@@ -6,7 +6,7 @@ const Navbar = () => {
         <div className="w-64">
             <Image
             className="h-auto w-24 m-auto"
-                src="/images/logos/RMC_Logo-MASTER.png"
+                src="./images/logos/RMC_Logo-MASTER.png"
                 width={60}
                 height={60}
                 alt="Picture of the author"
@@ -17,7 +17,7 @@ const Navbar = () => {
             <div>
                 <Image
                 className="w-5 h-5 m-auto"
-                    src="/icons/bell.svg"
+                    src="./icons/bell.svg"
                     width={24}
                     height={24}
                     alt="Picture of the author"
@@ -28,7 +28,7 @@ const Navbar = () => {
                 <div className="bg-gray-100 rounded-full">
                     <Image
                         className="w-8 h-8 m-auto"
-                            src="/icons/avatar-default.svg"
+                            src="./icons/avatar-default.svg"
                             width={24}
                             height={24}
                             alt="Picture of the author"
