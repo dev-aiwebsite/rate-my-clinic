@@ -1,6 +1,6 @@
 "use client"
 
-export default function CircleChart({data = []}) {
+export default function CircleChart({data = [{value: 0}]}) {
     let chart_visual = ""
     if(data.length){
         data.sort((a,b) => {
