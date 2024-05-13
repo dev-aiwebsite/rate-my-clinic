@@ -19,8 +19,10 @@
     ],
     "paths": {
       "@/*": ["./src/app/*"]
-    }
+    },
+    "types": ["@uploadcare/blocks/types/jsx"]
+    
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/utils.js"],
+  "exclude": ["node_modules"],
 }

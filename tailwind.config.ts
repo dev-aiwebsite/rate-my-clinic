@@ -17,6 +17,7 @@ const config: Config = {
         appblue: {
           200: "#E9F5FF",
           300: "#94BDE5",
+          350: "#80b0e0",
           400: "#004261",
         },
       },

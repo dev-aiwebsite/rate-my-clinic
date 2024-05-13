@@ -6,6 +6,9 @@
   --foreground-rgb: 0, 0, 0;
   --background-start-rgb: #fff;
   --background-end-rgb: #fff;
+  --appblue-200: #94BEE5;
+  --appgreen-600: #004261;
+  --appgreen-300: #97CB64;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -15,6 +18,12 @@
     --background-end-rgb: 0, 0, 0;
   }
 } */
+
+.meter-needle {
+  rotate: -90deg;
+  transition: all 0.5s ease-in-out;
+  transform-origin: 0% 90%;
+}
 
 body {
   color: rgb(var(--foreground-rgb));
@@ -29,5 +38,11 @@ body {
 @layer utilities {
   .text-balance {
     text-wrap: balance;
+  }
+}
+
+@layer components {
+  .btn-primary {
+    @apply py-2 px-5 bg-appblue-300 text-white rounded-lg shadow-md hover:bg-appblue-350 focus:outline-none ;
   }
 }

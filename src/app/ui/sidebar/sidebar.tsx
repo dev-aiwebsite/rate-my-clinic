@@ -1,27 +1,29 @@
 import Image from "next/image"
-import ProfileButton from "../profile-settings-button"
-import LogoutBtn from "../logout-btn"
+import ProfileButton from "../../components/profile-settings-button"
+import LogoutBtn from "../../components/logout-btn"
+import { auth } from "@/auth"
+import Link from "next/link"
 
 const list_item = [
     {
         name: "My clinic",
         icon: "/icons/home.svg",
-        link: "#"
+        link: "/dashboard"
     },
     {
         name: "Owner surver",
         icon: "/icons/checklist.svg",
-        link: "#"
+        link: "/dashboard/owner-survey"
     },
     {
         name: "Team survey",
         icon: "/icons/team.svg",
-        link: "#"
+        link: "/dashboard/team-survey"
     },
     {
         name: "Client survey",
         icon: "/icons/client.svg",
-        link: "#"
+        link: "/dashboard/client-survey"
     },
 ]
 
@@ -37,7 +39,7 @@ const second_list_item = [
         link: "#"
     }
 ]
-const Sidebar = () => {
+const Sidebar = async () => {
     return <aside className="w-64 h-full bg-white px-5 flex flex-col pb-10">
         <div className="text-center">
             <Image
@@ -49,12 +51,12 @@ const Sidebar = () => {
                 
             />
             <h1 className="mb-2 text-sm">Jade Scott</h1>
-            <ProfileButton/>
+            <Link href="/settings/account" className="block !w-fit min-w-1/2 mx-auto ring-1 ring-gray-200 px-6 py-1 rounded-lg text-gray-400 text-xs hover:bg-appblue-200 hover:text-appblue-400">Settings</Link>
         </div>
         <ul className="my-5 py-3 border-solid border-0 border-y border-gray-200 text-gray-500">
             {list_item.map((item, index) => (
                 <li key={index} className="hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400" >
-                    <a href={item.link} className="flex flex-row items-center gap-3 text-sm py-3 px-6">
+                    <Link href={item.link} className="flex flex-row items-center gap-3 text-sm py-3 px-6">
                         <Image
                             className="w-5 h-5" 
                             src={item.icon}
@@ -62,7 +64,7 @@ const Sidebar = () => {
                             width={20}
                             height={20}
                         />
-                        {item.name}</a>
+                        {item.name}</Link>
                 </li>
             ))}
         </ul>
