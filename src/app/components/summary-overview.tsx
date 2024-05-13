@@ -1,19 +1,57 @@
+import Image from "next/image";
 import CircleChart from "./circle-chart"
+import MeterChart from "./meter-chart";
+
+const data = [
+    {
+        name: 'Clients',
+        value: 73,
+        color: 'var(--appgreen-300)',
+        icon: '/icons/client.svg',
+    },
+    {
+        name: 'Strategy',
+        value: 25,
+        color: 'var(--appgreen-300)',
+        icon: '/icons/strategy.svg',
+    },
+    {
+        name: 'Team',
+        value: 58,
+        color: 'var(--appblue-200)',
+        icon: '/icons/team.svg',
+    },
+    {
+        name: 'Finance',
+        value: 49,
+        color: 'var(--appblue-200)',
+        icon: '/icons/finance.svg',
+    },
+]
+
 let test = [
     {
         name: 'Group A',
-        value: 90,
+        value: 20,
         color: '#94BDE5',
     },
     {
         name: 'Group B',
-        value: 20,
+        value: 50,
         color: '#004261',
     }
 ]
-export default function SummaryOverview() {
-    return (
-        <div className="row-span-3 col-span-3 grid grid-cols-3">
+
+let needle = {
+    color: "#004261",
+    value: 90,
+    title: 'Client'
+}
+
+
+ const SummaryOverview = ({additionalClass = ""}) => {
+    let cName = `${additionalClass} row-span-3 col-span-3 grid grid-cols-3`
+    return <div className={cName}>
             <div className="flex flex-col items-center justify-center gap-5 border-0 border-solid border-r border-gray-200">
                 <CircleChart data={test}/>
                 <div>
@@ -28,14 +66,39 @@ export default function SummaryOverview() {
                 </div>
                 <a className="font-medium text-gray-400" href="#">See full report</a>
             </div>
-
-            <div>
-
-            </div>
-
-            <div>
-
+            <div className="col-span-2 grid grid-cols-2 gap-6">
+               {data.map((item, index) => (
+                <div key={index} className="grid grid-cols-[1fr_4fr] items-center justify-center gap-4">
+                    <div className="flex flex-col gap-2 items-center">
+                        <p className="text-[1.5vw] font-medium">{item?.value || "-/-"}</p>
+                        <Image
+                            className="w-[60%] aspect-square" 
+                            src={item.icon}
+                            alt={item.name}
+                            width={40}
+                            height={40}
+                        />
+                    </div>
+                    <div className="flex-1">
+                        <MeterChart
+                            data={[
+                                {
+                                    value: 100,
+                                    color: item.color,
+                                },
+                            ]}
+                            needle={{
+                                color: "",
+                                value: 90,
+                                title: 'Client'
+                            }}
+                        />
+                    </div>
+                </div>
+               ))}
             </div>
         </div>
-    );
+    
 }
+
+export default SummaryOverview

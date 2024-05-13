@@ -1,10 +1,12 @@
-"use client"
-export default function LogoutBtn() {
-    const handleClick = () => {
-        console.log('Button clicked!');
-    }
+import { signOut } from "@/auth";
 
+export default function LogoutBtn() {
     return (
-        <button className="w-full ring-1 ring-gray-200 px-6 py-2 rounded-lg text-gray-400 text-sm hover:bg-appblue-200 hover:text-appblue-400" onClick={handleClick}>Logout</button>
+        <form action={async () => {
+            'use server';
+            await signOut();
+          }}>
+            <button className="w-full ring-1 ring-gray-200 px-6 py-2 rounded-lg text-gray-400 text-sm hover:bg-appblue-200 hover:text-appblue-400"type="submit">Logout</button>
+        </form>
     );
 }
