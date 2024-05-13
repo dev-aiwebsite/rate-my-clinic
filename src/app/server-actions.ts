@@ -56,6 +56,7 @@ export const AuthenticateUser = async (formData: FormData) => {
 };
 
 export const OwnerSurveyAction = async (formData: FormData) => {
-    
+    console.log('owner survey form submitted')
+        console.log(formData)
 }
 

@@ -23,6 +23,6 @@
     "types": ["@uploadcare/blocks/types/jsx"]
     
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/utils.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/utils.js", "public/static.js"],
   "exclude": ["node_modules"],
 }
