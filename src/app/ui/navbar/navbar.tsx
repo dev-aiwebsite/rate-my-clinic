@@ -1,15 +1,11 @@
 import { auth } from "@/auth"
 import Image from "next/image"
-import { Session } from "next-auth"
 import { Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react'
 import { Fragment } from "react";
-interface CustomSession extends Session {
-    user_img: string;
-    user_name: string;
-}
+import { ExtendedAdapterSession } from "../../../../typings";
 
 const Navbar = async () => {
-    const session = await auth() as CustomSession
+    const session = await auth() as unknown as ExtendedAdapterSession
     let userAvatar = session.user_img ? `${session?.user_img}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
     let userName = session?.user_name || "Guest"
     return(

@@ -5,6 +5,8 @@ import { authConfig } from './authconfig';
 import { connectToDb } from "./lib/utils";
 import { Users } from './lib/models';
 import bcrypt from 'bcrypt';
+import { ExtendedAdapterSession, ExtendedUser } from "../../typings";
+import { JWT } from "next-auth/jwt";
 interface CustomSession extends Session {
     user_role: string;
   }
@@ -43,24 +45,27 @@ export const { signIn, signOut, auth } = NextAuth({
     ],
     callbacks: {
         async jwt({ token, user }) {
+            console.log(user, 'from jwt')
             if (user) {
-                token.username = user.username
-                token.useremail = user.useremail
-                token.img = user.img
-                token.user_id = user.id
-                token.role = user.role
+                const extendedUser = user as ExtendedUser;
+                token.username = extendedUser.username;
+                token.useremail = extendedUser.useremail;
+                token.img = extendedUser.img;
+                token.user_id = extendedUser.id;
+                token.role = extendedUser.role;
             }
-            return token
+            return token;
         },
         async session({ session, token }) {
             if (token) {
-                session.user_id = token.user_id
-                session.user_name = token.username
-                session.user_email = token.useremail
-                session.user_img = token.img
-                session.user_role = token.role
+                const ExtendedSession = session as unknown as ExtendedAdapterSession
+                ExtendedSession.user_id = token.user_id
+                ExtendedSession.user_name = token.username as string
+                ExtendedSession.user_email = token.useremail as string
+                ExtendedSession.user_img = token.img as string
+                ExtendedSession.user_role = token.role as string
             }
             return session
         }
     }
-})
+});

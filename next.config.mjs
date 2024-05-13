@@ -1,8 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    images: {
-        domains: ['ucarecdn.com'],
-      },
+  images: {
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'ucarecdn.com',
+          port: '',
+        },
+      ],
+  },
 };
 
 export default nextConfig;
