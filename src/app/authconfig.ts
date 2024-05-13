@@ -6,9 +6,6 @@ export const authConfig = {
     signIn: '/login',
     error: "/login",
   },
-  session: {
-    strategy: "jwt"
-  },
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     authorized({ auth, request }) {
