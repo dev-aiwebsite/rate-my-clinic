@@ -1,8 +1,14 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-    // output: "export",
- basePath: '/rate-my-clinic'
-    
+  images: {
+      remotePatterns: [
+        {
+          protocol: 'https',
+          hostname: 'ucarecdn.com',
+          port: '',
+        },
+      ],
+  },
 };
 
 export default nextConfig;
