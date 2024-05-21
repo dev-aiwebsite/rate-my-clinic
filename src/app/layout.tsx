@@ -19,7 +19,7 @@ export const metadata: Metadata = {
   description: "rate my clinic",
 };
 
-export default function RootLayout({children,pageProps}: Readonly<{children: React.ReactNode;}>) {
+export default function RootLayout({children}: Readonly<{children: React.ReactNode;}>) {
   return (
     <PrimeReactProvider>
     <html lang="en">
