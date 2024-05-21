@@ -19,11 +19,7 @@ export const authConfig = {
         // return Response.redirect(new URL('/dashboard', request.nextUrl));
         return Response.redirect(new URL('/dashboard', request.nextUrl));
       }
-      const trustedHosts = ['https://h1lwf00kudd4tiu1bkxtdxeam.js.wpenginepowered.com', '*'];
-      const host = request.headers.get('host');
-      if (host && !trustedHosts.includes(host)) {
-        throw new Error('Untrusted host');
-      }
+
       return true;
     },
   }
