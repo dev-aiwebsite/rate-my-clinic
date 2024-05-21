@@ -103,7 +103,8 @@ export default function SignupPage({children}:any) {
                         </>}
                         {page == 2 &&
                         <div className="">
-                        <PaymentEmbed priceId={products.basic.id}/>
+                            {/* has error product structure changed */}
+                        {/* <PaymentEmbed priceId={products.basic.id}/> */}
                             <div>
                                 test
                             </div>

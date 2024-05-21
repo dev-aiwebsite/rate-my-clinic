@@ -10,18 +10,15 @@ export default async function Page({searchParams}:any) {
     const session_id = searchParams.session_id as string;
     if(session_id){
         const sessionInfo = await stripe.checkout.sessions.retrieve(session_id);
-        console.log(sessionInfo.status);
-    
-       
+        
         if(sessionInfo.status == "complete"){
             let name,email,clinic_name,clinic_type,password = 'Welcome1!'
             let formData = new FormData()
 
-
-            name = sessionInfo.customer_details.name
-            email = sessionInfo.customer_details.email
-            clinic_name = sessionInfo.custom_fields.find(i => i.key == "clinic_name").text.value
-            clinic_type = sessionInfo.custom_fields.find(i => i.key == "clinic_type").dropdown.value
+            name = sessionInfo?.customer_details?.name;
+            email = sessionInfo?.customer_details?.email;
+            clinic_name = sessionInfo?.custom_fields.find(i => i.key == "clinic_name")?.text?.value;
+            clinic_type = sessionInfo?.custom_fields.find(i => i.key == "clinic_type")?.dropdown?.value;
             
             formData.append('username', name as string)
             formData.append('useremail', email as string)
