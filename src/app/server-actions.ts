@@ -4,28 +4,41 @@ import { signIn } from "./auth"
 import { Users } from "./lib/models"
 import { connectToDb } from "./lib/utils"
 import bcrypt from 'bcrypt'
+import { MailOptions, transporter } from "../../config/nodemailer.config"
 
 export const RegisterUser = async (formData:FormData) =>{
-
-    const {username,useremail,clinic_type} = Object.fromEntries(formData)
+    let result = {
+        success: false,
+        data: null || "",
+        orig_pass: "",
+        message: null || ""
+    }
+    try {
+        connectToDb()
+    const {username,useremail,clinic_type,clinic_name} = Object.fromEntries(formData)
     let emailExists = await Users.findOne({useremail})
 
     if(emailExists){
-       console.log("email exist")
-       return false;
+       result.data = emailExists
+       result.message = 'User email already exist'
+       result.success = false
+       return result;
     }
     let salt = bcrypt.genSaltSync(10) 
     const userpass = formData.get('userpass') as string;
     let hashedPass = await bcrypt.hash(userpass,salt)
-
-    try {
-        connectToDb()
-        const newUser = new Users({username,useremail,password:hashedPass,clinic_type})
+        const newUser = new Users({username,useremail,password:hashedPass,clinic_name,clinic_type})
         await newUser.save()
+        result.data = newUser
+        result.orig_pass = userpass,
+        result.message = 'User created successfully'
+        result.success = true
+        return result
         
     } catch (error:any) {
-        console.log(error)
-        throw new Error(error.toString())
+        result.message = error.toString()
+        result.success = false
+        return result
     }
 }
 
@@ -60,3 +73,21 @@ export const OwnerSurveyAction = async (formData: FormData) => {
         console.log(formData)
 }
 
+export const AppSendMail =  async(mailOptions:MailOptions) => {
+    const {from,to,subject,htmlBody} = mailOptions
+    try {
+        await transporter.sendMail({
+            from: 'RATE MY CLINIC <info@ratemyclinic@gmail.com>',
+            to,
+            subject,
+            html: htmlBody
+        })
+
+
+        return {success: true, message: 'test'}
+
+    } catch (error:any) {
+        return {success: false , message: error}
+    }
+
+}

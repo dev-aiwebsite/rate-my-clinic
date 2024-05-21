@@ -1,7 +1,5 @@
 import Image from "next/image"
-import ProfileButton from "../../components/profile-settings-button"
 import LogoutBtn from "../../components/logout-btn"
-import { auth } from "@/auth"
 import Link from "next/link"
 
 const list_item = [
@@ -31,12 +29,12 @@ const second_list_item = [
     {
         name: "Nps chart",
         icon: "/icons/nps.svg",
-        link: "#"
+        link: "/dashboard/nps"
     },
     {
         name: "Book a call",
         icon: "/icons/sched.svg",
-        link: "#"
+        link: "/dashboard/contact"
     }
 ]
 const Sidebar = async () => {
