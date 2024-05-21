@@ -47,7 +47,7 @@ export default function LoginForm() {
                     href="/forgot-password">Forgot Password
                 </Link>
                 <Link className="underline text-xs text-blue-600"
-                    href="/signup">Not yet a member? Register here
+                    href="/pricing">Not yet a member? Register here
                 </Link>
             </div>
         </form>

@@ -1,6 +1,7 @@
 import Image from "next/image";
 import CircleChart from "./circle-chart"
 import MeterChart from "./meter-chart";
+import Link from "next/link";
 
 const data = [
     {
@@ -70,7 +71,6 @@ let needle = {
                {data.map((item, index) => (
                 <div key={index} className="grid grid-cols-[1fr_4fr] items-center justify-center gap-4">
                     <div className="flex flex-col gap-2 items-center">
-                        <p className="text-[1.5vw] font-medium">{item?.value || "-/-"}</p>
                         <Image
                             className="w-[60%] aspect-square" 
                             src={item.icon}
@@ -78,21 +78,24 @@ let needle = {
                             width={40}
                             height={40}
                         />
+                        <p className="text-[1.5vw] font-medium">{item?.value || "-/-"}</p>
                     </div>
                     <div className="flex-1">
-                        <MeterChart
-                            data={[
-                                {
-                                    value: 100,
-                                    color: item.color,
-                                },
-                            ]}
-                            needle={{
-                                color: "",
-                                value: 90,
-                                title: 'Client'
-                            }}
-                        />
+                        <Link href={`/dashboard/nps/${item.name.toLowerCase()}`}>
+                            <MeterChart
+                                data={[
+                                    {
+                                        value: 100,
+                                        color: item.color,
+                                    },
+                                ]}
+                                needle={{
+                                    color: "",
+                                    value: item.value,
+                                    title: item.name
+                                }}
+                            />
+                        </Link>
                     </div>
                 </div>
                ))}

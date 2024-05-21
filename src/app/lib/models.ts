@@ -3,7 +3,6 @@ const user_schema = new mongoose.Schema({
     username: {
         type: String,
         required: true,
-        unique: true,
         min: 3,
         max: 20
     },
@@ -19,6 +18,9 @@ const user_schema = new mongoose.Schema({
     role: {
         type: String,
         default: "user",
+    },
+    clinic_name: {
+        type: String,
     },
     clinic_type: {
         type: String,

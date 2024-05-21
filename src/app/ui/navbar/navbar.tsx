@@ -6,8 +6,9 @@ import { ExtendedAdapterSession } from "../../../../typings";
 
 const Navbar = async () => {
     const session = await auth() as unknown as ExtendedAdapterSession
-    let userAvatar = session.user_img ? `${session?.user_img}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
-    let userName = session?.user_name || "Guest"
+    if(!session) return false
+        let userAvatar = session?.user_img ? `${session?.user_img}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
+        let userName = session?.user_name || "Guest"
     return(
     <div className="h-16 bg-[#004261] w-full flex flex-row items-center py-6 *:px-6">
         <div className="w-64">

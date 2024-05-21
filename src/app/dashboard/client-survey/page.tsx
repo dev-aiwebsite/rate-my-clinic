@@ -1,5 +1,4 @@
-import { auth } from "@/auth";
-import { fetchData } from "@/lib/data";
+
 export default async function Page() {
     return (
     

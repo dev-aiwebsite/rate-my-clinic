@@ -1,3 +1,4 @@
+import { PrimeReactProvider } from 'primereact/api';
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
@@ -18,16 +19,25 @@ export const metadata: Metadata = {
   description: "rate my clinic",
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({children,pageProps}: Readonly<{children: React.ReactNode;}>) {
   return (
+    <PrimeReactProvider>
     <html lang="en">
       <body className={`${poppins.className}`}>
         {children}
         </body>
     </html>
+    </PrimeReactProvider>
   );
 }
+
+
+
+
+// export default function MyApp({ Component, pageProps }) {
+//     return (
+//         <PrimeReactProvider>
+//             <Component {...pageProps} />
+//         </PrimeReactProvider>
+//     );
+// }
