@@ -6,7 +6,7 @@ const shapeStyle: CSSProperties = {
 
 export default function HelperCard({className}:any) {
     return (
-        <div className={`${className} max-w-[320px] bg-white ring-1 ring-gray-500 rounded-lg p-10 flex pb-0 overflow-hidden mb-px text-sm`}> 
+        <div className={`${className} md:max-w-[320px] bg-white ring-1 ring-gray-500 rounded-lg p-10 flex pb-0 overflow-hidden mb-px text-sm`}> 
         <div>
             <div className="inline-flex items-end float-right h-full -mr-10 -mb-10" style={shapeStyle}>
                 <Image
