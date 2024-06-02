@@ -1,0 +1,5 @@
+.slider_marker {
+    position: absolute;
+    left: 0;
+    translate: -50% -100%;
+}

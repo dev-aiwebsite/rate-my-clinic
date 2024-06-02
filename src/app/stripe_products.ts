@@ -3,6 +3,7 @@ type Products = {
   };
 
   export interface Product {
+    level: number;
     name: string;
     monthly: {
       id: string;
@@ -22,6 +23,7 @@ type Products = {
 
 export const products:Products = {
     basic : {
+        level: 1,
         name: 'Basic',
         monthly: {
             id: 'price_1PGiQ8A60aLPUECGFZe6pzRK',
@@ -39,6 +41,7 @@ export const products:Products = {
         }
     },
     standard : {
+        level: 2,
         name: 'Standard',
         monthly: {
             id: 'price_1PGiQ8A60aLPUECGFZe6pzRK',
@@ -56,6 +59,7 @@ export const products:Products = {
         }
     },
     premium : {
+        level: 3,
         name: 'Premium',
         monthly: {
             id: 'price_1PGiQ8A60aLPUECGFZe6pzRK',

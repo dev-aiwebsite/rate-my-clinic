@@ -1,7 +1,8 @@
+import { Message } from 'primereact/message';
 "use server"
 import { revalidatePath } from "next/cache"
-import { signIn } from "./auth"
-import { Users } from "./lib/models"
+import { signIn, signOut } from "./auth"
+import { DB_TeamSurveyData, DB_ClientSurveyData, DB_OwnerSurveyData, Users } from "./lib/models"
 import { connectToDb } from "./lib/utils"
 import bcrypt from 'bcrypt'
 import { MailOptions, transporter } from "../../config/nodemailer.config"
@@ -46,8 +47,6 @@ export const UpdateUser = async (query = {"useremail":"string"}, data = {}) =>{
     try {        
         console.log('update user')
         connectToDb()
-    //    const query = { "useremail": 'test@gmail.com' }
-    //    const data ={ "img": 'https://ucarecdn.com/30b83b52-ef0f-43f2-a363-98946f94e07a/' }
         let user = await Users.findOneAndUpdate(query, data, {new:true})
         revalidatePath('/dashboard')
         return user
@@ -70,7 +69,53 @@ export const AuthenticateUser = async (formData: FormData) => {
 
 export const OwnerSurveyAction = async (formData: FormData) => {
     console.log('owner survey form submitted')
-        console.log(formData)
+    console.log(formData)
+    
+    try {
+        connectToDb()
+        const newOwnerSurvey = new DB_OwnerSurveyData(Object.fromEntries(formData))
+        await newOwnerSurvey.save()
+
+        return {"success": true, 'message':'data save in database'}
+    } catch (error) {
+        console.log(error)
+        return {"success": false, 'message': error?.toString()}
+        
+    }
+}
+
+
+export const ClientSurveyAction = async (formData: FormData) => {
+    console.log('Client survey form submitted')
+    console.log(formData)
+    
+    try {
+        connectToDb()
+        const newClientSurvey = new DB_ClientSurveyData(Object.fromEntries(formData))
+        await newClientSurvey.save()
+
+        return {"success": true, 'message':'data save in database'}
+    } catch (error) {
+        console.log(error)
+        return {"success": false, 'message': error?.toString()}
+        
+    }
+}
+export const TeamSurveyAction = async (formData: FormData) => {
+    console.log('Team survey form submitted')
+    console.log(formData)
+    
+    try {
+        connectToDb()
+        const newTeamSurvey = new DB_TeamSurveyData(Object.fromEntries(formData))
+        await newTeamSurvey.save()
+
+        return {"success": true, 'message':'data save in database'}
+    } catch (error) {
+        console.log(error)
+        return {"success": false, 'message': error?.toString()}
+        
+    }
 }
 
 export const AppSendMail =  async(mailOptions:MailOptions) => {
@@ -91,3 +136,7 @@ export const AppSendMail =  async(mailOptions:MailOptions) => {
     }
 
 }
+
+export const handleLogout = async () => {
+    await signOut();
+  };

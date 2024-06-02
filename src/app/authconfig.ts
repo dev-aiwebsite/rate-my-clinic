@@ -12,11 +12,12 @@ export const authConfig = {
       const isLoggedIn = auth?.user;
       const isOnDashboard = request.nextUrl.pathname.startsWith('/dashboard');
       const isOnSettings = request.nextUrl.pathname.startsWith('/settings');
+      const isOnSurvey = request.nextUrl.pathname.startsWith('/survey');
       if (isOnDashboard || isOnSettings) {
         if (isLoggedIn) return true;
         return false; // Redirect unauthenticated users to login page        
-      } else if (isLoggedIn) {
-        // return Response.redirect(new URL('/dashboard', request.nextUrl));
+        // return true
+      } else if (isLoggedIn && !isOnSurvey) {
         return Response.redirect(new URL('/dashboard', request.nextUrl));
       }
 

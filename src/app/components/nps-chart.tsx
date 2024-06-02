@@ -121,8 +121,8 @@ export default function NpsChart() {
                     <Tooltip target=".custom-tooltip-btn" autoHide={false} position="bottom">
                         <div className="max-w-[250px] text-sm">
                         Professional expert advice delivered in a considered friendly manner with great hands on therapy.
-                        <CopyButton className="float-right"
-                            text={"Professional expert advice delivered in a considered friendly manner with great hands on therapy."} isTooltip={true}/>
+                        <CopyButton className="float-right !p-1 !ring-0"
+                            textToCopy={"Professional expert advice delivered in a considered friendly manner with great hands on therapy."} toolTip="Copy text"/>
                             
                         </div>
                     </Tooltip>
@@ -144,9 +144,8 @@ export default function NpsChart() {
             [dataType]: !dataVisibility[dataType]
         })
     }
-console.log('renders')
     return (<>
-        <div className="width-full flex flex-col h-[80vh]">
+        <div className="width-full flex flex-col h-auto">
                     
             <div className="text-sm text-neutral-500 font-[300] flex items-center justify-center gap-5">
                 <button className="flex flex-row gap-2 items-center shadow-sm ring-1 ring-gray-200 hover:shadow-lg bg-white rounded-full py-2 px-3"
@@ -204,7 +203,7 @@ console.log('renders')
                             <div className="no-scrollbar overflow-y-clip grid grid-rows-10 h-[calc(100%_+_4rem)] py-8 -my-8 overflow-x-auto flex-1 z-2 relative">
                                {chartItems}
                             </div>
-                            <div className="grid grid-rows-10 h-full">
+                            <div className="grid grid-rows-10 h-auto">
                                 {numbers.map((number) => (
                                 <div key={number} className="text-xs text-neutral-500 border-0 border-l-4 border-t-4 border-gray-200">
                                     <span className="block -translate-y-[calc(50%_+_2px)] translate-x-full">{number}</span>

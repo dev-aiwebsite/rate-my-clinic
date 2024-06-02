@@ -1,3 +1,4 @@
+"use client"
 import React, { useState } from 'react';
 import { Button } from 'primereact/button';
 import { Tooltip } from 'primereact/tooltip';
@@ -5,34 +6,37 @@ import { CopyToClipboard } from 'react-copy-to-clipboard';
 import 'primeicons/primeicons.css';
 import { Ripple } from 'primereact/ripple';
 
-const CopyButton = ({ text,isTooltip = false,className }:{text:any,isTooltip:boolean | null,className:string}) => {
+const CopyButton = ({buttonText,textToCopy, toolTip,showIcon = true,className }:{buttonText?:string,textToCopy:string,toolTip?:any,showIcon?:boolean,className?:string}) => {
     const [copied, setCopied] = useState(false);
 
     const handleCopy = () => {
         setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        setTimeout(() => {
+            setCopied(false)
+        }, 1000);
+        
     };
-    let tooltip = ""
-    if(isTooltip){
-        tooltip = copied ? 'Text copied to clipboard' : 'Click to copy text'
-    }
 
-    return (<div className={`${className} p-ripple rounded p-1 hover:bg-white hover:bg-opacity-10`}>
-            <CopyToClipboard text={text} onCopy={handleCopy}>
+    return (
+            <CopyToClipboard text={textToCopy} onCopy={handleCopy}>
                 <Button
                     id="copy-btn"
-                    icon="pi pi-copy"
-                    className={"p-button-text text-sm"}
+                    icon={copied ? "pi pi-check" : "pi pi-copy"}
+                    className={`${className} p-button-text text-sm p-ripple`}
                     data-pr-position="bottom"
-                    unstyled={true}
+                    // unstyled={true}
                 >
-                    <Tooltip target="#copy-btn" unstyled={true}>
-                        <span className='text-xs'>copy text</span>
-                    </Tooltip>
+                    <span className='pi-file-check hidden'></span>
+                    {copied ? 'Copied!' : buttonText}
+
+                    {toolTip &&
+                        <Tooltip target="#copy-btn">
+                            {toolTip}
+                        </Tooltip>
+                    }
+                        <Ripple />
                 </Button>
             </CopyToClipboard>
-            <Ripple />
-        </div>
     );
 };
 

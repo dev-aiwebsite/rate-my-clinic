@@ -37,16 +37,17 @@ export default function MeterChart({
     return (
         <div className="">
             <div className="flex flex-col items-center justify-center">
-                <div className="relative w-[calc(100%-10vh)] min-w-[15vh] aspect-[2/1]">
+                <div className="overflow-hidden relative w-[calc(100%-10vh)] min-w-[15vh] aspect-[2/1]">
                     <div className="container absolute flex items-center justify-center rounded-full w-full h-[200%]">
                         <div className="p-4 rounded-full absolute w-[70%] h-[70%] bg-white flex items-center justify-center flex-col text-center">
                         </div>
                     </div>
                     <svg className="meter-needle absolute h-[90%] bottom-0 left-1/2 -translate-x-1/2" width="31" height="134" viewBox="0 0 31 134" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path d="M 0.7768 121.567 L 13 2 L 30.0996 119.666 C 28.2858 140.131 0.9369 136.146 0.7768 121.567 Z" fill={needle.color}/>
-                    </svg>
+                    </svg>    
+                    <div className="md:hidden absolute bottom-0 left-1/2 -translate-x-1/2 translate-y-1/4 text-[10px] sm:text-[12px] md:text-xs font-medium rounded-full aspect-square w-[2em] bg-white flex items-center justify-center">{needle.value}</div>                
                 </div>
-                <div className="relative text-base">{needle.title}</div>
+                <div className="max-md:hidden relative text-base mt-2">{needle.title}</div>
             </div>
             <style jsx>{`
                 .container {

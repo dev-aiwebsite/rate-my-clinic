@@ -9,8 +9,8 @@ const ProfileUploadBtnNoSSR = dynamic(() => import("@/components/upload-profile-
 export default async function AccountPage() {
     const session = await auth()
     return (
-        <div className="bg-[#f7f7f7] grid-flow-* flex-1 p-6 gap-x-6 gap-y-10 grid grid-cols-3 grid-rows-6 *:bg-white *:shadow-lg *:rounded-md *:py-6 *:px-6">
-            <div className="row-span-2 text-center">
+        <div className="bg-[#f7f7f7] grid-flow-* flex-1 p-6 gap-x-6 gap-y-10 grid max-md:grid-cols-4 md:grid-rows-6 *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6">
+            <div className="col-span-2 md:col-span-1 md:row-span-2 text-center">
                 <h3 className="">Clinic Logo</h3>
                 <Image
                 className="h-24 w-auto m-auto p-5"
@@ -20,7 +20,7 @@ export default async function AccountPage() {
                     alt="Wrh logo"
                 />
             </div>
-            <div className="row-span-2 flex">
+            <div className="col-span-2 md:col-span-1 md:col-start-1 md:row-span-2 flex">
                 <div className="flex items-center flex-col justify-between flex-1">
                     <h3 className="text-center">Membership</h3>
                     <p className="text-xl text-center">Basic</p>
@@ -30,7 +30,7 @@ export default async function AccountPage() {
                     </div>
                 </div>
             </div>
-            <div className="row-span-2 text-center">
+            <div className="col-span-2 md:col-span-1 md:row-span-2 text-center">
                 <h3>Invoices</h3>
                 <ul>
                     <li>
@@ -56,7 +56,7 @@ export default async function AccountPage() {
                     </li>
                 </ul>
             </div>
-            <div className="col-span-2 row-start-1 col-start-2 row-span-6">
+            <div className="max-md:col-span-full md:col-span-2 md:row-start-1 md:col-start-2 row-span-6">
              <ProfileUploadBtnNoSSR userSession={session}/>
 
             </div>
