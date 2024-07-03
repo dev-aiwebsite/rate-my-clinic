@@ -23,8 +23,8 @@ const second_list_item = [
     
 ]
 const SidebarMobile = ({userData,isVisible = false,position = "right"}:{userData:any,isVisible?:boolean,position?: "right" | "top" | "bottom" | "left"}) => {
-    let userAvatar = userData?.user_img ? `${userData?.user_img}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
-    let userName = userData?.user_name || "Guest"
+    let userAvatar = userData?.profile_pic ? `${userData?.profile_pic}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
+    let userName = userData?.username || "Guest"
 
     const customContent = () => {
         return (

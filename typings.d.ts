@@ -7,7 +7,7 @@ export interface ExtendedUser extends User {
     role: string;
     id: string;
   }
-  export interface ExtendedAdapterSession extends AdapterSession {
+  export interface ExtendedSession extends Session {
     user_id: any;
     user_name: string;
     user_email: string;

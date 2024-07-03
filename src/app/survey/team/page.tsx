@@ -1,6 +1,6 @@
 "use client"
 import InputRange from "@/components/inputRange";
-import { useUsersContext } from "@/context/usersContext";
+import { useSessionContext } from "@/context/sessionContext";
 import { TeamSurveyAction } from "@/server-actions";
 import { Button } from "primereact/button";
 import { Toast, ToastMessage } from 'primereact/toast';
@@ -9,31 +9,21 @@ import { FormEvent, useEffect, useRef, useState } from "react";
 const selectOptions_0_10 = Array.from({ length: 11 }, (_, i) => i);
 
 type page = number
-export default function ClientSurveyForm() {
-    const users = useUsersContext()
+export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
+    const {users} = useSessionContext()
     const toast = useRef<Toast>(null);
     const max_pages = 1
     const [page, setPage] = useState(1)
-    const [submitBtnText, setSubmitBtnText] = useState("Next")
+    
+    let default_submitBtnText = 'Next'
+    if(max_pages == 1){
+        default_submitBtnText = 'Submit'
+    }
+    const [submitBtnText, setSubmitBtnText] = useState(default_submitBtnText)
     const [isLoading, setIsLoading] = useState(false)
-    const [searchParams, setSearchParams] = useState<URLSearchParams | null>(null);
-
-    console.log('rendering')
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            setSearchParams(new URLSearchParams(window.location.search));
-        }
-
-        if(max_pages == 1){
-            setSubmitBtnText('Submit')
-        }
-    }, []);
-
-
-   
-
-    const clinic_id = searchParams?.get('cid')
-    const clinic_name = users?.find(i => i._id == `${clinic_id}`)?.clinic_name || ""
+  
+    const clinic_id = searchParams.cid
+    const clinic_name = users?.find((i: { _id: string; }) => i._id == `${clinic_id}`)?.clinic_name || ""
 
 
 
@@ -100,12 +90,42 @@ export default function ClientSurveyForm() {
                             {/* <h3 className="text-xl  leading-6 mb-4">Clinic information</h3> */}
                             <div className="formSectionContent">
                                 <div className="sm:col-span-1">
-                                    <label htmlFor="name" className="formLabel">
-                                       Name
+                                    <label htmlFor="clinicname" className="formLabel">Clinic name</label>
+                                    <div className="mt-2">
+                                        <div className="formField">
+                                            <input
+                                                disabled={true}
+                                                type="text"
+                                                id="clinicname"
+                                                autoComplete="clinicname"
+                                                className=""
+                                                placeholder="Clinic" value={`${clinic_name}`} />
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="fname" className="formLabel">
+                                       First name
                                     </label>
                                     <div className="mt-2">
                                         <div className="formField">
-                                            <input type="text" name="name" id="name" required/>
+                                            <input type="text" name="fname" id="fname" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="lname" className="formLabel">
+                                       Last name
+                                    </label>
+                                    <div className="mt-2">
+                                        <div className="formField">
+                                            <input type="text" name="lname" id="lname" required/>
                                         </div>
                                     </div>
                                 </div>

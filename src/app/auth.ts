@@ -5,7 +5,7 @@ import { authConfig } from './authconfig';
 import { connectToDb } from "./lib/utils";
 import { Users } from './lib/models';
 import bcrypt from 'bcrypt';
-import { ExtendedAdapterSession, ExtendedUser } from "../../typings";
+import { ExtendedSession, ExtendedUser } from "../../typings";
 import { JWT } from "next-auth/jwt";
 interface CustomSession extends Session {
     user_role: string;
@@ -45,7 +45,6 @@ export const { signIn, signOut, auth } = NextAuth({
     ],
     callbacks: {
         async jwt({ token, user }) {
-            console.log(user, 'from jwt')
             if (user) {
                 const extendedUser = user as ExtendedUser;
                 token.username = extendedUser.username;
@@ -58,7 +57,7 @@ export const { signIn, signOut, auth } = NextAuth({
         },
         async session({ session, token }) {
             if (token) {
-                const ExtendedSession = session as unknown as ExtendedAdapterSession
+                const ExtendedSession = session as unknown as ExtendedSession
                 ExtendedSession.user_id = token.user_id
                 ExtendedSession.user_name = token.username as string
                 ExtendedSession.user_email = token.useremail as string

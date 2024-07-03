@@ -2,14 +2,10 @@ import { auth } from "@/auth";
 import ClinicQr from "@/components/clinic-qrcode";
 import CopyButton from "@/components/copy-text-button";
 import { InputText } from 'primereact/inputtext';
-import { ExtendedAdapterSession } from "../../../../typings";
-import dynamic from "next/dynamic";
+import { ExtendedSession } from "../../../../typings";
 
-// const CopyButton = dynamic(() => import('@/components/copy-text-button'), {
-    
-// })
 export default async function Page() {
-    const session = await auth() as unknown as ExtendedAdapterSession    
+    const session = await auth() as unknown as ExtendedSession    
     let clinicId = session?.user_id
     let url = `${process.env.NEXTAUTH_URL}/survey/client?cid=${clinicId}`;
     console.log(session)

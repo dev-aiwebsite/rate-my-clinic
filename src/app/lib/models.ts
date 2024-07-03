@@ -2,6 +2,15 @@ import mongoose from "mongoose";
 const user_schema = new mongoose.Schema({
   username: {
     type: String,
+  },
+  fname: {
+    type: String,
+    required: true,
+    min: 3,
+    max: 20
+  },
+  lname: {
+    type: String,
     required: true,
     min: 3,
     max: 20
@@ -10,6 +19,9 @@ const user_schema = new mongoose.Schema({
     type: String,
     required: true,
     unique: true,
+  },
+  usermobile: {
+    type: String,
   },
   password: {
     type: String,
@@ -22,24 +34,50 @@ const user_schema = new mongoose.Schema({
   clinic_name: {
     type: String,
   },
-  clinic_type: {
+  clinic_location_state: {
     type: String,
   },
-  clinic_img: {
+  clinic_location_country: {
     type: String,
-    default: ""
+  },
+  clinic_location_postcode: {
+    type: String,
+  },
+  clinic_established: {
+    type: String,
+  },
+  clinic_logo: {
+    type: String,
   },
   subscription: {
     type: String,
     default: "free"
   },
-  img: {
+  profile_pic: {
     type: String,
     default: ""
   },
   isActive: {
     type: Boolean,
     default: true
+  },
+  isVerified: {
+    type: Boolean,
+    default: false
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  },
+  isBlocked: {
+    type: Boolean,
+    default: false
+  },
+  passwordResetToken: {
+    type: String,
+  },
+  passwordResetExpires: {
+    type: Date,
   },
 
 }, { timestamps: true });
@@ -63,10 +101,14 @@ const userMetaSchema = new mongoose.Schema({
 
 const clientSurveyDataSchema = new mongoose.Schema({
   clinicid: {
-    type: Number,
+    type: String,
     required: true,
   },
-  name: {
+  fname: {
+    type: String,
+    required: true,
+  },
+  lname: {
     type: String,
     required: true,
   },
@@ -78,54 +120,65 @@ const clientSurveyDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  social_activities: {
-    type: Number,
-    required: true,
-  },
-  communication: {
-    type: Number,
-    required: true,
-  },
-  professional_development: {
-    type: Number,
-    required: true,
-  },
-  mentoring: {
-    type: Number,
-    required: true,
-  },
-  teamwork: {
-    type: Number,
-    required: true,
-  },
-  workplace_feedback: {
+  recommendation_feedback: {
     type: String,
     required: true,
   },
-  clinic_strengths: {
+  recommendedPreviously: {
     type: String,
     required: true,
   },
-  communication_effectiveness: {
+  servicesUsed: {
+    type: String,
+    required: true,
+  },
+  practitioner  : {
     type: Number,
     required: true,
   },
-  improvement_feedback: {
-    type: String,
-    required: true,
-  },
-  reward_comparison: {
-    type: String,
-    required: true,
-  },
-  service_knowledge: {
+  receptionTeam: {
     type: Number,
     required: true,
   },
-  additional_comments: {
+  lookAndFeel: {
+    type: Number,
+    required: true,
+  },
+  communication: {  
+    type: Number,
+    required: true,
+  },
+  bookingProcess: {
+    type: Number,
+    required: true,
+  },
+  valueForMoney: {
+    type: Number,
+    required: true,
+  },
+  website: {  
+    type: Number,
+    required: true,
+  },
+  improvementSuggestion: {
+    type: String,
+  },
+  socialMediaUsed: {
+    type: String,
+  },
+  followUpBookingConfirmation: {
     type: String,
     required: true,
   },
+  group_age: {
+    type: String,
+    required: true,
+  },
+  comments_questions: {
+    type: String,
+    required: true,
+  }
+  
 }, { timestamps: true });
 
 const teamSurveyDataSchema = new mongoose.Schema({
@@ -133,7 +186,11 @@ const teamSurveyDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  name: {
+  fname: {
+    type: String,
+    required: true,
+  },
+  lname: {
     type: String,
     required: true,
   },
@@ -196,7 +253,15 @@ const teamSurveyDataSchema = new mongoose.Schema({
 }, { timestamps: true });
 
 const ownerSurveyDataSchema = new mongoose.Schema({
-  owner_name: {
+  clinic_id: {
+    type: String,
+    required: true,
+  },
+  owner_fname: {
+    type: String,
+    required: true,
+  },
+  owner_lname: {
     type: String,
     required: true,
   },
@@ -228,7 +293,7 @@ const ownerSurveyDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  logo_upload: {
+  clinic_logo: {
     type: String,
     required: true,
   },
@@ -241,18 +306,17 @@ const ownerSurveyDataSchema = new mongoose.Schema({
     required: true,
   },
   own_building: {
-    type: Boolean,
+    type: String,
     required: true,
   },
   pay_market_rent: {
-    type: Boolean,
+    type: String,
   },
   market_rate_difference: {
     type: Number,
-    required: true,
   },
   group_classes: {
-    type: Boolean,
+    type: String,
     required: true,
   },
   classes_per_week: {
@@ -283,11 +347,11 @@ const ownerSurveyDataSchema = new mongoose.Schema({
     required: true,
   },
   plan_execution: {
-    type: String,
+    type: Number,
     required: true,
   },
   plan_review_timeline: {
-    type: String,
+    type: Number,
     required: true,
   },
   exit_plan: {
@@ -343,8 +407,7 @@ const ownerSurveyDataSchema = new mongoose.Schema({
     required: true,
   },
   last_client_survey: {
-    type: Date,
-    required: true,
+    type: Number,
   },
   email_software: {
     type: String,
@@ -353,7 +416,7 @@ const ownerSurveyDataSchema = new mongoose.Schema({
   client_source: {
     type: String,
     required: true,
-  }, written_treatment_plans: { type: Boolean, required: true, }, employee_satisfaction_survey: { type: String, required: true, }, last_employee_survey: { type: Date, required: true, }, number_of_clinicians: { type: Number, required: true, }, number_of_non_clinicians: { type: Number, required: true, }, work_life_balance: { type: Number, required: true, },
+  }, written_treatment_plans: { type: String, required: true, }, employee_satisfaction_survey: { type: String, required: true, }, last_employee_survey: { type: Number }, number_of_clinicians: { type: Number, required: true, }, number_of_non_clinicians: { type: Number, required: true, }, work_life_balance: { type: Number, required: true, },
 }, { timestamps: true });
 
 

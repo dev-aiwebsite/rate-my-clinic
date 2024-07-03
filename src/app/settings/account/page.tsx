@@ -1,23 +1,20 @@
-import { auth } from "@/auth";
-import ProfileUploadBtn from "@/components/upload-profile-btn";
-import { UpdateUser } from "@/server-actions";
-import dynamic from "next/dynamic";
+"use client"
+import ProfileForm from "@/components/profiledetails-form";
+import { useSessionContext } from "@/context/sessionContext";
 import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-const ProfileUploadBtnNoSSR = dynamic(() => import("@/components/upload-profile-btn"), { ssr: false });
-export default async function AccountPage() {
-    const session = await auth()
+export default function AccountPage() {
+    const {currentUser} = useSessionContext()
     return (
-        <div className="bg-[#f7f7f7] grid-flow-* flex-1 p-6 gap-x-6 gap-y-10 grid max-md:grid-cols-4 md:grid-rows-6 *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6">
+        <div className="bg-[#f7f7f7] grid-flow-* flex-1 p-6 gap-x-6 gap-y-10 grid max-md:grid-cols-4 md:grid-cols-3 md:grid-rows-6 *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6">
             <div className="col-span-2 md:col-span-1 md:row-span-2 text-center">
                 <h3 className="">Clinic Logo</h3>
                 <Image
-                className="h-24 w-auto m-auto p-5"
-                    src="/images/logos/wrh-logo.png"
+                className="h-40 w-auto m-auto p-5"
+                    src={currentUser?.clinic_logo || "/images/logos/default_logo.svg"}
                     width={600}
                     height={600}
-                    alt="Wrh logo"
+                    alt=""
                 />
             </div>
             <div className="col-span-2 md:col-span-1 md:col-start-1 md:row-span-2 flex">
@@ -57,8 +54,7 @@ export default async function AccountPage() {
                 </ul>
             </div>
             <div className="max-md:col-span-full md:col-span-2 md:row-start-1 md:col-start-2 row-span-6">
-             <ProfileUploadBtnNoSSR userSession={session}/>
-
+                <ProfileForm/>
             </div>
 
         </div>

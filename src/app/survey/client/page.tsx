@@ -1,33 +1,51 @@
 "use client"
-import { useUsersContext } from "@/context/usersContext";
-import { ClientSurveyAction } from "@/server-actions";
+import InputRange from "@/components/inputRange";
+import { useSessionContext } from "@/context/sessionContext";
+import { useSurveyDataContext } from "@/context/surveyDataContext";
+import { ClientSurveyAction, getSurveyData } from "@/server-actions";
 import { Button } from "primereact/button";
-import { Dialog } from "primereact/dialog";
 import { Toast, ToastMessage } from 'primereact/toast';
 import { FormEvent, useEffect, useRef, useState } from "react";
 
-const selectOptions_0_10 = Array.from({ length: 11 }, (_, i) => i);
-
 type page = number
-export default function ClientSurveyForm() {
-    const users = useUsersContext()
+type surveyData =  {
+    summary: {
+        [key: string]: any;
+    };
+    ownerSurveyData: any;
+    clientSurveyData: any;
+    teamSurveyData: any;
+} | null
+export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
+    const {users} = useSessionContext()
+    
     const toast = useRef<Toast>(null);
-    const max_pages = 2
+    const max_pages = 1
     const [page, setPage] = useState(1)
-    const [submitBtnText, setSubmitBtnText] = useState("Next")
+    let default_submitBtnText = "Next"
+    if(max_pages <= 1){
+        default_submitBtnText = 'Submit'
+    }
+    const [submitBtnText, setSubmitBtnText] = useState(default_submitBtnText)
     const [isLoading, setIsLoading] = useState(false)
-    const [searchParams, setSearchParams] = useState<URLSearchParams | null>(null);
-    useEffect(() => {
-        if (typeof window !== "undefined") {
-            setSearchParams(new URLSearchParams(window.location.search));
-        }
-    }, []);
 
+   const [surveyData,setSurveyData] = useState<surveyData>(null)
+   
 
-    const clinic_id = searchParams?.get('cid')
-    const clinic_name = users?.find(i => i._id == `${clinic_id}`)?.clinic_name || ""
+   
 
+    const clinic_id = searchParams.cid
+    const clinic_name = users?.find((i: { _id: string; }) => i._id == `${clinic_id}`)?.clinic_name || ""
 
+    useEffect(()=>{
+        getSurveyData(clinic_id)
+        .then( d => {
+            setSurveyData(d as surveyData)
+        })
+
+    },[])
+
+    console.log(surveyData)
 
     const Alert = ({ severity = 'info', summary = 'Info', detail = 'Message Content' }: ToastMessage) => {
         toast.current?.show({ severity, summary, detail });
@@ -109,15 +127,30 @@ export default function ClientSurveyForm() {
 
                             <div className="formSectionContent">
                                 <div className="sm:col-span-1">
-                                    <label htmlFor="name" className="formLabel">Name</label>
+                                    <label htmlFor="fname" className="formLabel">First Name</label>
                                     <div className="mt-2">
                                         <div className="formField">
                                             <input
                                                 required
                                                 type="text"
-                                                name="name"
-                                                id="name"
-                                                autoComplete="name"
+                                                name="fname"
+                                                id="fname"
+                                                autoComplete="fname"
+                                                className=""
+                                            />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="lname" className="formLabel">Last Name</label>
+                                    <div className="mt-2">
+                                        <div className="formField">
+                                            <input
+                                                required
+                                                type="text"
+                                                name="lname"
+                                                id="lname"
+                                                autoComplete="lname"
                                                 className=""
                                             />
                                         </div>
@@ -142,11 +175,231 @@ export default function ClientSurveyForm() {
 
                             <div className="formSectionContent">
                                 <div className="sm:col-span-1">
-                                    <label htmlFor="recommendation" className="formLabel">On a scale of 0-10, how likely are you to recommend (insert name of business) as a place to work to your friends and family?</label>
+                                    <label htmlFor="recommendation" className="formLabel">On a scale of 0-10, how likely are you to recommend <strong>{clinic_name}</strong> to your friends and family?</label>
+                                    <div className="mt-2">
+                                        <div className="formField !ring-0 !shadow-none">
+                                            <InputRange min={0} max={10} name="recommendation" defaultValue={0} required/>                                         
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="recommendation_feedback" className="formLabel">Please tell us why you gave that score?</label>
                                     <div className="mt-2">
                                         <div className="formField">
-                                            <select name="recommendation" id="recommendation" className="">
-                                                {selectOptions_0_10.map((n) => <option key={n} value={n}>{n}</option>)}
+                                             <textarea rows={5} name="recommendation_feedback" id="recommendation_feedback" className="" placeholder="" required></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <span className="formLabel">Have you recommended anyone to us previously?</span>
+                                    <div className="mt-2">
+                                        <div className="formField !ring-0 !shadow-none flex flex-row gap-5 text-base">
+                                             <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                                <input type="radio" name="recommendedPreviously" value="no" defaultChecked/>
+                                                <span>No</span>
+                                             </label>
+                                             <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                                <input type="radio" name="recommendedPreviously" value="yes"required/>
+                                                <span>Yes</span>
+                                             </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="servicesUsed" className="formLabel">Which of our services have you used?</label>
+                                    <div className="mt-2">
+                                        <div className="formField">
+                                            <select name="servicesUsed" required>
+                                            <option value="">Select service</option>
+                                            {surveyData?.ownerSurveyData.services_provided?.split(",").map((item:any,index:number)=> <option key={index} value={item}>{item}</option>)}
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                             <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="practitioner" className="formLabel">Overall, how satisfied are you with your practitioner?</label>
+                                    <div className="mt-2">
+                                        <div className="formField !ring-0 !shadow-none">
+                                            <InputRange min={0} max={10} name="practitioner" defaultValue={0} required/>                                         
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="receptionTeam" className="formLabel">Overall, how satisfied are you with our admin team?</label>
+                                    <div className="mt-2">
+                                        <div className="formField !ring-0 !shadow-none">
+                                            <InputRange min={0} max={10} name="receptionTeam" defaultValue={0} required/>                                         
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                         
+
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="lookAndFeel" className="formLabel">
+                                    How would you rate the look and feel of our practice?
+                                    </label>
+                                    <div className="mt-2">
+                                        <div className="formField ring-0 flex flex-row">
+                                            <InputRange min={0} max={10} name="lookAndFeel" defaultValue={0} required/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="communication" className="formLabel">How satisfied are your with our communication?</label>
+                                    <div className="mt-2">
+                                         <div className="formField !ring-0 !shadow-none">
+                                            <InputRange min={0} max={10} name="communication" defaultValue={0} required/>                                         
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="bookingProcess" className="formLabel">
+                                    How satisfied are you with our booking process?  
+                                    </label>
+                                    <div className="mt-2">
+                                        <div className="formField ring-0 flex flex-row">
+                                            <InputRange min={0} max={10} name="bookingProcess" defaultValue={0} required/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="valueForMoney" className="formLabel">
+                                    How satisfied are you with the value for money of your treatment with us?
+                                    </label>
+                                    <div className="mt-2">
+                                        <div className="formField ring-0 flex flex-row">
+                                            <InputRange min={0} max={10} name="valueForMoney" defaultValue={0} required/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="website" className="formLabel">
+                                        How satisfied are you with our website?
+                                    </label>
+                                    <div className="mt-2">
+                                        <div className="formField ring-0 flex flex-row">
+                                            <InputRange min={0} max={10} name="website" defaultValue={0} required/>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="improvementSuggestion" className="formLabel">Can you suggest anything we can do to improve our service to you?</label>
+                                    <div className="mt-2">
+                                        <div className="formField">
+                                             <textarea rows={5} name="improvementSuggestion" id="improvementSuggestion" className="" placeholder=""></textarea>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="socialMediaUsed" className="formLabel">Which social media do you use?</label>
+                                    <div className="mt-2">
+                                    <div className="formField ring-0 flex flex-col items-start">
+                                        <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <span>Facebook</span>
+                                        </label>
+                                        <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <span>Instagram</span>
+                                        </label>
+                                        <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <span>X</span>
+                                        </label>
+                                        <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <span>Twitter</span>
+                                        </label>
+                                        <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <span>Tik Tok</span>
+                                        </label>
+                                        <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <span>Snapchat</span>
+                                        </label>
+                                        <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <span>YouTube</span>
+                                        </label>
+                                        <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <span>I don’t use social media</span>
+                                        </label>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <span className="formLabel">Were you able to book a follow up appointment within a reasonable timeframe?</span>
+                                    <div className="mt-2">
+                                        <div className="formField !ring-0 !shadow-none flex flex-row gap-5 text-base">
+                                             <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                                <input type="radio" name="followUpBookingConfirmation" value="no" defaultChecked/>
+                                                <span>No</span>
+                                             </label>
+                                             <label className="flex flex-row items-center gap-2 cursor-pointer">
+                                                <input type="radio" name="followUpBookingConfirmation" value="yes"required/>
+                                                <span>Yes</span>
+                                             </label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="formSectionContent">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="group_age" className="formLabel">What age group are you in?</label>
+                                    <div className="mt-2">
+                                        <div className="formField">
+                                            <select name="group_age" id="" required>
+                                                <option value="under18">Under 18</option>
+                                                <option value="1824">18-24</option>
+                                                <option value="2539">25-39</option>
+                                                <option value="4054">40-54</option>
+                                                <option value="5570">55-70</option>
+                                                <option value="over70">Over 70</option>
+                                                <option value="preferNotToSay">Prefer not to say</option>
                                             </select>
                                         </div>
                                     </div>
@@ -155,158 +408,15 @@ export default function ClientSurveyForm() {
 
                             <div className="formSectionContent">
                                 <div className="sm:col-span-1">
-                                    <label htmlFor="social_activities" className="formLabel">What is your satisfaction with our social activities?</label>
+                                    <label htmlFor="comments_questions" className="formLabel">Do you have any other comments or questions?</label>
                                     <div className="mt-2">
                                         <div className="formField">
-                                            <select name="social_activities" id="social_activities" className="">
-                                                {selectOptions_0_10.map((n) => <option key={n} value={n}>{n}</option>)}
-                                            </select>
+                                             <textarea rows={5} name="comments_questions" id="comments_questions" className="" placeholder="" required></textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-                            
-                            <div className="formSectionContent">
-                                <div className="sm:col-span-1">
-                                    <label htmlFor="communication" className="formLabel">What is your satisfaction with our communication?</label>
-                                    <div className="mt-2">
-                                        <div className="formField">
-                                            <select name="communication" id="communication" className="">
-                                                {selectOptions_0_10.map((n) => <option key={n} value={n}>{n}</option>)}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            
-                            <div className="formSectionContent">
-                                <div className="sm:col-span-1">
-                                    <label htmlFor="professional_development" className="formLabel">What is your satisfaction with our Professional Development?</label>
-                                    <div className="mt-2">
-                                        <div className="formField">
-                                            <select name="professional_development" id="professional_development" className="">
-                                                {selectOptions_0_10.map((n) => <option key={n} value={n}>{n}</option>)}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            
-                            <div className="formSectionContent">
-                                <div className="sm:col-span-1">
-                                    <label htmlFor="mentoring" className="formLabel">What is your satisfaction with the level of mentoring you receive?</label>
-                                    <div className="mt-2">
-                                        <div className="formField">
-                                            <select name="mentoring" id="mentoring" className="">
-                                                {selectOptions_0_10.map((n) => <option key={n} value={n}>{n}</option>)}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            
-                            <div className="formSectionContent">
-                                <div className="sm:col-span-1">
-                                    <label htmlFor="teamwork" className="formLabel">How well do you believe we work as a team?</label>
-                                    <div className="mt-2">
-                                        <div className="formField">
-                                            <select name="teamwork" id="teamwork" className="">
-                                                {selectOptions_0_10.map((n) => <option key={n} value={n}>{n}</option>)}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            
-                            <div className="formSectionContent">
-                                <div className="sm:col-span-1">
-                                    <label htmlFor="workplace_feedback" className="formLabel">As a workplace, what would you like to see more or less of to make us a more enjoyable, challenging and rewarding place to work?</label>
-                                    <div className="mt-2">
-                                        <div className="formField">
-                                            <textarea rows={5} name="workplace_feedback" id="workplace_feedback" className="" placeholder="Your feedback"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            
-                            <div className="formSectionContent">
-                                <div className="sm:col-span-1">
-                                    <label htmlFor="clinic_strengths" className="formLabel">What do you believe are the strengths of our clinic?</label>
-                                    <div className="mt-2">
-                                        <div className="formField">
-                                            <textarea rows={5} name="clinic_strengths" id="clinic_strengths" className="" placeholder="Your feedback"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            
-                            <div className="formSectionContent">
-                                <div className="sm:col-span-1">
-                                    <label htmlFor="communication_effectiveness" className="formLabel">How well do you believe we communicate?</label>
-                                    <div className="mt-2">
-                                        <div className="formField">
-                                            <select name="communication_effectiveness" id="communication_effectiveness" className="">
-                                                {selectOptions_0_10.map((n) => <option key={n} value={n}>{n}</option>)}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            
-                            <div className="formSectionContent">
-                                <div className="sm:col-span-1">
-                                    <label htmlFor="improvement_feedback" className="formLabel">What do you believe we need to improve?</label>
-                                    <div className="mt-2">
-                                        <div className="formField">
-                                            <textarea rows={5} name="improvement_feedback" id="improvement_feedback" className="" placeholder="Your feedback"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            
-                            <div className="formSectionContent">
-                                <div className="sm:col-span-1">
-                                    <label htmlFor="reward_comparison" className="formLabel">How well do you believe you are rewarded compared to your peers?</label>
-                                    <div className="mt-2">
-                                        <div className="formField">
-                                            <select name="reward_comparison" id="reward_comparison" className="">
-                                                <option value="considerably_worse">Considerably worse</option>
-                                                <option value="somewhat_worse">Somewhat worse</option>
-                                                <option value="about_the_same">About the same</option>
-                                                <option value="somewhat_better">Somewhat better</option>
-                                                <option value="considerably_better">Considerably better</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                                </div>
-                            
-                            <div className="formSectionContent">
-                                <div className="sm:col-span-1">
-                                    <label htmlFor="service_knowledge" className="formLabel">How would you rate your knowledge of the services we provide?</label>
-                                    <div className="mt-2">
-                                        <div className="formField">
-                                            <select name="service_knowledge" id="service_knowledge" className="">
-                                                {selectOptions_0_10.map((n) => <option key={n} value={n}>{n}</option>)}
-                                            </select>
-                                        </div>
-                                    </div>
-                                </div>
-                    </div>
-                            
-                            <div className="formSectionContent">
-                                <div className="sm:col-span-1">
-                                    <label htmlFor="additional_comments" className="formLabel">Is there anything else you would like to add?</label>
-                                    <div className="mt-2">
-                                        <div className="formField">
-                                            <textarea rows={5} name="additional_comments" id="additional_comments" className="" placeholder="Your feedback"></textarea>
-                                        </div>
-                                    </div>
-                                </div>
-
-                            </div>
-
-
+                        
                         </div>
 
 

@@ -9,7 +9,7 @@ export default async function LoginPage({children}:any) {
                   <h1 className="text-lg font-bold text-center font-medium mb-10">Enter Login Credentials</h1>
                   <LoginForm/>
                 </div>
-                <div className="absolute top-0 sm:relative -z-0 opacity-10">
+                <div className="absolute top-0 sm:relative -z-0 opacity-10 sm:opacity-100">
                     <Image 
                         className="h-full w-full"
                         src="/images/logos/rmc-login-optmz.png" 
