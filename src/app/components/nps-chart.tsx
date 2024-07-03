@@ -8,58 +8,8 @@ import CopyButton from "./copy-text-button";
 type DataType = {
     date: string;
     value: number;
-};
-
-let data:DataType[] = [
-    {
-        "date": "2024-01-15",
-        "value": 3
-    },
-    {
-        "date": "2024-02-08",
-        "value": 7
-    },
-    {
-        "date": "2024-03-21",
-        "value": 10
-    },
-    {
-        "date": "2024-04-10",
-        "value": 5
-    },
-    {
-        "date": "2024-05-27",
-        "value": 8
-    },
-    {
-        "date": "2024-06-14",
-        "value": 2
-    },
-    {
-        "date": "2024-07-03",
-        "value": 6
-    },
-    {
-        "date": "2024-08-19",
-        "value": 4
-    },
-    {
-        "date": "2024-09-23",
-        "value": 9
-    },
-    {
-        "date": "2024-10-05",
-        "value": 1
-    },
-    {
-        "date": "2024-11-17",
-        "value": 7
-    },
-    {
-        "date": "2024-12-29",
-        "value": 10
-    }
-]
+    comment:string;
+}[] | null;
 export interface NpsTogglerType {
     detractors: number;
     passives: number;
@@ -72,7 +22,8 @@ interface DataVisibilityType {
     "promoters": boolean;
 }
 
-export default function NpsChart() {
+export default function NpsChart({data}:{data?:DataType}) {
+
     const [dataVisibility, setDataVisibility] = useState({
         detractors: true,
         passives: true,
@@ -85,57 +36,56 @@ export default function NpsChart() {
         "passives": 0,
         "promoters": 0
     }
-
-    
-    // Sort the data based on the date
-    data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-
-    // Classify the values
-
     let chartItems:any = []
-    
-    data.forEach((item,index) => {
-        let iconPath
-        let dataType:"promoters" | "detractors" | "passives"
-        if (item.value >= 7) {
-            togglerDataMap.promoters += 1;
-            dataType = "promoters"
-            iconPath = "/icons/smiley-good.svg"
-        } else if (item.value <= 3) {
-            togglerDataMap.detractors += 1;
-            dataType = "detractors"
-            iconPath = "/icons/smiley-bad.svg"
 
-        } else {
-            togglerDataMap.passives += 1;
-            dataType = "passives"
-            iconPath = "/icons/smiley-neutral.svg"
-        }
+    if(data){
+        // Sort the data based on the date
+        data.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
 
-        if(!dataVisibility[dataType]) return
-        chartItems.push (
-            <div className="grid grid-rows-10 h-full row-span-full w-40 relative"
-            data-npsdataclass={dataType}
-            key={index}>
-                <span className={`row-start-${11 - item.value} block leading-[0px] -translate-y-1/2`}>
-                    <Tooltip target=".custom-tooltip-btn" autoHide={false} position="bottom">
-                        <div className="max-w-[250px] text-sm">
-                        Professional expert advice delivered in a considered friendly manner with great hands on therapy.
-                        <CopyButton className="float-right !p-1 !ring-0"
-                            textToCopy={"Professional expert advice delivered in a considered friendly manner with great hands on therapy."} toolTip="Copy text"/>
-                            
-                        </div>
-                    </Tooltip>
-                    <Image className="custom-tooltip-btn h-full mx-auto" src={iconPath} width={40} height={40} alt="smiley" />
-                </span>
-                <span className="absolute bottom-0 text-xs text-center w-full  translate-y-[200%]">{item.date}</span>
-            </div>
-        )
+        // Classify the values
 
-        
-    });
+        data.forEach((item,index) => {
+            let iconPath
+            let dataType:"promoters" | "detractors" | "passives"
+            if (item.value >= 7) {
+                togglerDataMap.promoters += 1;
+                dataType = "promoters"
+                iconPath = "/icons/smiley-good.svg"
+            } else if (item.value <= 3) {
+                togglerDataMap.detractors += 1;
+                dataType = "detractors"
+                iconPath = "/icons/smiley-bad.svg"
 
+            } else {
+                togglerDataMap.passives += 1;
+                dataType = "passives"
+                iconPath = "/icons/smiley-neutral.svg"
+            }
 
+            if(!dataVisibility[dataType]) return
+            chartItems.push (
+                <div className="grid grid-rows-10 h-full row-span-full w-40 relative"
+                data-npsdataclass={dataType}
+                key={index}>
+                    <span className={`row-start-${11 - item.value} block leading-[0px] -translate-y-1/2`}>
+                        <Tooltip target=".custom-tooltip-btn" autoHide={false} position="bottom">
+                            <div className="max-w-[250px] text-sm">
+                            {item.comment}
+                            <CopyButton className="float-right !p-1 !ring-0"
+                                textToCopy={"Professional expert advice delivered in a considered friendly manner with great hands on therapy."} toolTip="Copy text"/>
+                                
+                            </div>
+                        </Tooltip>
+                        <Image className="custom-tooltip-btn h-full mx-auto" src={iconPath} width={40} height={40} alt="smiley" />
+                    </span>
+                    <span className="absolute bottom-0 text-xs text-center w-full  translate-y-[200%]">{item.date}</span>
+                </div>
+            )
+
+            
+        });
+
+    }
     function handleClick(dataType:"detractors" | "passives" | "promoters") {
 
         console.log('Button clicked!',dataVisibility);

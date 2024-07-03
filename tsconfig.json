@@ -22,6 +22,6 @@
     },
     "types": ["@uploadcare/blocks/types/jsx"],
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/utils.js", "public/static.js"],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/utils.js", "public/static.js", "src/app/api/forgot-password."],
   "exclude": ["node_modules"],
 }

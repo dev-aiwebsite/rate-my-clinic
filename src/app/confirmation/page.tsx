@@ -10,9 +10,9 @@ export default async function Page({searchParams}:any) {
     const session_id = searchParams.session_id as string;
     if(session_id){
         const sessionInfo = await stripe.checkout.sessions.retrieve(session_id);
-        
+        console.log(sessionInfo)
         if(sessionInfo.status == "complete"){
-            let name,email,clinic_name,clinic_type,password = 'Welcome1!'
+            let name,fname,lname,email,clinic_name,clinic_type,password = 'Welcome1!'
             let formData = new FormData()
 
             name = sessionInfo?.customer_details?.name;
@@ -20,7 +20,15 @@ export default async function Page({searchParams}:any) {
             clinic_name = sessionInfo?.custom_fields.find(i => i.key == "clinic_name")?.text?.value;
             clinic_type = sessionInfo?.custom_fields.find(i => i.key == "clinic_type")?.dropdown?.value;
             
+            let splittedName = name?.split(" ")
+            if(splittedName){
+                fname = splittedName[0]
+                lname = splittedName[1]
+            }
+
             formData.append('username', name as string)
+            formData.append('fname', fname as string)
+            formData.append('lname', lname as string)
             formData.append('useremail', email as string)
             formData.append('clinic_name', clinic_name as string)
             formData.append('clinic_type', clinic_type as string)

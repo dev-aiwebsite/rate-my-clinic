@@ -31,12 +31,12 @@ const list_item = [
 
 const NavbarMobile = ({ userData }: { userData: any }) => {
     const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
-
+console.log(userData)
     function toggleSidebar() {
         setIsSidebarVisible(!isSidebarVisible)
     }
-    let userAvatar = userData?.user_img ? `${userData?.user_img}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
-    let userName = userData?.user_name || "Guest"
+    let userAvatar = userData?.img ? `${userData?.img}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
+    let userName = userData?.username || "Guest"
 
     return (
         <div className="bg-white h-fit fixed bottom-0 left-0 w-full z-[1100]">

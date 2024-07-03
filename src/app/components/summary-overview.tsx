@@ -3,58 +3,57 @@ import CircleChart from "./circle-chart"
 import MeterChart from "./meter-chart";
 import Link from "next/link";
 
+ const SummaryOverview = ({surveyData,additionalClass = ""}:{surveyData:any,additionalClass:string}) => {
+console.log(surveyData)
 const data = [
     {
         name: 'Clients',
-        value: 73,
+        value: surveyData?.summary.clients?.score || 0,
         color: 'var(--appgreen-300)',
         icon: '/icons/client.svg',
     },
     {
         name: 'Strategy',
-        value: 25,
+        value: surveyData?.summary.strategy.score || 0,
         color: 'var(--appgreen-300)',
         icon: '/icons/strategy.svg',
     },
     {
-        name: 'Team',
-        value: 58,
+        name: 'Teams',
+        value: surveyData?.summary.team.score || 0,
         color: 'var(--appblue-200)',
         icon: '/icons/team.svg',
     },
     {
         name: 'Finance',
-        value: 49,
+        value: surveyData?.summary.finance.score || 0,
         color: 'var(--appblue-200)',
         icon: '/icons/finance.svg',
     },
 ]
 
-let test = [
-    {
-        name: 'Group A',
-        value: 20,
-        color: '#94BDE5',
-    },
-    {
-        name: 'Group B',
-        value: 50,
-        color: '#004261',
-    }
-]
+
 
 let needle = {
     color: "#004261",
     value: 90,
     title: 'Client'
 }
+let total = data.map(i => i.value).reduce((acc, curr) => acc + curr, 0)
+let totalAverage = total / 4;
 
+let overAll = [
+    {
+        name: 'Group A',
+        value: totalAverage,
+        color: '#004261',
+    },
+]
 
- const SummaryOverview = ({additionalClass = ""}) => {
-    let cName = `${additionalClass} md:row-span-3 md:col-span-3 grid grid-cols-1 md:grid-cols-3 max-md:gap-y-6 max-md:gap-x-0 md:gap-6 max-md:!bg-transparent max-md:!shadow-none`;
+    let cName = `${additionalClass} md:row-span-4 md:col-span-3 grid grid-cols-1 md:grid-cols-3 max-md:gap-y-6 max-md:gap-x-0 md:gap-6 max-md:!bg-transparent max-md:!shadow-none`;
     return <div className={cName}>
                 <div className="max-md:w-full flex flex-col items-center justify-center gap-5 md:border-0 md:border-solid md:border-r md:border-gray-200 max-md:shadow-lg max-md:p-6 max-md:gap-6 max-md:rounded-lg max-md:bg-white">
-                    <CircleChart data={test}/>
+                    <CircleChart data={overAll}/>
                     <div>
                         <div className="flex flex-row gap-2 items-center">
                             <div className="h-3 w-3 bg-appblue-300"></div>
@@ -62,7 +61,7 @@ let needle = {
                         </div>
                         <div className="flex flex-row gap-2 items-center">
                             <div className="h-3 w-3 bg-appblue-400"></div>
-                            <span className="text-xs">Average Australian Clinic: {test[0].value}</span>
+                            <span className="text-xs">Average Australian Clinic: 20</span>
                         </div>
                     </div>
                     <a className="font-medium text-gray-400 underline text-orange-400" href="#">See full report</a>

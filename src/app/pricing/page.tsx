@@ -22,7 +22,7 @@ export default function PricingPage({ children }: any) {
         <div className="flex flex-col items-center h-full w-full overflow-auto px-10 pb-10">
             <h1 className="text-4xl font-medium my-4">Pricing plans for teams of all sizes</h1>
             <p className="font-[300] max-w-2xl text-center">Choose an affordable plan that’s packed with the best features for engaging your audience, creating customer loyalty, and driving sales.</p>
-            <div>
+            <div className="py-16">
                 <Switcher enabled={enabled} setEnabled={handleSwitcherClick}/>
             </div>
             <div>

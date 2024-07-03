@@ -1,6 +1,5 @@
 // /app/context/usersContext.tsx
 "use client";
-
 import { createContext, useContext, ReactNode } from "react";
 
 interface UsersProviderProps {
@@ -10,7 +9,7 @@ interface UsersProviderProps {
 
 const UsersContext = createContext<any[] | null>(null);
 
-export default function UsersContextProvider({ users, children }: UsersProviderProps) {
+export default function UsersContextProvider({users, children }: UsersProviderProps) {
   return (
     <UsersContext.Provider value={users}>
       {children}

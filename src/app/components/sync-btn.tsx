@@ -1,26 +1,47 @@
-"use client"
+"use client";
 import Image from "next/image";
+import { Button } from "primereact/button";
+import { useCallback, useEffect, useState } from "react";
+import 'primeicons/primeicons.css';
+import { getSurveyData } from "@/server-actions";
+import { formatDistanceToNow } from "date-fns";
+import { useSurveyDataContext } from "@/context/surveyDataContext";
 
 export default function SyncButton() {
+    const [isLoading, setIsLoading] = useState(false);
+    const [lastSync, setLastSync] = useState(new Date());
+    const { data, setData } = useSurveyDataContext();
+    const [textTime, setTextTime] = useState(formatDistanceToNow(lastSync, { addSuffix: true }));
+
     const handleClick = () => {
-        console.log('Button clicked!');
-        // Add your custom logic here
+        setIsLoading(true);
+        getSurveyData().then(d => {
+            setData(d);
+            setIsLoading(false);
+            setLastSync(new Date());
+        });
     };
 
+    useEffect(() => {
+        const interval = setInterval(() => {
+            setTextTime(formatDistanceToNow(lastSync, { addSuffix: true }));
+        }, 5000);
+
+        // Clear interval on component unmount
+        return () => clearInterval(interval);
+    }, [lastSync]);
 
     return (
-        
-        <div className="flex flex-row gap-4 justify-center items-center">
-        <button className="py-1 px-4 rounded bg-orange-400 cursor-pointer hover:bg-orange-500 text-white" onClick={handleClick}>Sync</button>
-        <Image
-        className="w-5 h-5"
-      src="/icons/sync.svg"
-      alt="sync icon"
-      width={16}
-      height={16}
-      priority
-    />
-    <span className="text-gray-400 text-xs">Fetching data..</span>
-    </div>
+        <>
+            <Button
+                className="w-full flex flex-row gap-4 justify-center items-center min-w-20 justify-center gap-2 !text-center ring-0 border-0 py-1 px-4 rounded bg-orange-400 cursor-pointer hover:bg-orange-500 text-white"
+                disabled={isLoading}
+                onClick={handleClick}
+            >
+                <span className={`${isLoading ? 'pi-spin' : ""} pi pi-sync text-sm`}></span>
+                {isLoading ? 'Syncing...' : 'Sync now'}
+            </Button>
+            <span className="text-xs text-slate-400">Last sync: {textTime}</span>
+        </>
     );
 }

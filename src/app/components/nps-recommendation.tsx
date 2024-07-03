@@ -5,33 +5,38 @@ import Image from "next/image";
 
 
 interface Item {
-    name: string;
-    value: number;
-    color: string;
-    icon: string;
-}
+    [key:number]: {
+        name: string;
+        value: number;
+        color: string;
+        icon: string;
+    }
+ 
+}[]
+
 
 export default function NpsContent({item,className}:{item:Item,className?:string}) {
-    
+    let discrepancy = item[0].value - item[1].value
+    let discrepancy_display_text = discrepancy < 0 ? `${discrepancy.toFixed(1)}` : `+${discrepancy.toFixed(1)}`
     return (
         <div className={`${className} flex flex-col gap-14`}>
             {<div className="flex flex-row items-end justify-around max-md:card">
                     <div className="flex flex-col gap-2 items-center flex-1 md:max-w-[160px]">
                         <Image
                             className="max-md:max-w-[100px] w-[60%] aspect-square" 
-                            src={item.icon}
-                            alt={item.name}
+                            src={item[0].icon}
+                            alt={item[0].name}
                             width={40}
                             height={40}
                         />
-                        <div className="text-3xl">
-                            <span>{item.name}</span> : <span className="text-red-400">{item.value}</span>
+                        <div className="text-3xl whitespace-nowrap">
+                            <span>{item[0].name}</span> : <span className="text-red-400">{discrepancy_display_text}</span>
                         </div>
                         <div className="text-base md:hidden text-center">
-                            <span>Your score</span> : <span>{item.value}</span>
+                            <span>Your score</span> : <span>{item[0].value}</span>
                         </div>
                         <div className="md:hidden text-center">
-                            <span>Average Australian Clinic</span> : <span>{item.value}</span>
+                            <span>Average Australian Clinic</span> : <span>{item[1].value}</span>
                         </div>
                         
                     </div>
@@ -42,13 +47,13 @@ export default function NpsContent({item,className}:{item:Item,className?:string
                             data={[
                                 {
                                     value: 100,
-                                    color: item.color,
+                                    color: item[0].color,
                                 },
                             ]}
                             needle={{
                                 color: "",
-                                value: item.value,
-                                title: item.value.toString()
+                                value: item[0].value,
+                                title: item[0].value.toString()
                             }}
                         />
                     </div>
@@ -59,13 +64,13 @@ export default function NpsContent({item,className}:{item:Item,className?:string
                             data={[
                                 {
                                     value: 100,
-                                    color: item.color,
+                                    color: item[1].color,
                                 },
                             ]}
                             needle={{
                                 color: "",
-                                value: item.value,
-                                title: item.value.toString()
+                                value: item[1].value,
+                                title: item[1].value.toString()
                             }}
                         />
                     </div>

@@ -1,14 +1,30 @@
+"use client"
 import HelperCard from "@/components/helperCard";
 import NpsNavButtonGroup from "@/components/nps-navigation";
 import NpsContent from "@/components/nps-recommendation";
+import { useSessionContext } from "@/context/sessionContext";
+import { useSurveyDataContext } from "@/context/surveyDataContext";
 
 export default function Page() {
-    const item = {
-        name: 'Teams',
-        value: 73,
-        color: 'var(--appgreen-300)',
-        icon: '/icons/teams.svg',
-    }
+    const {data} = useSurveyDataContext()
+    const {currentUser} = useSessionContext()
+    let clinic_id = currentUser._id
+    let otherClinicSurveyData = data.clientSurveyData
+
+    const item = [
+        {
+            name: 'Team',
+            value: data.summary.team.score,
+            color: 'var(--appgreen-300)',
+            icon: '/icons/client.svg',
+        },
+        {
+            name: 'other',
+            value: 50,
+            color: 'var(--appgreen-300)',
+            icon: '/icons/client.svg',
+        }
+    ]
     return (<>
         <NpsNavButtonGroup className="max-md:hidden card"/>
         <div className="col-span-3 row-span-5 h-fit max-md:!pb-30 md:card">

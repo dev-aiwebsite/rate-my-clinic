@@ -1,26 +1,77 @@
 "use client"
 import { OwnerSurveyAction } from "@/server-actions";
-import { FormEvent, useCallback, useRef, useState } from "react";
+import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
 import { Toast, ToastMessage } from 'primereact/toast';
-import dynamic from "next/dynamic";
 import 'react-phone-number-input/style.css'
 import PhoneInput, { isValidPhoneNumber } from "react-phone-number-input";
+import { useSurveyDataContext } from "@/context/surveyDataContext";
+import { Checkbox } from 'primereact/checkbox';
+import { useSessionContext } from "@/context/sessionContext";
 type E164Number = string;
 
-const InputFileNoSSR = dynamic(() => import("@/components/input-file"), { ssr: false });
-
 type page = number
+const clinicInfoFields = [
+    "owner_fname",
+    "owner_lname",
+    "owner_email",
+    "owner_mobile",
+    "clinic_name",
+    "clinic_location_state",
+    "clinic_location_country",
+    "clinic_location_postcode",
+    "clinic_established"
+  ];
+
+
+
 export default function Page() {
     
     const toast = useRef<Toast>(null);
     const max_pages = 15
 
     const [isLoading, setIsLoading] = useState(false)
+    const [checked, setChecked] = useState(false);
     const [submitBtnType, setSubmitBtnType] = useState("button")
     const [page,setPage] = useState(1)
     const [submitBtnText, setSubmitBtnText] = useState("Next")
     const [phoneValue, setPhoneValue] = useState<E164Number>()
     const phoneInputRef = useRef<any>();
+    const [clinicLogo, setClinicLogo] = useState("")
+    const {currentUser} = useSessionContext()
+
+    const {data} = useSurveyDataContext()
+    let clinic_id = currentUser._id
+    let defaultValue = data?.ownerSurveyData as Record<string, any>
+    useEffect(() => {
+        // Update form fields with default values
+            const form = document.getElementById('owner-survey-form') as HTMLFormElement;
+            if (form) {
+
+                let formFields:NodeListOf<HTMLInputElement> = form.querySelectorAll('[name]')
+                
+                formFields.forEach((ff) => {
+                    let key = ff.name
+                    
+                    if(key == "owner_mobile"){
+                        setPhoneValue(currentUser.usermobile)
+                    }else if(key == 'clinic_logo'){
+                        setClinicLogo(currentUser.clinic_logo)
+
+                    } else if (clinicInfoFields.includes(key)){
+                        
+                        key.includes('name') ? key = key.replace("owner_","") : key = key.replace("owner_","user")
+
+                        ff.value = currentUser[key];
+                    } else {
+                        if(defaultValue){
+                            ff.value = defaultValue[key];
+                        }
+                    }
+
+                })
+
+            }
+    }, []);
 
     const handlePrev = useCallback((index: page) => {
         if(index <= 1){
@@ -35,23 +86,19 @@ export default function Page() {
 
 const handlePhoneValidation = useCallback((value:typeof phoneValue)=> {
     setPhoneValue(value);
-    console.log(phoneInputRef)
     if (value !== undefined) {
         let valid = isValidPhoneNumber(value);
         let This = phoneInputRef.current;
             This.setCustomValidity(valid ? '' : 'Please enter a valid phone number');
             This.reportValidity();
-
-        
-
       }
+      
 }, [setPhoneValue])
 
 const handleNext = useCallback((index: page) => {
     if (index < max_pages) {
         const form = document.getElementById('owner-survey-form') as HTMLFormElement;
         const currentPageItems = Array.from(form.querySelectorAll(`[data-formpage="${page}"] input[name], [data-formpage="${page}"] select[name], [data-formpage="${page}"] textarea[name]`)) as HTMLFormElement[];
-        console.log(page, currentPageItems)
         if (form && !currentPageItems.every(i => i.reportValidity()) ) {
             return;
         } else {
@@ -78,7 +125,6 @@ const handleNext = useCallback((index: page) => {
             return false;
         }
     
-        console.log('submitting');
         setIsLoading(true);
         const res = await OwnerSurveyAction(new FormData(form));
         if (res.success) {
@@ -92,27 +138,32 @@ const handleNext = useCallback((index: page) => {
         }
     }, [setIsLoading, setPage, setSubmitBtnText]);
 
-   
-
-
-    return (
-
-        <>
+    
+    return (<>
           <Toast className="text-sm" ref={toast} />
           <div className="flex-1 p-6 gap-x-10 gap-y-10 max-md:flex max-md:flex-col grid grid-cols-3 grid-rows-6 *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-10">
             <div className="col-span-3 row-span-1 flex flex-row items-center justify-between text-xl font-medium">
                 Owner survey
             </div>
             <form className="max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col" id="owner-survey-form" onSubmit={(e) => handleDefaultSubmit(e,page)}>
+                <input type="hidden" name="clinic_id" value={clinic_id}/>
                 <div className="flex-1">
                     <div className={`formSectionContainer ${page == 1 ? "" : "!hidden"}`} data-formpage="1">
                         <h3 className="formSectionHeader">Clinic Owner Details</h3>
                         <div className="formSectionContent">
                             <div className="sm:col-span-1">
-                                <label htmlFor="owner_name" className="formLabel">Clinic owner (primary contact if more than one) – Name</label>
+                                <label htmlFor="owner_fname" className="formLabel">Clinic owner first name</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="text" name="owner_name" id="owner_name" className="" placeholder="Name" required/>
+                                        <input type="text" name="owner_fname" id="owner_fname" className="" placeholder="You can add/edit this field in profile settings" required readOnly/>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="sm:col-span-1">
+                                <label htmlFor="owner_lname" className="formLabel">Clinic owner last name</label>
+                                <div className="mt-2">
+                                    <div className="formField">
+                                        <input type="text" name="owner_lname" id="owner_lname" className="" placeholder="You can add/edit this field in profile settings" required readOnly/>
                                     </div>
                                 </div>
                             </div>
@@ -121,7 +172,7 @@ const handleNext = useCallback((index: page) => {
                                 <label htmlFor="owner_email" className="formLabel">Email address</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="email" name="owner_email" id="owner_email" className="" placeholder="Email address" required/>
+                                        <input type="email" name="owner_email" id="owner_email" className="" placeholder="Email address" required readOnly/>
                                     </div>
                                 </div>
                             </div>
@@ -139,6 +190,7 @@ const handleNext = useCallback((index: page) => {
                                         value={phoneValue}
                                         onChange={(value)=> handlePhoneValidation(value)}
                                         required
+                                        readOnly
                                         
                                     />
                                     </div>
@@ -155,7 +207,7 @@ const handleNext = useCallback((index: page) => {
                                 <label htmlFor="clinic_name" className="formLabel">Clinic Name</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="text" name="clinic_name" id="clinic_name" className="" placeholder="Clinic Name" required/>
+                                        <input type="text" name="clinic_name" id="clinic_name" className="" placeholder="You can add/edit this field in profile settings" required readOnly/>
                                     </div>
                                 </div>
                             </div>
@@ -164,9 +216,9 @@ const handleNext = useCallback((index: page) => {
                                 <label htmlFor="clinic_location" className="formLabel">Clinic location</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="text" name="clinic_location_state" id="clinic_location_state" className="" placeholder="State/Territory" required/>
-                                        <input type="text" name="clinic_location_country" id="clinic_location_country" className="" placeholder="Country" required/>
-                                        <input type="text" name="clinic_location_postcode" id="clinic_location_postcode" className="" placeholder="Postcode/Zipcode" required/>
+                                        <input type="text" name="clinic_location_state" id="clinic_location_state" className="" placeholder="You can add/edit this field in profile settings" required readOnly/>
+                                        <input type="text" name="clinic_location_country" id="clinic_location_country" className="" placeholder="" required readOnly/>
+                                        <input type="text" name="clinic_location_postcode" id="clinic_location_postcode" className="" placeholder="" required readOnly/>
                                     </div>
                                 </div>
                             </div>
@@ -175,16 +227,18 @@ const handleNext = useCallback((index: page) => {
                                 <label htmlFor="clinic_established" className="formLabel">When was your clinic established?</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="date" name="clinic_established" id="clinic_established" className="" required/>
+                                        <input type="date" name="clinic_established" id="clinic_established" className="" required readOnly placeholder="You can add/edit this field in profile settings"/>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="sm:col-span-1">
-                                <label htmlFor="logo_upload" className="formLabel">Please upload your logo. This is used to brand the client and team surveys.</label>
+                                <label htmlFor="clinic_logo" className="formLabel">Please upload your logo. This is used to brand the client and team surveys.</label>
                                 <div className="mt-2">
-                                    <div className="formField">
-                                        <InputFileNoSSR name={"logo_upload"} required={true}/>
+                                    <div className="formField p-2">
+                                        {clinicLogo && <><img src={clinicLogo} className="max-h-20"/> <input type='hidden' name="clinic_logo" value={clinicLogo}/></>}
+                                        {!clinicLogo && <input value="" placeholder="You can add/edit this field in profile settings" name="clinic_logo" required readOnly/>}
+                                        
                                     </div>
                                 </div>
                             </div>
@@ -391,13 +445,7 @@ const handleNext = useCallback((index: page) => {
                             <label htmlFor="plan_review_timeline" className="formLabel">How long has it been since you reviewed your business plan?</label>
                             <div className="mt-2">
                                 <div className="formField">
-                                    <select name="plan_review_timeline" id="plan_review_timeline" className="">
-                                        <option value="6_months">6 months</option>
-                                        <option value="6-12_months">6-12 months</option>
-                                        <option value="1-2_years">1-2 years</option>
-                                        <option value="2+_years">2+ years</option>
-                                        <option value="na">N/A</option>
-                                    </select>
+                                    <input type="number" name="plan_review_timeline" id="plan_review_timeline" className="" min="1" max="" placeholder="In months"required/>
                                 </div>
                             </div>
                         </div>
@@ -545,7 +593,7 @@ const handleNext = useCallback((index: page) => {
                                             <option value="1">1</option>
                                             <option value="2">2</option>
                                             <option value="3">3</option>
-                                            <option value="4+">4+</option>
+                                            <option value="4">4+</option>
                                         </select>
                                     </div>
                                 </div>
@@ -575,7 +623,7 @@ const handleNext = useCallback((index: page) => {
                                 <label htmlFor="last_client_survey" className="formLabel">If yes, how long ago did you do that? (in years, to 1 decimal point)</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="number" step="0.1" name="last_client_survey" id="last_client_survey" className="" placeholder="Years" required/>
+                                        <input type="number" step="0.1" name="last_client_survey" id="last_client_survey" className="" placeholder="eg: 1.2 (1 year and 2 months ago)" required/>
                                     </div>
                                 </div>
                             </div>
@@ -647,7 +695,7 @@ const handleNext = useCallback((index: page) => {
                                 <label htmlFor="last_employee_survey" className="formLabel">If yes, how long ago did you do that? (in years, to 1 decimal point)</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="number" step="0.1" name="last_employee_survey" id="last_employee_survey" className="" placeholder="Years" required/>
+                                        <input type="number" step="0.1" name="last_employee_survey" id="last_employee_survey" className="" placeholder="eg: 1.2 (1 year and 2 months ago)" required/>
                                     </div>
                                 </div>
                             </div>
@@ -691,9 +739,7 @@ const handleNext = useCallback((index: page) => {
                             <div className="sm:col-span-1 flex flex-row-reverse items-center justify-center gap-2">
                                 <label htmlFor="terms_acknowledgement" className="formLabel">Do you acknowledge you have read our terms and conditions? (insert link to them)</label>
                                 <div className="">
-                                    <div className="formField rounded">
-                                        <input type="checkbox" name="terms_acknowledgement" id="terms_acknowledgement" className="appearance-none checked:appearance-auto h-4 aspect-square !p-0" required/>
-                                    </div>
+                                        <Checkbox className="[&_.p-checkbox-box]:!border-2 [&_.p-checkbox-box]:hover:!border-[#1d4ed8] [&.p-highlight_.p-checkbox-box]:!border-[#3b82f6]" onChange={e => setChecked(e.checked!)} checked={checked} name="terms_acknowledgement" id="terms_acknowledgement"></Checkbox>
                                 </div>
                             </div>
                         </div>
@@ -701,7 +747,7 @@ const handleNext = useCallback((index: page) => {
                 </div>
                 <div className="w-full flex flex-row justify-end items-end">
                     <button className={`btn ${page != 1 ? "" : "!hidden"}`} onClick={() => handlePrev(page)} type="button">Back</button>
-                    <button className={`btn-primary min-w-60`} type={submitBtnType as "button" | "submit"} onClick={() => handleNext(page)} form="owner-survey-form">{submitBtnText}</button>
+                    <button className="btn-primary min-w-60" type={submitBtnType as "button" | "submit"} onClick={() => handleNext(page)} form="owner-survey-form">{submitBtnText}</button>
                 </div>
             </form>
         </div>

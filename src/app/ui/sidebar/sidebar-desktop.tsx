@@ -9,7 +9,7 @@ const list_item = [
         link: "/dashboard"
     },
     {
-        name: "Owner surver",
+        name: "Owner survey",
         icon: "/icons/checklist.svg",
         link: "/dashboard/owner-survey"
     },
@@ -37,18 +37,20 @@ const second_list_item = [
         link: "/dashboard/contact"
     }
 ]
+
 const SidebarDesktop = ({userData}:{userData:any}) => {
     return <aside className="w-64 h-full bg-white px-5 flex flex-col pb-10">
         <div className="text-center">
             <Image
             className="h-24 w-auto m-auto p-5"
-                src="/images/logos/wrh-logo.png"
+                src={userData?.clinic_logo || "/images/logos/default_logo.svg"}
                 width={600}
                 height={600}
-                alt="Wrh logo"
+                alt="Clinic logo"
+                placeholder="empty"
                 
             />
-            <h1 className="mb-2 text-sm">{userData?.user_name}</h1>
+            {/* <h1 className="mb-2 text-sm">{userData?.username}</h1> */}
             <Link href="/settings/account" className="block !w-fit min-w-1/2 mx-auto ring-1 ring-gray-200 px-6 py-1 rounded-lg text-gray-400 text-xs hover:bg-appblue-200 hover:text-appblue-400">Settings</Link>
         </div>
         <ul className="my-5 py-3 border-solid border-0 border-y border-gray-200 text-gray-500">

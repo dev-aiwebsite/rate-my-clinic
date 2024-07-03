@@ -2,11 +2,13 @@
 import Image from "next/image"
 import { Popover, PopoverButton, PopoverPanel, Transition } from '@headlessui/react'
 import { Fragment } from "react";
+import Link from "next/link";
+import 'primeicons/primeicons.css';
 
 const NavbarDesktop = ({userData}:{userData:any}) => {
     
-        let userAvatar = userData?.user_img ? `${userData?.user_img}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
-        let userName = userData?.user_name || "Guest"
+        let userAvatar = userData?.profile_pic ? `${userData?.profile_pic}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
+        let userName = userData?.username || "Guest"
 
     return(
     <div className="h-16 bg-[#004261] w-full flex flex-row items-center py-6 *:px-6">
@@ -21,14 +23,21 @@ const NavbarDesktop = ({userData}:{userData:any}) => {
         </div>
         <div className="ml-auto flex flex-row items-center justify-center gap-5 w-64">
             <Popover className="relative flex">
-                <PopoverButton className="w-5 h-5 m-auto">
-                    <Image
-                    className=""
-                        src="/icons/bell.svg"
-                        width={24}
-                        height={24}
-                        alt="notification"                 
-                    />
+                <PopoverButton className="m-auto outline-none border-none py-1 px-2 rounded-lg hover:bg-white/10">
+                            
+                    <div className="flex flex-row items-center gap-2">
+                        <div className="bg-gray-100 rounded-full">
+                            <Image
+                                className="w-8 h-8 m-auto"
+                                    src={userAvatar}
+                                    width={24}
+                                    height={24}
+                                    alt="Picture of the author"
+                                    
+                                />
+                        </div>
+                        <h2 className="text-white text-sm">{userName}</h2>
+                    </div>
                 </PopoverButton>
                 <Transition
                 as={Fragment}
@@ -39,67 +48,16 @@ const NavbarDesktop = ({userData}:{userData:any}) => {
                 leaveFrom="opacity-100 translate-y-0"
                 leaveTo="opacity-0 translate-y-1"
                 >
-                    <PopoverPanel className="absolute h-fit top-8 right-0 min-w-80  bg-white py-4 rounded shadow-lg ring-1 ring-gray-200">
+                    <PopoverPanel className="absolute h-fit top-full mt-2 right-0 min-w-40  bg-white py-2 rounded shadow-lg ring-1 ring-gray-200">
                         <ul className="list-none p-0 m-0 text-xs">
-                            <li className="px-3 py-1">
-                                <span>You have <b>4</b> new notifications</span>
-                            </li>
-                            <li className="p-3">
-                                <div className="flex align-items-center">
-                                    <Image
-                                    className="w-8 h-8 m-auto"
-                                        src={`${userAvatar}-/preview/512x512/`}
-                                        width={24}
-                                        height={24}
-                                        alt="Picture of the author"
-                                        
-                                    />
-                                    <div className="flex flex-col ml-3 flex-1">
-                                        <div className="flex align-items-center justify-between mb-1">
-                                            <span className="font-bold">Jerome Bell</span>
-                                            <small>42 mins ago</small>
-                                        </div>
-                                        <span className="text-xs line-height-3">How to write content about your photographs?</span>
-                                    </div>
-                                </div>
-                            </li>
-                            <li className="p-3">
-                                <div className="flex align-items-center">
-                                    <Image
-                                    className="w-8 h-8 m-auto"
-                                        src={`${userAvatar}-/preview/512x512/`}
-                                        width={24}
-                                        height={24}
-                                        alt="Picture of the author"
-                                        
-                                    />
-                                    <div className="flex flex-col ml-3 flex-1">
-                                        <div className="flex align-items-center justify-between mb-1">
-                                            <span className="font-bold">Jerome Bell</span>
-                                            <small>42 mins ago</small>
-                                        </div>
-                                        <span className="text-xs line-height-3">How to write content about your photographs?</span>
-                                    </div>
-                                </div>
+                            <li className="hover:bg-gray-100 p-1 px-2">
+                                <Link className="w-full block flex flex-row flex-wrap gap-2 items-center" href="/settings/account"><span className="pi pi-cog"></span>Profile settings</Link>
                             </li>
                         </ul>
                     </PopoverPanel>
                     
                 </Transition>
-            </Popover>
-            <div className="flex flex-row items-center gap-2">
-                <div className="bg-gray-100 rounded-full">
-                    <Image
-                        className="w-8 h-8 m-auto"
-                            src={userAvatar}
-                            width={24}
-                            height={24}
-                            alt="Picture of the author"
-                            
-                        />
-                </div>
-                <h2 className="text-white text-sm">{userName}</h2>
-            </div>
+            </Popover>    
         </div>
     </div>
     )
