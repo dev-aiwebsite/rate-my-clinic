@@ -1,8 +1,11 @@
+"use client"
 import Image from "next/image"
 import LogoutBtn from "../../components/logout-btn"
 import Link from "next/link"
 import { Sidebar } from "primereact/sidebar"
 import { GoGear } from "react-icons/go";
+import SyncButton from "@/components/sync-btn";
+import { useEffect, useState } from "react";
 
 const second_list_item = [
     {
@@ -22,10 +25,17 @@ const second_list_item = [
     }
     
 ]
-const SidebarMobile = ({userData,isVisible = false,position = "right"}:{userData:any,isVisible?:boolean,position?: "right" | "top" | "bottom" | "left"}) => {
+const SidebarMobile = ({userData,isVisible = false,position = "right",onHide}:{onHide?:React.Dispatch<React.SetStateAction<boolean>>,userData:any,isVisible?:boolean,position?: "right" | "top" | "bottom" | "left"}) => {
     let userAvatar = userData?.profile_pic ? `${userData?.profile_pic}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
     let userName = userData?.username || "Guest"
 
+    function handleHide(){
+        if(onHide){
+            onHide(false)
+        }
+    }
+
+    
     const customContent = () => {
         return (
            <div className="h-full">
@@ -45,6 +55,9 @@ const SidebarMobile = ({userData,isVisible = false,position = "right"}:{userData
             <Link href="/settings/account" className="block !w-fit min-w-1/2 mx-auto ring-1 ring-gray-200 px-6 py-1 rounded-lg text-gray-400 text-xs hover:bg-appblue-200 hover:text-appblue-400">Settings</Link>
         </div> */}
         <ul className="text-gray-500">
+                 <li className="pt-6 pb-4 px-6 mb-1 bg-white hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400" >
+                    <SyncButton textClass="text-sm text-center block w-full"/>
+                </li>
             {second_list_item.map((item, index) => (
                 <li key={index} className="mb-1 bg-white hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400" >
                     <a href={item.link} className="flex flex-row items-center gap-3 text-xs py-3 px-6">
@@ -70,10 +83,12 @@ const SidebarMobile = ({userData,isVisible = false,position = "right"}:{userData
 
     }
 
-    return (
-         <Sidebar maskClassName="!bg-transparent !h-fit !bottom-16 !top-auto" className="w-fit h-fit rounded-lg overflow-hidden mr-2 mt-auto shadow-lg" onHide={() => true} visible={isVisible} position={position} content={customContent}>
+    return (<>
+       
+         <Sidebar maskClassName="!bg-opacity-5 !bottom-0 !top-auto" className="bottom-16 w-fit h-fit rounded-lg overflow-hidden mr-2 mt-auto shadow-lg" onHide={handleHide} visible={isVisible} position={position} content={customContent}>
         
         </Sidebar>
+        </>
     )
 }
 

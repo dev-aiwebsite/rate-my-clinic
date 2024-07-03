@@ -21,7 +21,6 @@ export default function CircleChart({max,data = [{value: 0}],text}:{data:{name?:
         chart_visual = `${colors_array.join(",")},`
     }
 
-
     return (
         <div className="container flex items-center justify-center rounded-full relative w-full h-full max-w-36 max-h-36 aspect-square">
         <div className="p-4 rounded-full absolute w-[calc(100%-33px)] h-[calc(100%-33px)] md:w-[calc(100%-45px)] md:h-[calc(100%-45px)] bg-white flex items-center justify-center flex-col text-center">
@@ -35,7 +34,6 @@ export default function CircleChart({max,data = [{value: 0}],text}:{data:{name?:
         `}
     </style>
     </div>
-
    
     )
 }

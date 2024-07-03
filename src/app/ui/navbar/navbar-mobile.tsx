@@ -31,10 +31,10 @@ const list_item = [
 
 const NavbarMobile = ({ userData }: { userData: any }) => {
     const [isSidebarVisible, setIsSidebarVisible] = useState<boolean>(false);
-console.log(userData)
     function toggleSidebar() {
         setIsSidebarVisible(!isSidebarVisible)
     }
+
     let userAvatar = userData?.img ? `${userData?.img}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
     let userName = userData?.username || "Guest"
 
@@ -102,7 +102,7 @@ console.log(userData)
                     </span>
                 </li>
             </ul>
-            <SidebarMobile userData={userData} isVisible={isSidebarVisible} />
+            <SidebarMobile userData={userData} isVisible={isSidebarVisible} onHide={setIsSidebarVisible}/>
         </div>
     )
 }

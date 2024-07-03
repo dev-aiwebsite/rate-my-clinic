@@ -46,6 +46,11 @@ let overAll = [
     {
         name: 'Group A',
         value: totalAverage,
+        color: '#94BDE5',
+    },
+    {
+        name: 'Average Australian Clinic',
+        value: 50,
         color: '#004261',
     },
 ]
@@ -57,14 +62,14 @@ let overAll = [
                     <div>
                         <div className="flex flex-row gap-2 items-center">
                             <div className="h-3 w-3 bg-appblue-300"></div>
-                            <span className="text-lg">Overall Rating: -/-</span>
+                            <span className="text-lg">Overall Rating: {totalAverage || "-/-"}</span>
                         </div>
                         <div className="flex flex-row gap-2 items-center">
                             <div className="h-3 w-3 bg-appblue-400"></div>
-                            <span className="text-xs">Average Australian Clinic: 20</span>
+                            <span className="text-xs">Average Australian Clinic: {overAll[1].value}</span>
                         </div>
                     </div>
-                    <a className="font-medium text-gray-400 underline text-orange-400" href="#">See full report</a>
+                    {/* <a className="font-medium text-gray-400 underline text-orange-400" href="#">See full report</a> */}
                 </div>
                 <div className="md:col-span-2 grid grid-cols-2 gap-4 md:gap-6 max-md:*:bg-white">
                 {data.map((item, index) => (
