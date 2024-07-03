@@ -2,6 +2,13 @@ import Image from "next/image"
 import LogoutBtn from "../../components/logout-btn"
 import Link from "next/link"
 
+type list_item = {
+    name: string;
+    icon: string;
+    link: string;
+    attr?: any;
+}[]
+
 const list_item = [
     {
         name: "My clinic",
@@ -25,7 +32,7 @@ const list_item = [
     },
 ]
 
-const second_list_item = [
+const second_list_item:list_item = [
     {
         name: "Nps chart",
         icon: "/icons/nps.svg",
@@ -34,7 +41,9 @@ const second_list_item = [
     {
         name: "Book a call",
         icon: "/icons/sched.svg",
-        link: "/dashboard/contact"
+        link: "#",
+        attr: 'disabled' || undefined
+
     }
 ]
 
@@ -56,7 +65,7 @@ const SidebarDesktop = ({userData}:{userData:any}) => {
         <ul className="my-5 py-3 border-solid border-0 border-y border-gray-200 text-gray-500">
             {list_item.map((item, index) => (
                 <li key={index} className="hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400" >
-                    <Link href={item.link} className="flex flex-row items-center gap-3 text-sm py-3 px-6">
+                    <Link href={item.link} className="flex flex-row items-center gap-3 text-sm py-3 px-6" >
                         <Image
                             className="w-5 h-5" 
                             src={item.icon}
@@ -71,7 +80,7 @@ const SidebarDesktop = ({userData}:{userData:any}) => {
         <ul className="text-gray-500">
             {second_list_item.map((item, index) => (
                 <li key={index} className="hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400" >
-                    <a href={item.link} className="flex flex-row items-center gap-3 text-sm py-3 px-6">
+                    <a href={item.link} className="flex flex-row items-center gap-3 text-sm py-3 px-6" >
                         <Image
                             className="w-5 h-5" 
                             src={item.icon}

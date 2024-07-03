@@ -93,7 +93,7 @@ export default function Page(){
             <SummaryOverview surveyData={data} additionalClass="max-md:basis-full !px-0 md:*:px-6 gap-6"/>
 
             <div className="md:row-span-1 max-md:basis-full">
-                <Link className="flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps">
+                <Link className="flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps?nps=client">
                     <div>
                         <p>Client NPS</p>
                         <p className="font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
@@ -103,7 +103,7 @@ export default function Page(){
             </div>
 
             <div className="md:row-span-1 max-md:basis-full">
-                <Link className="flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps/strategy">
+                <Link className="flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps?nps=team">
                     <div>
                         <p>Team NPS</p>
                         <p className="font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>

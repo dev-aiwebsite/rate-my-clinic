@@ -209,8 +209,8 @@ export default function ProfileForm({ handleSubmit }: { handleSubmit?: () => voi
                     </div>
                
                    
-                <div className="w-full flex flex-row justify-end items-end mt-10">
-                    <Button className="btn-primary" type="submit" loading={isLoading}><span className="min-w-32">Save</span></Button>
+                <div className="w-full flex flex-row justify-end md:items-end mt-10">
+                    <Button className="btn-primary md:min-w-32" type="submit" loading={isLoading}><span>Save</span></Button>
                 </div>
             </form>
         </>

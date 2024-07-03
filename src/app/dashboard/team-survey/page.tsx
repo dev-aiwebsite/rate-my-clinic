@@ -14,7 +14,7 @@ export default async function Page() {
     let url = `${process.env.NEXTAUTH_URL}/survey/team?cid=${clinicId}`;
     console.log(session)
     return (
-        <div className="bg-[#f7f7f7] flex-1 p-6 gap-x-6 gap-y-10 grid grid-cols-3 grid-rows-6 *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6">
+        <div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 grid grid-cols-3 grid-rows-6 *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6">
              <div className="col-span-3 row-span-1 flex flex-row items-center justify-between">
                 <h1 className="text-xl font-medium">Team Survey</h1>
              </div>
