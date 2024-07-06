@@ -42,6 +42,7 @@ export default function Page() {
     const {data} = useSurveyDataContext()
     let clinic_id = currentUser._id
     let defaultValue = data?.ownerSurveyData as Record<string, any>
+
     useEffect(() => {
         // Update form fields with default values
             const form = document.getElementById('owner-survey-form') as HTMLFormElement;
@@ -71,7 +72,7 @@ export default function Page() {
                 })
 
             }
-    }, []);
+    }, [currentUser, defaultValue]);
 
     const handlePrev = useCallback((index: page) => {
         if(index <= 1){
@@ -133,6 +134,9 @@ const handleNext = useCallback((index: page) => {
             setSubmitBtnText("Next");
             Alert({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully' });
             setIsLoading(false);
+
+            // todo redender form with new data
+
         } else {
             Alert({ severity: 'error', summary: 'Error', detail: res.message });
         }
@@ -141,11 +145,11 @@ const handleNext = useCallback((index: page) => {
     
     return (<>
           <Toast className="text-sm" ref={toast} />
-          <div className="flex-1 p-6 gap-x-10 gap-y-10 max-md:flex max-md:flex-col grid grid-cols-3 grid-rows-6 *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-10">
-            <div className="col-span-3 row-span-1 flex flex-row items-center justify-between text-xl font-medium">
+          <div className="flex-1 p-6 gap-x-10 gap-y-10 max-md:flex max-md:flex-col grid grid-cols-3 grid-rows-6">
+            <div className="card col-span-3 row-span-1 flex flex-row items-center justify-between text-xl font-medium">
                 Owner survey
             </div>
-            <form className="max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col" id="owner-survey-form" onSubmit={(e) => handleDefaultSubmit(e,page)}>
+            <form className="card max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col" id="owner-survey-form" onSubmit={(e) => handleDefaultSubmit(e,page)}>
                 <input type="hidden" name="clinic_id" value={clinic_id}/>
                 <div className="flex-1">
                     <div className={`formSectionContainer ${page == 1 ? "" : "!hidden"}`} data-formpage="1">

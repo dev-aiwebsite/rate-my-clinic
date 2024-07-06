@@ -37,10 +37,6 @@
   transform-origin: 0% 90%;
 }
 
-body {
-  color: var(--surface-900);
-  background: #f7f7f7
-}
 
 @media screen and (max-width: 768px) {
   html {
@@ -54,6 +50,9 @@ body {
 }
 
 @layer components {
+  body {
+    @apply bg-[#f7f7f7];
+  }
   .btn {
     @apply py-2 px-5 rounded-lg cursor-pointer;
   }
@@ -65,7 +64,7 @@ body {
     @apply py-2 px-5 bg-transparent ring-1 ring-appblue-350 text-appblue-300 rounded-lg shadow-md hover:ring-appblue-350 focus:outline-none cursor-pointer;
   }
   .card {
-    @apply bg-white shadow-lg rounded-lg py-6 px-6;
+    @apply bg-white shadow-md rounded-2xl py-6 px-6 ;
   }
 
   #client_survey_form .formField {

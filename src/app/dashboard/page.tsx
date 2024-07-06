@@ -79,8 +79,8 @@ export default function Page(){
         },
     ]
 
-    return (<div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 max-md:flex max-md:flex-row max-md:flex-wrap md:grid md:grid-cols-3 *:bg-white *:shadow-lg *:rounded-md *:py-6 *:px-6">
-            <div className="hidden col-span-3 row-span-1 md:flex flex-row items-center justify-between">
+    return (<div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 max-md:flex max-md:flex-row max-md:flex-wrap md:grid md:grid-cols-3">
+            <div className="card hidden col-span-3 row-span-1 md:flex flex-row items-center justify-between">
                 <div>
                     <h1 className="text-2xl inline-block mr-2 capitalize">{userName}</h1>
                     <span className="text-gray-400 text-base">You have 10 days till your final report is generated</span>
@@ -90,9 +90,9 @@ export default function Page(){
                 </div>
             </div>
 
-            <SummaryOverview surveyData={data} additionalClass="max-md:basis-full !px-0 md:*:px-6 gap-6"/>
+            <SummaryOverview surveyData={data} additionalClass="card max-md:basis-full !px-0 md:*:px-6 gap-6"/>
 
-            <div className="md:row-span-1 max-md:basis-full">
+            <div className="card md:row-span-1 max-md:basis-full">
                 <Link className="flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps?nps=client">
                     <div>
                         <p>Client NPS</p>
@@ -102,7 +102,7 @@ export default function Page(){
                 </Link>
             </div>
 
-            <div className="md:row-span-1 max-md:basis-full">
+            <div className="card md:row-span-1 max-md:basis-full">
                 <Link className="flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps?nps=team">
                     <div>
                         <p>Team NPS</p>
@@ -111,7 +111,7 @@ export default function Page(){
                     <CircleChart data={teamNps} max={10}/>
                 </Link>
             </div>
-            <div className="md:row-span-1 !p-0 max-md:basis-full">
+            <div className="card md:row-span-1 !p-0 max-md:basis-full">
                 <HelperCard className="!ring-0"/>
             </div>
 
