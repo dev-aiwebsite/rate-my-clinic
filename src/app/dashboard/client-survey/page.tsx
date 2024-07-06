@@ -10,11 +10,11 @@ export default async function Page() {
     let url = `${process.env.NEXTAUTH_URL}/survey/client?cid=${clinicId}`;
     console.log(session)
     return (
-        <div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 grid grid-cols-3 grid-rows-6 *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6">
-             <div className="col-span-3 row-span-1 flex flex-row items-center justify-between">
+        <div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 grid grid-cols-3 grid-rows-6">
+             <div className="card col-span-3 row-span-1 flex flex-row items-center justify-between">
                 <h1 className="text-xl font-medium">Client Survey</h1>
              </div>
-            <div className="col-span-3 row-span-5 flex flex-row flex-wrap gap-20 justify-center">
+            <div className="card col-span-3 row-span-5 flex flex-row flex-wrap gap-20 justify-center">
                 <div className="flex flex-col items-center gap-5">
                     <p>Let your clients scan the QR code</p>
                     <ClinicQr text={url}/>

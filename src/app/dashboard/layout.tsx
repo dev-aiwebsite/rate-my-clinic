@@ -9,20 +9,17 @@ import SessionContextProvider from "@/context/sessionContext";
 import SurveyDataContext from "@/context/surveyDataContext";
 import { getSurveyData } from "@/server-actions";
 
-
 const layout = async ({
    children,
  }: Readonly<{
    children: React.ReactNode;
  }>) => {
 
-
-
 const session = await auth() as unknown as ExtendedSession
 const Users = await fetchData()
 const currentUser = JSON.parse(JSON.stringify(Users.find(i => i._id == session.user_id)))
 const surveyData = await getSurveyData()
-console.log(surveyData)
+
 const value = {
     ripple: true,
 };
@@ -30,7 +27,7 @@ const value = {
  return <>
     <PrimeReactProvider value={value}>
         <SessionContextProvider current_user={currentUser}>
-            <div className="h-screen flex flex-col max-md:bg-[#f7f7f7]">
+            <div className="h-screen flex flex-col max-md:bg-slate-100">
                 <Navbar/>
                 <Image
                     className="md:hidden h-42 w-auto m-auto p-5 md:hidden !bg-transparent !shadow-none"
