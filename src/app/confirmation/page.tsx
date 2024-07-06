@@ -4,13 +4,16 @@ import Stripe from "stripe";
 import { defaultEmailOption } from "../../../config/nodemailer.config";
 import bcrypt from 'bcrypt';
 import Link from "next/link";
+import Image from "next/image";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET!);
 export default async function Page({searchParams}:any) {
     const session_id = searchParams.session_id as string;
     if(session_id){
         const sessionInfo = await stripe.checkout.sessions.retrieve(session_id);
-        console.log(sessionInfo)
+        
+        let content = <></>
+
         if(sessionInfo.status == "complete"){
             let name,fname,lname,email,clinic_name,clinic_type,password = 'Welcome1!'
             let formData = new FormData()
@@ -35,7 +38,6 @@ export default async function Page({searchParams}:any) {
             formData.append('userpass', password as string)
 
             const res = await RegisterUser(formData)
-            console.log(res)
             if(res.success){
                 const { from } = defaultEmailOption
                 const parsedData = JSON.parse(JSON.stringify(res.data))
@@ -55,17 +57,17 @@ export default async function Page({searchParams}:any) {
                     "clinic name": parsedData.clinic_name,
                     "clinic type": parsedData.clinic_type,
                     
-                };
-    
-                console.log(res.orig_pass)
+                }
+
+                const link = process.env.NEXTAUTH_URL
     
                 const htmlBody = `
                 <p>Thank you ${name} for subscribing.</p>
                 <p>here is your account details</p><div>
                 ${Object.keys(userInfo).map(i => `<b>${i}</b>: ${userInfo[i]}`).join('<br/>')}
                 </div><br>
-                <p>Click here to login : <a href="http://localhost:3000/login">Login</a></p>
-                <p>Click here to reset your password: <a href="http://localhost:3000/forgetpassword">Reset Password</a></p>
+                <p>Click here to login : <a href="${link}/login">Login</a></p>
+                <p>Click here to reset your password: <a href=${link}/forgot-password">Reset Password</a></p>
     
                 `
                 const mailOptions = {
@@ -74,33 +76,75 @@ export default async function Page({searchParams}:any) {
                     subject: "Thank you for subscribing",
                     htmlBody
                 }
+
                 const emailed = await AppSendMail(mailOptions)
-                console.log(emailed)
-                return <>
-                    <h1>{res.message}</h1>
-                    <h1>{emailed.message}</h1>
+                content =  <>
+               
                 </>
     
             } else if(res.message == "User email already exist"){
-                return <>
-                    <h1>Thank you for subscribing</h1>
-                    <Link href="/login">Login here</Link>
+                content = <>
+                <h1 className="text-3xl text-bold">Thank you for subscribing</h1>
+                    <Link href="/login">You can login here</Link>
                 </>
     
             } else {
-                return <>
-                <h1>Thank you for subscribing</h1>
-                <p>You will be receiving an email shortly</p>
+                content = <>
+                <Image
+                            className="w-16 mx-auto"
+                            width={60}
+                            height={60}
+                            src="/icons/emailDelivery.svg"
+                            alt="email delivery icon"
+                        />
+                        <h1 className="text-3xl text-bold">Thank you for subscribing</h1>
+                    
+                    <br></br>
+                    <p>{`Your subscription is now confirmed and active. We have sent you an email with more details. If you don't see it, please check your spam folder.`}</p>
             </>
             }
         }
+
+
+        return (<div className="w-screen h-screen flex items-center justify-center">
+            <div className="max-w-[600px] mx-auto rounded-xl shadow-xl bg-white ring-1 ring-gray-100 overflow-hidden">
+                 <div className="h-16 bg-[#004261] w-full flex flex-row items-center py-6 *:px-6">
+                    <div className="">
+                        <Image
+                        className="h-auto w-24 m-auto"
+                            src="/images/logos/RMC_Logo-MASTER.png"
+                            width={60}
+                            height={60}
+                            alt="Picture of the author"
+                        />
+                    </div>
+                    <div className="ml-auto text-sm text-white">
+                        <Link className="hover:bg-white/20 rounded px-1.5 py-1" href='/login'>Login</Link>
+                    </div>
+                </div>
+                <div className="py-10 px-20 text-center">
+                    
+                <Image
+                            className="w-16 mx-auto"
+                            width={60}
+                            height={60}
+                            src="/icons/emailDelivery.svg"
+                            alt="email delivery icon"
+                        />
+                        <h1 className="text-3xl text-bold">Thank you for subscribing</h1>
+                    
+                    <br></br>
+                    <p>{`Your subscription is now confirmed and active. We have sent you an email with more details. If you don't see it, please check your spam folder.`}</p>
+                </div>
+
+            </div>
+            </div>
     
-       
+        )
 
 
     } else {
         redirect('/pricing')
-        
     }
 
 
