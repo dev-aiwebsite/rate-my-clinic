@@ -1,14 +1,10 @@
-import { Message } from 'primereact/message';
 "use server"
-import { revalidatePath } from "next/cache"
 import { signIn, signOut, auth } from "./auth"
 import { DB_TeamSurveyData, DB_ClientSurveyData, DB_OwnerSurveyData, Users } from "./lib/models"
 import { connectToDb } from "./lib/utils"
 import bcrypt from 'bcrypt'
 import { MailOptions, transporter } from "../../config/nodemailer.config"
-import {ObjectId} from 'mongodb'
 import { ExtendedSession } from '../../typings';
-import { availableParallelism } from 'os';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -74,15 +70,36 @@ export const AuthenticateUser = async (formData: FormData) => {
 };
 
 export const OwnerSurveyAction = async (formData: FormData) => {
-    console.log('owner survey form submitted')
-    console.log(formData)
+    type result = {
+        [key:string]: any
+    }
+
+    let result:result = {
+        success: false,
+    }
+    const formDataObj = Object.fromEntries(formData);
+    const user = await auth() as ExtendedSession;
+    let currentUser_id = user?.user_id
+
+    const ownerSurveyData = await DB_OwnerSurveyData.findOne({clinic_id: currentUser_id })
+    
     
     try {
-        connectToDb()
-        const newOwnerSurvey = new DB_OwnerSurveyData(Object.fromEntries(formData))
-        await newOwnerSurvey.save()
 
-        return {"success": true, 'message':'data save in database'}
+        if(ownerSurveyData){
+            Object.assign(ownerSurveyData, formDataObj);
+            await ownerSurveyData.save();
+            result['message'] = "Data updated successfully"
+            result['success'] = true
+        } else {
+            const newOwnerSurvey = new DB_OwnerSurveyData(formDataObj)
+            await newOwnerSurvey.save()
+            result['message'] = "Data saved successfully"
+            result['success'] = true
+        }
+        
+        return result
+
     } catch (error) {
         console.log(error)
         return {"success": false, 'message': error?.toString()}

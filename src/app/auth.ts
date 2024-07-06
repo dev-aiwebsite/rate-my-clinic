@@ -7,6 +7,8 @@ import { Users } from './lib/models';
 import bcrypt from 'bcrypt';
 import { ExtendedSession, ExtendedUser } from "../../typings";
 import { JWT } from "next-auth/jwt";
+import middleware from "../middleware";
+
 interface CustomSession extends Session {
     user_role: string;
   }
