@@ -27,10 +27,10 @@ export const authConfig = {
         }
 
       } else {
-        if(isOnSurvey){
-          return true
-        } else {
+        if(isOnDashboard || isOnSettings){
           return false
+        } else {
+          return true
         }
       }
 
