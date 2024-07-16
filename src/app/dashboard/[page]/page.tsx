@@ -1,4 +1,5 @@
-import HowItWorksPage from "@/how-it-works/page";
+import HowItWorksPage from "@/components/howitworks";
+
 
 export default function Page({params}:{params:any}){
     if(params.page == "how-it-works"){
