@@ -21,19 +21,18 @@ export default function Page({searchParams}:{searchParams:any}) {
     const {data} = useSurveyDataContext()
     let filteredData 
     let npsCategory = searchParams.nps
+    let npsTextHeader = 'Client NPS'
 
-    if(npsCategory == 'client'){
-
-        filteredData = data.clientSurveyData.filter((i:any)=> i.clinicid == currentUser._id)
-    } else if(npsCategory == 'team'){
-        filteredData = data.teamSurveyData.filter((i:any)=> i.clinicId == currentUser._id)
+    if(npsCategory == 'team'){
+        npsTextHeader = 'Team Satisfaction'
+        filteredData = data?.teamSurveyData?.filter((i:any)=> i.clinicId == currentUser._id) || null
     } else {
-        filteredData = data.clientSurveyData.filter((i:any)=> i.clinicid == currentUser._id)
+        filteredData = data?.clientSurveyData?.filter((i:any)=> i.clinicid == currentUser._id) || null
     }
 
 
     let npsValues: number[] = []
-    let npsData:npsData = filteredData.map((i)=> {
+    let npsData:npsData = filteredData?.map((i)=> {
 
         const date = new Date(i.createdAt);
         const formattedDate = date.toISOString().split('T')[0];
@@ -58,11 +57,15 @@ export default function Page({searchParams}:{searchParams:any}) {
     const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
     // Calculate the average
-    const npsAverage = sum / npsValues.length;
+    let npsAverage = (sum / npsValues.length).toFixed(1)
+
+    if(isNaN(sum / npsValues.length)){
+        npsAverage = "0.0"
+    }
 
     return (<>
         <div className="col-span-3 row-span-1 flex flex-row items-center justify-between card">
-            <h1 className="text-2xl capitalize">{npsCategory || 'Client'} NPS: {npsAverage}</h1>
+            <h1 className="text-2xl capitalize">{`${npsTextHeader}: ${npsAverage}`}</h1>
         </div>
 
         <div className="col-span-3 row-span-5 h-fit max-md:!pb-30 md:card">

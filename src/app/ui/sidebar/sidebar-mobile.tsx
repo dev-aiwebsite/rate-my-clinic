@@ -21,7 +21,7 @@ const second_list_item = [
     {
         name: "Settings",
         icon: <GoGear size={20}/>,
-        link: "/settings/account"
+        link: "/dashboard/settings/account"
     }
     
 ]
