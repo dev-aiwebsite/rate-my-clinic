@@ -71,10 +71,17 @@ export default async function Page({searchParams}:any) {
     
                 `
                 const mailOptions = {
-                    from,
-                    to: userInfo.useremail || process.env.GMAIL_EMAIL || "",
+                    to: userInfo.useremail,
                     subject: "Thank you for subscribing",
-                    htmlBody
+                    templateName: 'Welcome email',
+                    dynamicFields: {
+                        firstname: `${name}`,
+                        loginlink: `${link}`,
+                        userpassword: res.orig_pass,
+                        useremail: parsedData.useremail
+                    }
+
+                    
                 }
 
                 const emailed = await AppSendMail(mailOptions)

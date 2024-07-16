@@ -60,7 +60,7 @@ const SidebarDesktop = ({userData}:{userData:any}) => {
                 
             />
             {/* <h1 className="mb-2 text-sm">{userData?.username}</h1> */}
-            <Link href="/settings/account" className="block !w-fit min-w-1/2 mx-auto ring-1 ring-gray-200 px-6 py-1 rounded-lg text-gray-400 text-xs hover:bg-appblue-200 hover:text-appblue-400">Settings</Link>
+            <Link href="/dashboard/settings/account" className="block !w-fit min-w-1/2 mx-auto ring-1 ring-gray-200 px-6 py-1 rounded-lg text-gray-400 text-xs hover:bg-appblue-200 hover:text-appblue-400">Settings</Link>
         </div>
         <ul className="my-5 py-3 border-solid border-0 border-y border-gray-200 text-gray-600">
             {list_item.map((item, index) => (
@@ -91,6 +91,11 @@ const SidebarDesktop = ({userData}:{userData:any}) => {
                         {item.name}</Link>
                 </li>
             ))}
+            <li className="hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400">
+                <Link href='/dashboard/how-it-works' className="text-red-400  flex flex-row items-center gap-3 text-sm py-3 px-6">
+                    <span className="text-red-400 w-4 h-4 pi pi-list-check"></span><span className="underline">How it works</span>
+                </Link>
+            </li>
         </ul>
         <div className="mt-auto">
             <LogoutBtn/>

@@ -17,9 +17,12 @@ export const authConfig = {
       const isOnSurvey = request.nextUrl.pathname.startsWith('/survey');
       const isOnHome = request.nextUrl.pathname === '/';
 
-      console.log (userAgent(request))
+
+
+      // console.log (userAgent(request))
 
       if(isLoggedIn){
+        
         if(isOnHome){
           return Response.redirect(new URL('/dashboard', request.nextUrl));
         } else {
@@ -27,7 +30,7 @@ export const authConfig = {
         }
 
       } else {
-        if(isOnDashboard || isOnSettings){
+        if(isOnDashboard || isOnSettings || isOnHome){
           return false
         } else {
           return true

@@ -1,6 +1,19 @@
 "use client"
 
-export default function CircleChart({max,data = [{value: 0}],text}:{data:{name?:string,value:number,color?:string}[],text?:string,max?:number,}) {
+type npsData = {
+    data:{
+        name?:string,
+        value:number,
+        color?:string
+    }[],
+    subtext?:{
+        text:string,
+        class?:string
+    },
+        max?:number
+}
+
+export default function CircleChart({max,data = [{value: 0}],subtext}:npsData) {
     let chart_visual = ""
     if(data.length){
 
@@ -24,8 +37,8 @@ export default function CircleChart({max,data = [{value: 0}],text}:{data:{name?:
     return (
         <div className="container flex items-center justify-center rounded-full relative w-full h-full max-w-36 max-h-36 aspect-square">
         <div className="p-4 rounded-full absolute w-[calc(100%-33px)] h-[calc(100%-33px)] md:w-[calc(100%-45px)] md:h-[calc(100%-45px)] bg-white flex items-center justify-center flex-col text-center">
-            <div className="font-bold text-xl">{data[0].value}</div>
-            {text && <div className="text-[8px] text-gray-400 leading-[1.1em]">{text}</div> }
+            <div className="font-bold text-xl">{data[0].value.toFixed(1)}</div>
+            {subtext && <div className={`${subtext.class} text-[8px] text-gray-400 leading-[1.1em]`}>{subtext.text}</div> }
         </div>
         <style jsx>{`
             .container {

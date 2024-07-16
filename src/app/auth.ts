@@ -37,7 +37,7 @@ export const { signIn, signOut, auth } = NextAuth({
             async authorize(credentials) {
                 const user = await login(credentials)
                 if(user){
-                    return user
+                    return await user
                 }  else {
                     throw new CustomError()
                 }

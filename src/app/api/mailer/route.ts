@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { transporter } from "../../../../config/nodemailer.config";
 import { AppSendMail } from "@/server-actions";
+import {ApiClient, BodyPart, EmailMessageData, EmailRecipient, EmailsApi} from "@elasticemail/elasticemail-client";
+import { error } from "console";
 
 export async function POST(req:NextRequest, res: NextResponse){
     const payload = await req.text()
@@ -24,24 +26,18 @@ export async function POST(req:NextRequest, res: NextResponse){
 }
 
 export async function GET(req:NextRequest, res: NextResponse){
-    testEmail()
+    let mailOptions = {
+      to:'dev@aiwebsiteservices.com',
+      Subject: 'Password reset email test',
+      templateName: 'Password reset email',
+      dynamicFields: {
+            firstname: 'dev',
+          "resetLink": 'https://aiwebsiteservices.com'
+      }
+    }
+    const emailResult = await AppSendMail(mailOptions)
+
+    return NextResponse.json(emailResult)
 }
 
-async function testEmail(){
-    const testMailOptions = {
-        from: 'RATE MY CLINIC <info@ratemyclinic@gmail.com>',
-        to: process.env.GMAIL_EMAIL || 'info@ratemyclinic@gmail.com',
-        subject: 'test email rmc',
-        htmlBody: 'test'
-    }
-    
-    try {
-        
-        const res = await AppSendMail(testMailOptions)
-        console.log(res)
-        return NextResponse.json({status: "success", message: "test"})
-    } catch (error) {
-        console.log(error)
-        return NextResponse.json({status: "failed", message: error})
-    }
-}
+

@@ -9,7 +9,9 @@ import SessionContextProvider from "@/context/sessionContext";
 import SurveyDataContext from "@/context/surveyDataContext";
 import { getSurveyData } from "@/server-actions";
 
-const layout = async ({
+
+
+const Layout = async ({
    children,
  }: Readonly<{
    children: React.ReactNode;
@@ -23,6 +25,7 @@ const surveyData = await getSurveyData()
 const value = {
     ripple: true,
 };
+
 
  return <>
     <PrimeReactProvider value={value}>
@@ -46,4 +49,4 @@ const value = {
  </>
 }
 
-export default layout
+export default Layout
