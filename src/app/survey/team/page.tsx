@@ -4,7 +4,9 @@ import { useSessionContext } from "@/context/sessionContext";
 import { TeamSurveyAction } from "@/server-actions";
 import { Button } from "primereact/button";
 import { Toast, ToastMessage } from 'primereact/toast';
+import 'primeicons/primeicons.css';
 import { FormEvent, useEffect, useRef, useState } from "react";
+import Image from "next/image";
 
 const selectOptions_0_10 = Array.from({ length: 11 }, (_, i) => i);
 
@@ -14,6 +16,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
     const toast = useRef<Toast>(null);
     const max_pages = 1
     const [page, setPage] = useState(1)
+    const [formSubmitted, setFormSubmitted] = useState(false)
     
     let default_submitBtnText = 'Next'
     if(max_pages == 1){
@@ -23,9 +26,10 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
     const [isLoading, setIsLoading] = useState(false)
   
     const clinic_id = searchParams.cid
-    const clinic_name = users?.find((i: { _id: string; }) => i._id == `${clinic_id}`)?.clinic_name || ""
-
-
+    const user_data = users?.find((i: { _id: string; }) => i._id == `${clinic_id}`)
+    const clinic_name = user_data?.clinic_name || ""
+    const clinic_logo = user_data?.clinic_logo || ""
+    console.log(user_data)
 
     const Alert = ({ severity = 'info', summary = 'Info', detail = 'Message Content' }: ToastMessage) => {
         toast.current?.show({ severity, summary, detail });
@@ -60,8 +64,9 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                 form.reset()
                 setPage(1)
                 setSubmitBtnText("Next")
-                Alert({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully' });
+                // Alert({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully' });
                 setIsLoading(false)
+                setFormSubmitted(true)
             } else {
                 Alert({ severity: 'error', summary: 'Error', detail: res.message });
             }
@@ -78,13 +83,27 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
 
         <>
             <Toast className="text-sm" ref={toast} />
-            <div className="flex-1 p-6 gap-x-6 gap-y-10 flex flex-col *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6 max-w-screen-lg mx-auto">
-                <div className="col-span-3 row-span-1 flex flex-row items-center justify-between text-xl font-medium">
-                    Team survey
+            {formSubmitted && <div className="w-screen h-screen p-10">
+                <div className="bg-white p-20 rounded-xl shadow-lg max-w-lg text-center mx-auto mt-28">
+                    <p className="pi pi-check-circle text-[10rem] text-green-400"></p>
+                    <h1 className="text-2xl font-medium mt-10">Thank you!</h1>
+                    <p className="mt-3">Your submission has been sent, you may now safely close this page.</p>
+                    
+
+
                 </div>
+            </div>}
+            {!formSubmitted && <div className="flex-1 p-6 gap-x-6 gap-y-10 flex flex-col *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6 max-w-screen-lg mx-auto">
+                {/* <div className="col-span-3 row-span-1 flex flex-row items-center justify-between text-2xl font-medium text-appblue-400">
+                    Team survey
+                </div> */}
                 <form className="max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col !p-10" id="client_survey_form" onSubmit={(e) => handleDefaultSubmit(e, page)}>
                     <div className="flex-1">
                         <input type="hidden" name="clinicId" value={`${clinic_id}`}/>
+                        <div className="flex flex-col items-center mb-10">
+                            <Image className="" width="150" height="600" src={clinic_logo} alt={clinic_name} />
+                            <h1 className="text-4xl font-medium text-appblue-400 mt-5">Team survey</h1>
+                        </div>
 
                         <div className={`formSectionContainer ${page == 1 ? "" : "!hidden"}`}>
                             {/* <h3 className="text-xl  leading-6 mb-4">Clinic information</h3> */}
@@ -346,7 +365,8 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                         <Button className="md:h-14 btn-primary min-w-60" type="submit" label={submitBtnText} icon="pi pi-check" loading={isLoading} />
                     </div>
                 </form>
-            </div>
+            </div>}
+          
         </>
     );
 }

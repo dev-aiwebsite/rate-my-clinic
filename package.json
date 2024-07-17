@@ -11,6 +11,7 @@
     "stripe:trigger": "stripe trigger payment_intent.succeeded"
   },
   "dependencies": {
+    "@elasticemail/elasticemail-client": "^4.0.23",
     "@headlessui/react": "^2.0.3",
     "@stripe/react-stripe-js": "^2.7.1",
     "@stripe/stripe-js": "^3.4.0",

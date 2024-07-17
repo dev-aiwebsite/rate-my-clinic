@@ -3,6 +3,7 @@ import InputRange from "@/components/inputRange";
 import { useSessionContext } from "@/context/sessionContext";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { ClientSurveyAction, getSurveyData } from "@/server-actions";
+import Image from "next/image";
 import { Button } from "primereact/button";
 import { Toast, ToastMessage } from 'primereact/toast';
 import { FormEvent, useEffect, useRef, useState } from "react";
@@ -31,11 +32,13 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
 
    const [surveyData,setSurveyData] = useState<surveyData>(null)
    
-
+    const [formSubmitted, setFormSubmitted] = useState(false)
    
 
     const clinic_id = searchParams.cid
-    const clinic_name = users?.find((i: { _id: string; }) => i._id == `${clinic_id}`)?.clinic_name || ""
+    const user_data = users?.find((i: { _id: string; }) => i._id == `${clinic_id}`)
+    const clinic_name = user_data?.clinic_name || ""
+    const clinic_logo = user_data?.clinic_logo || ""
 
     useEffect(()=>{
         getSurveyData(clinic_id)
@@ -75,12 +78,24 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
             console.log('submitting')
             setIsLoading(true)
             let form = e.target as HTMLFormElement
-            const res = await ClientSurveyAction(new FormData(form))
+            let formData = new FormData(form)
+            //(servicesUsed, socialMediaUsed) make these fields value a comma separated. 
+            let servicesUsed = formData.getAll('servicesUsed').join(",")
+            let socialMediaUsed = formData.getAll('socialMediaUsed').join(",")
+            // remove 
+            formData.delete('servicesUsed')
+            formData.delete('socialMediaUsed')
+            // add the converted value
+            formData.append('servicesUsed', servicesUsed)
+            formData.append('socialMediaUsed', socialMediaUsed)
+
+            const res = await ClientSurveyAction(formData)
             if (res.success) {
                 form.reset()
                 setPage(1)
                 setSubmitBtnText("Next")
-                Alert({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully' });
+                // Alert({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully' });
+                setFormSubmitted(true)
                 setIsLoading(false)
             } else {
                 Alert({ severity: 'error', summary: 'Error', detail: res.message });
@@ -98,12 +113,26 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
 
         <>
             <Toast className="text-sm" ref={toast} />
-            <div className="flex-1 p-6 gap-x-6 gap-y-10 flex flex-col *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6 max-w-screen-lg mx-auto">
-                <div className="col-span-3 row-span-1 flex flex-row items-center justify-between text-xl font-medium">
-                    Client survey
+            {formSubmitted && <div className="w-screen h-screen p-10">
+                <div className="bg-white p-20 rounded-xl shadow-lg max-w-lg text-center mx-auto mt-28">
+                    <p className="pi pi-check-circle text-[10rem] text-green-400"></p>
+                    <h1 className="text-2xl font-medium mt-10">Thank you!</h1>
+                    <p className="mt-3">Your submission has been sent, you may now safely close this page.</p>
+                    
+
+
                 </div>
+            </div>}
+            {!formSubmitted && <div className="flex-1 p-6 gap-x-6 gap-y-10 flex flex-col *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6 max-w-screen-lg mx-auto">
+                {/* <div className="col-span-3 row-span-1 flex flex-row items-center justify-between text-xl font-medium">
+                    Client survey
+                </div> */}
                 <form className="max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col !p-10" id="client_survey_form" onSubmit={(e) => handleDefaultSubmit(e, page)}>
                     <div className="flex-1">
+                        <div className="flex flex-col items-center mb-10">
+                            <Image className="" width="150" height="70" src={clinic_logo} alt={clinic_name} />
+                            <h1 className="text-4xl font-medium text-appblue-400 mt-5">Client survey</h1>
+                        </div>
                         <div className={`formSectionContainer ${page == 1 ? "" : "!hidden"}`}>
                             {/* <h3 className="text-xl  leading-6 mb-4">Clinic information</h3> */}
                             <div className="formSectionContent">
@@ -215,11 +244,15 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                 <div className="sm:col-span-1">
                                     <label htmlFor="servicesUsed" className="formLabel">Which of our services have you used?</label>
                                     <div className="mt-2">
-                                        <div className="formField">
-                                            <select name="servicesUsed" required>
-                                            <option value="">Select service</option>
-                                            {surveyData?.ownerSurveyData.services_provided?.split(",").map((item:any,index:number)=> <option key={index} value={item}>{item}</option>)}
-                                            </select>
+                                        <div className="formField ring-0 flex flex-col items-start">
+                                        {surveyData?.ownerSurveyData.services_provided?.split(",").map((item:any,index:number)=> {
+                                            return (
+                                            <label key={index} className="flex flex-row items-center gap-2 cursor-pointer">
+                                                <input type="checkbox" name="servicesUsed" value={item} />
+                                                <span>{item}</span>
+                                            </label>
+                                            )
+                                        })}
                                         </div>
                                     </div>
                                 </div>
@@ -429,7 +462,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                         <Button className="md:h-14 btn-primary min-w-60" type="submit" label={submitBtnText} icon="pi pi-check" loading={isLoading} />
                     </div>
                 </form>
-            </div>
+            </div>}
         </>
     );
 }

@@ -11,12 +11,28 @@ export const transporter = nodemailer.createTransport({
     }
 })
 
+const elastic_email = process.env.ELASTIC_EMAIL
+const elatic_pass = process.env.ELASTIC_PASS
+export const elasticTransporter = nodemailer.createTransport({
+    host: 'smtp.elasticemail.com',
+    auth: {
+        user: elastic_email,
+        pass: elatic_pass
+    }
+})
+
+
+
 export interface MailOptions {
-    from: string;
+    from?: string;
     to: string;
-    subject: string;
-    htmlBody: string;
+    name?: string;
+    subject?: string;
+    htmlBody?: string;
+    templateName?: string;
+    dynamicFields?: { [key: string]: string };
 }
 export const defaultEmailOption = {
     from: 'RATE MY CLINIC <info@ratemyclinic@gmail.com>',
 }
+

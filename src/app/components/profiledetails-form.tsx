@@ -1,5 +1,5 @@
 "use client"
-import { FormEvent, useCallback, useEffect, useRef, useState } from "react";
+import { FormEvent, MouseEvent, useCallback, useEffect, useRef, useState } from "react";
 import { Toast, ToastMessage } from 'primereact/toast';
 import dynamic from "next/dynamic";
 import 'react-phone-number-input/style.css'
@@ -9,51 +9,72 @@ import { useSessionContext } from "@/context/sessionContext";
 import Switcher from "./switcher";
 import { Button } from "primereact/button";
 import { UpdateUser } from "@/server-actions";
+import { useRouter } from "next/navigation";
+
+
+
 
 type E164Number = string;
 
 const InputFileNoSSR = dynamic(() => import("@/components/input-file"), { ssr: false });
 
 type page = number
-export default function ProfileForm({ handleSubmit }: { handleSubmit?: () => void }) {
+export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: () => void,redirectTo?:string }) {
 
     const toast = useRef<Toast>(null);
-
+    const router = useRouter();
     const [isLoading, setIsLoading] = useState(false)
     const [phoneValue, setPhoneValue] = useState<E164Number>()
     const phoneInputRef = useRef<any>();
-    const [clinicLogo, setClinicLogo] = useState("")
     const { currentUser, setCurrentUser } = useSessionContext()
-    const [profilePic, setProfilePic] = useState(currentUser.profile_pic)
     const [switchEnabled, setSwitchEnabled] = useState(false);
+    const profileFormRef = useRef<HTMLFormElement | null>(null)
+    const [validateForm,setValidateForm] = useState<boolean | number>(1)
+    
+    console.log(currentUser)
 
     const handleSwitcherClick = () => {
         setSwitchEnabled(!switchEnabled);
     };
 
-    const { data } = useSurveyDataContext()
 
-    let defaultValue = currentUser
+    const { data } = useSurveyDataContext()
     
     useEffect(() => {
         // Update form fields with default values
         const form = document.getElementById('profile-details-form') as HTMLFormElement;
         if (form) {
-            Object.keys(defaultValue).forEach((key: string | number) => {
+            Object.keys(currentUser).forEach((key: string | number) => {
                 const input = form.querySelector(`[name="${key}"]`) as HTMLInputElement;
-                if (key == 'clinic_logo') {
-                    setClinicLogo(defaultValue[key])
-                }
+                
                 if (input) {
                     if (key == "usermobile") {
-                        setPhoneValue(defaultValue[key])
+                        setPhoneValue(currentUser[key])
                     } else {
-                        input.value = defaultValue[key];
+                        input.value = currentUser[key];
                     }
                 }
             });
+
+            if(validateForm){
+                if (profileFormRef.current) {
+                    let invalidElements = profileFormRef.current.querySelectorAll(':invalid');
+                    
+                    if(validateForm == 1){
+                        invalidElements = profileFormRef.current.querySelectorAll('[data-formpage="1"] :invalid');
+        
+                    } else if(validateForm == 2){
+                        invalidElements = profileFormRef.current.querySelectorAll('[data-formpage="2"] :invalid');
+                    }
+        
+                    invalidElements.forEach((element: Element) => {
+                        (element as HTMLInputElement).reportValidity();
+                    });
+                }
+            }
+
         }
-    }, [defaultValue]);
+    }, [currentUser,validateForm]);
 
 
     const handlePhoneValidation = useCallback((value: typeof phoneValue) => {
@@ -68,12 +89,12 @@ export default function ProfileForm({ handleSubmit }: { handleSubmit?: () => voi
     }, [setPhoneValue])
 
 
-    const handleDefaultSubmit = useCallback((e: FormEvent) => {
-        e.preventDefault();
+    const handleDefaultSubmit = (form:HTMLFormElement)=> {
+
         const Alert = ({ severity = 'info', summary = 'Info', detail = 'Message Content' }: ToastMessage) => {
             toast.current?.show({ severity, summary, detail });
         };
-        let form = e.target as HTMLFormElement;
+
         setIsLoading(true);
         let formData = new FormData(form)
     
@@ -83,22 +104,73 @@ export default function ProfileForm({ handleSubmit }: { handleSubmit?: () => voi
 
         UpdateUser({ useremail: currentUser.useremail }, cleanedFormData)
         .then(res => {
-            form.reset();
             Alert({ severity: 'success', summary: 'Success', detail: 'Profile updated' });
             setIsLoading(false);
             setCurrentUser(res)
+            if(redirectTo){
+                router.push(redirectTo)
+            } 
+            
         })
         .catch(err => {
             Alert({ severity: 'error', summary: 'Error', detail: err });
         })
    
 
-    }, []);
+    };
+
+    const handleFormValidation = (e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>)=>{
+        e.preventDefault()
+        
+        let currentPage = 1
+        if(switchEnabled){
+            currentPage = 2
+        }
+
+        if(profileFormRef.current){
+            let form = profileFormRef.current as HTMLFormElement
+            let page1 = form.querySelector(`[data-formpage="1"]`) as HTMLFormElement
+            let page1_invalidEl = page1.querySelectorAll(':invalid')
+
+            let page2 = form.querySelector(`[data-formpage="2"]`) as HTMLFormElement
+            let page2_invalidEl = page2.querySelectorAll(':invalid')
+
+            if(page1_invalidEl.length || page2_invalidEl.length){
+                if(currentPage == 1){
+
+                    if(page1_invalidEl.length){
+                        setValidateForm(1)
+    
+                    } else if(page2_invalidEl.length) {
+                        setValidateForm(2)
+                        setSwitchEnabled(true)
+                    }
+    
+                } else if(currentPage == 2){
+    
+                    if(page2_invalidEl.length){
+                        setValidateForm(2)
+    
+                    } else if(page1_invalidEl.length) {
+                        setValidateForm(1)
+                        setSwitchEnabled(false)
+                    }
+    
+                }
+            } else {
+                handleDefaultSubmit(form)
+            }
+            
+        }
+
+    }
+
+
 
     return (
         <>
           <Toast className="text-sm" ref={toast} />
-            <form className="[&_label]:!text-sm max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col" id="profile-details-form" onSubmit={(e) => handleDefaultSubmit(e)}>
+            <form ref={profileFormRef} className="[&_label]:!text-sm max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col" id="profile-details-form">
                <div className="flex flex-row items-center justify-center">
                 <Switcher
                     enabled={switchEnabled}
@@ -114,7 +186,7 @@ export default function ProfileForm({ handleSubmit }: { handleSubmit?: () => voi
                             <div className="mt-2">
                                 <div className="formField">
 
-                                <InputFileNoSSR defaultValue={profilePic} name={"profile_pic"} required={true}/>
+                                <InputFileNoSSR defaultValue={currentUser?.profile_pic} name={"profile_pic"} required={true}/>
                                 </div>
                             </div>
                             </div>
@@ -139,7 +211,7 @@ export default function ProfileForm({ handleSubmit }: { handleSubmit?: () => voi
                                 <label htmlFor="useremail" className="formLabel">Email address</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="email" name="useremail" id="useremail" className="" placeholder="ex: johndoe@gmail.com" required/>
+                                        <input readOnly type="email" name="useremail" id="useremail" className="" placeholder="ex: johndoe@gmail.com" required/>
                                     </div>
                                 </div>
                             </div>
@@ -172,7 +244,7 @@ export default function ProfileForm({ handleSubmit }: { handleSubmit?: () => voi
                                 <label htmlFor="logo_upload" className="formLabel">Clinic Logo</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <InputFileNoSSR defaultValue={clinicLogo} name={"clinic_logo"}/>
+                                        <InputFileNoSSR defaultValue={currentUser?.clinic_logo} name={"clinic_logo"} required={true}/>
                                     </div>
                                 </div>
                             </div>
@@ -181,7 +253,7 @@ export default function ProfileForm({ handleSubmit }: { handleSubmit?: () => voi
                                 <label htmlFor="clinic_name" className="formLabel">Clinic Name</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="text" name="clinic_name" id="clinic_name" className="" placeholder="Clinic Name"/>
+                                        <input type="text" name="clinic_name" id="clinic_name" className="" placeholder="Clinic Name" required/>
                                     </div>
                                 </div>
                             </div>
@@ -190,9 +262,9 @@ export default function ProfileForm({ handleSubmit }: { handleSubmit?: () => voi
                                 <label htmlFor="clinic_location" className="formLabel">Clinic location</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="text" name="clinic_location_state" id="clinic_location_state" className="" placeholder="State/Territory"/>
-                                        <input type="text" name="clinic_location_country" id="clinic_location_country" className="" placeholder="Country"/>
-                                        <input type="text" name="clinic_location_postcode" id="clinic_location_postcode" className="" placeholder="Postcode/Zipcode"/>
+                                        <input type="text" name="clinic_location_state" id="clinic_location_state" className="" placeholder="State/Territory" required/>
+                                        <input type="text" name="clinic_location_country" id="clinic_location_country" className="" placeholder="Country" required/>
+                                        <input type="text" name="clinic_location_postcode" id="clinic_location_postcode" className="" placeholder="Postcode/Zipcode" required/>
                                     </div>
                                 </div>
                             </div>
@@ -201,7 +273,7 @@ export default function ProfileForm({ handleSubmit }: { handleSubmit?: () => voi
                                 <label htmlFor="clinic_established" className="formLabel">When was your clinic established?</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="date" name="clinic_established" id="clinic_established" className=""/>
+                                        <input type="date" name="clinic_established" id="clinic_established" className="" required/>
                                     </div>
                                 </div>
                             </div>
@@ -210,7 +282,7 @@ export default function ProfileForm({ handleSubmit }: { handleSubmit?: () => voi
                
                    
                 <div className="w-full flex flex-row justify-end md:items-end mt-10">
-                    <Button className="btn-primary md:min-w-32" type="submit" loading={isLoading}><span>Save</span></Button>
+                    <Button className="btn-primary md:min-w-32 justify-center" onClick={(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => handleFormValidation(e)} type="button" loading={isLoading}><span>Save</span></Button>
                 </div>
             </form>
         </>

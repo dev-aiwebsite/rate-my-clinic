@@ -3,8 +3,9 @@ import { signIn, signOut, auth } from "./auth"
 import { DB_TeamSurveyData, DB_ClientSurveyData, DB_OwnerSurveyData, Users } from "./lib/models"
 import { connectToDb } from "./lib/utils"
 import bcrypt from 'bcrypt'
-import { MailOptions, transporter } from "../../config/nodemailer.config"
+import { MailOptions, elasticTransporter, transporter } from "../../config/nodemailer.config"
 import { ExtendedSession } from '../../typings';
+import { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -47,14 +48,12 @@ export const RegisterUser = async (formData:FormData) =>{
 
 export const UpdateUser = async (query = {"useremail":"string"}, data = {}) =>{
     try {        
-        console.log('update user')
         connectToDb()
         let user = await Users.findOneAndUpdate(query, data, {new:true})
 
         return JSON.parse(JSON.stringify(user))
         
     } catch (error:any) {
-        console.log(error)
         throw new Error(error.toString())
     }
 }
@@ -141,23 +140,19 @@ export const TeamSurveyAction = async (formData: FormData) => {
     }
 }
 
-export const AppSendMail =  async(mailOptions:MailOptions) => {
-    const {from,to,subject,htmlBody} = mailOptions
+export const AppSendMail = async(mailOptions:MailOptions) => {
+    console.log(mailOptions)
     try {
-        await transporter.sendMail({
-            from: 'RATE MY CLINIC <info@ratemyclinic@gmail.com>',
-            to,
-            subject,
-            html: htmlBody
-        })
-
-        return {success: true, message: 'test'}
+        const emailStatus = await SendMailViaElastic(mailOptions)
+        return emailStatus
 
     } catch (error:any) {
         return {success: false , message: error}
     }
 
 }
+
+
 
 export const handleLogout = async () => {
     await signOut();
@@ -607,7 +602,10 @@ function surveyCalculation(data:any) {
             employee_satisfaction_survey: {
                 value: data.ownerSurveyData.last_employee_survey,
                 weight: 10,
-                score: function () {return (this.value == "yes" ? 100 : 50) * this.weight }
+                score: function () {
+                    
+                    return (this.value == "yes" ? 100 : 50) * this.weight 
+                }
             },
             last_employee_survey: {
                 // Not done = 0.  4+ = 20. <1 = 100. Between those two is pro-rated 
@@ -779,3 +777,63 @@ function surveyCalculation(data:any) {
     });
     return scores
 }
+
+
+export const SendMailViaElastic = async (mailOptions: MailOptions) => {
+    try {
+        let defaultClient = ApiClient.instance;
+
+        let apikey = defaultClient.authentications['apikey'];
+
+        if (!process.env.EMAIL_API_KEY) {
+            return { success: false, message: "ELASTIC_API_KEY is not defined" };
+        }
+        apikey.apiKey = process.env.EMAIL_API_KEY;
+
+        let api = new EmailsApi();
+
+        let email = EmailMessageData.constructFromObject({
+            Recipients: [
+                new EmailRecipient(mailOptions.to, mailOptions?.name)
+            ],
+            Content: {
+                Body: [
+                    BodyPart.constructFromObject({
+                        ContentType: "HTML",
+                        Content: mailOptions?.htmlBody || ""
+                    })
+                ],
+                Merge: mailOptions.dynamicFields,
+                Subject: mailOptions?.subject || "",
+                From: "RATE MY CLINIC <info.ratemyclinic@gmail.com>",
+                TemplateName: mailOptions.templateName || "",
+            },
+            
+        });
+
+        // Wrap the emailsPost operation in a Promise
+        const sendEmailPromise = new Promise<{ success: boolean; message?: string, data?: any, response?: any }>((resolve, reject) => {
+            var callback = function (error: any, data: any, response: any) {
+                if (error) {
+                    console.error('Error sending email:', error);
+                    reject({ success: false, message: error.message || "Failed to send email" });
+                } else {
+                    resolve({ success: true, message: "Email sent successfully", data:data, response:response });
+                }
+            };
+
+            api.emailsPost(email, callback);
+        });
+
+        // Await the completion of the Promise and return the result
+        return await sendEmailPromise;
+
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            console.error('Error sending email:', error);
+            return { success: false, message: error.message || "Failed to send email" };
+        } else {
+            return { success: false, message: "Failed to send email" };
+        }
+    }
+};

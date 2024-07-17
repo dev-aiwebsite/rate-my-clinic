@@ -100,8 +100,13 @@
     @apply gap-10 flex justify-center w-full sm:max-w-screen-lg mx-auto relative flex-col mt-8 mb-4;
   }
 
+  .field_instruction {
+    @apply text-sm text-red-400;
+  }
 
-
+  .disabled {
+    @apply !pointer-events-none !grayscale !opacity-80;
+  }
 }
 
 

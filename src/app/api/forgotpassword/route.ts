@@ -31,7 +31,7 @@ export async function POST(req:NextRequest, res: NextResponse){
 
         } else {
             
-            emailStatus = await sendPasswordResetLink(response.useremail)
+            emailStatus = await sendPasswordResetLink(response.useremail, targetUser.fname)
         }
         
         return NextResponse.json({success: emailStatus.success, message: emailStatus.message})
@@ -42,7 +42,7 @@ export async function POST(req:NextRequest, res: NextResponse){
     }
 }
 
-async function sendPasswordResetLink(email:string) {
+async function sendPasswordResetLink(email:string,name:string) {
     const passwordResetToken = randomUUID();
     const domain = process.env.NEXTAUTH_URL
     const htmlBody = `
@@ -53,10 +53,16 @@ async function sendPasswordResetLink(email:string) {
     `;
     
     const mailOptions = {
-        from: 'RATE MY CLINIC <info@ratemyclinic.com>', // Corrected email format
         to: email,
-        subject: 'Password Reset Link',
-        htmlBody, // Use 'html' instead of 'htmlBody'
+        subject: ' Password Reset Request',
+        // htmlBody, // Use 'html' instead of 'htmlBody',
+        templateName: 'Password reset email',
+        dynamicFields: {
+            firstname: `${name}`,
+            resetlink: `${domain}/forgot-password?ue=${encodeURIComponent(email)}&t=${passwordResetToken}`
+        }
+        
+        
     };
 
 

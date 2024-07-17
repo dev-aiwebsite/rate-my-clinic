@@ -51,7 +51,7 @@ const NavbarDesktop = ({userData}:{userData:any}) => {
                     <PopoverPanel className="absolute h-fit top-full mt-2 right-0 min-w-40  bg-white py-2 rounded shadow-lg ring-1 ring-gray-200">
                         <ul className="list-none p-0 m-0 text-xs">
                             <li className="hover:bg-gray-100 p-1 px-2">
-                                <Link className="w-full block flex flex-row flex-wrap gap-2 items-center" href="/settings/account"><span className="pi pi-cog"></span>Profile settings</Link>
+                                <Link className="w-full block flex flex-row flex-wrap gap-2 items-center" href="/dashboard/settings/account"><span className="pi pi-cog"></span>Profile settings</Link>
                             </li>
                         </ul>
                     </PopoverPanel>
