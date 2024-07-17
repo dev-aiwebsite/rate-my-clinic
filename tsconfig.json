@@ -20,7 +20,7 @@
     "paths": {
       "@/*": ["./src/app/*"]
     },
-    "types": ["@uploadcare/blocks/types/jsx","@elasticemail/elasticemail-client/types/elasticemail-client.d.ts","./types/elasticemail-client"],
+    "types": ["@uploadcare/blocks/types/jsx","./types/elasticemail-client"],
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/utils.js", "public/static.js", "src/app/api/forgot-password."],
   "exclude": ["node_modules"],
