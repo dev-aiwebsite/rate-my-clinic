@@ -6,11 +6,7 @@ import Link from "next/link";
 import CircleChart from "@/components/circle-chart";
 import { useSessionContext } from "@/context/sessionContext";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
-import { AppSendMail, getSurveyData } from "@/server-actions";
-import { useEffect, useState } from "react";
-import { formatDistanceToNow } from 'date-fns';
 import { redirect, usePathname } from "next/navigation";
-import { IsProfileComplete } from "@/globalScript";
 
 
 

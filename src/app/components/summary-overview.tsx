@@ -58,7 +58,7 @@ let overAll = [
 let diff = overAll[0].value - overAll[1].value
 let sign = diff > 0 ? '+' : ''
 let subtext = {
-    text: `${sign}${diff}`,
+    text: `${sign}${diff.toFixed(1)}`,
     class: 'text-red-400 text-[10px]'
 }
 
