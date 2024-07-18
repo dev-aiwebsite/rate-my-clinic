@@ -47,11 +47,11 @@ export default function NpsChart({data}:{data?:DataType}) {
         data.forEach((item,index) => {
             let iconPath
             let dataType:"promoters" | "detractors" | "passives"
-            if (item.value >= 7) {
+            if (item.value >= 9) {
                 togglerDataMap.promoters += 1;
                 dataType = "promoters"
                 iconPath = "/icons/smiley-good.svg"
-            } else if (item.value <= 3) {
+            } else if (item.value <= 6) {
                 togglerDataMap.detractors += 1;
                 dataType = "detractors"
                 iconPath = "/icons/smiley-bad.svg"

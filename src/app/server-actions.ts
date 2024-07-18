@@ -390,17 +390,19 @@ function surveyCalculation(data:any) {
                     // 95+ = 100, <20 = 0. In between is pro-rated
 
                     const value = data.clientSurveyData.map((i: SurveyData) => i.recommendation);
-                    // Calculate the average
-                    const total = value.reduce((sum: any, value: any) => sum + value, 0);
-                    // const average = value.length > 0 ? total / value.length : 0;
+                    const detractors =  value.filter((i: number) => i <= 6).length
+                    const promoters =  value.filter((i: number) => i >= 9).length
+
+                    const nps = ((promoters - detractors) / value.length) * 100
+
 
                     let score = 0
-                    if(total <= 20){
+                    if(nps <= 20){
                         score = 0
-                    } else if(total >= 95){
+                    } else if(nps >= 95){
                         score = 100
                     } else {
-                        score = 100 - ((total - 20) / (95 - 20) * 100)
+                        score = 100 - ((nps - 20) / (95 - 20) * 100)
                     }
 
                     return score * this.weight

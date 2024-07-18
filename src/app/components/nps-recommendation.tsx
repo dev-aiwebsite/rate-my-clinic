@@ -13,11 +13,23 @@ interface Item {
     }
  
 }[]
-
-
+const scoreTypeList = ['below','in line with', 'above']
 export default function NpsContent({item,className}:{item:Item,className?:string}) {
     let discrepancy = item[0].value - item[1].value
     let discrepancy_display_text = discrepancy < 0 ? `${discrepancy.toFixed(1)}` : `+${discrepancy.toFixed(1)}`
+
+    let scoreType = 'in line with'
+
+    if(discrepancy < 0){
+        scoreType = scoreTypeList[0]
+    } else if(discrepancy == 0){
+        scoreType = scoreTypeList[1]
+    } else if(discrepancy > 0){
+        scoreType = scoreTypeList[2]
+    }
+
+
+
     return (
         <div className={`${className} flex flex-col gap-14`}>
             {<div className="flex flex-row items-end justify-around max-md:card">
@@ -81,7 +93,7 @@ export default function NpsContent({item,className}:{item:Item,className?:string
                 <div>
                     <p className="font-medium">Key points include:</p>
                     <ul className="text-sm text-neutral-400 pl-5 mt-3 list-disc list-inside">
-                        <li>Your score is in line with, above, below the current national average</li>
+                        <li>Your score is {scoreType} the current national average</li>
 
                     </ul>
                 </div>
@@ -93,8 +105,6 @@ export default function NpsContent({item,className}:{item:Item,className?:string
                         <li>Commence work on your business plan for FY25.</li>
                         <li>We recommend you review your progress quarterly.</li>
                         <li>We recommend reviewing your exit strategy annually.</li>
-                        
-
                     </ul>
                 
                 </div>
