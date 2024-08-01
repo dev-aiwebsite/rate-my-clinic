@@ -2,7 +2,7 @@
 import "@uploadcare/blocks/web/lr-file-uploader-regular.min.css"
 import * as LR from '@uploadcare/blocks';
 import { useEffect, useRef, useState } from 'react';
-import { UpdateUser } from "@/server-actions";
+import { UpdateUser } from "lib/server-actions";
 
 LR.registerBlocks(LR);
  

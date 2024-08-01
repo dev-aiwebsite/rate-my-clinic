@@ -1,7 +1,6 @@
 
 import React, { useState } from "react";
 import { Dropdown, DropdownChangeEvent } from 'primereact/dropdown';
-import { products } from "@/stripe_products";
 
 interface Option {
     name: string;

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { Button } from "primereact/button";
 import { useCallback, useEffect, useState } from "react";
 import 'primeicons/primeicons.css';
-import { getSurveyData } from "@/server-actions";
+import { getSurveyData } from "lib/server-actions";
 import { formatDistanceToNow } from "date-fns";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
 

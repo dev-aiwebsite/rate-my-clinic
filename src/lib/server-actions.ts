@@ -1,11 +1,14 @@
 "use server"
-import { signIn, signOut, auth } from "./auth"
-import { DB_TeamSurveyData, DB_ClientSurveyData, DB_OwnerSurveyData, Users } from "./lib/models"
-import { connectToDb } from "./lib/utils"
+import { oldData } from './old-survey-data';
+import { signIn, signOut, auth } from "../app/auth"
+import { DB_TeamSurveyData, DB_ClientSurveyData, DB_OwnerSurveyData, Users } from "./models"
+import { connectToDb } from "./utils"
 import bcrypt from 'bcrypt'
 import { MailOptions, elasticTransporter, transporter } from "../../config/nodemailer.config"
 import { ExtendedSession } from '../../typings';
 import { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
+import Stripe from "stripe"
+import { strategy } from 'sharp';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -18,9 +21,10 @@ export const RegisterUser = async (formData:FormData) =>{
     }
     try {
         connectToDb()
-    const {username,useremail,clinic_type,clinic_name} = Object.fromEntries(formData)
-    let emailExists = await Users.findOne({useremail})
-    let fd = Object.fromEntries(formData)
+        const fd = Object.fromEntries(formData)
+        const {useremail} = fd
+        let emailExists = await Users.findOne({useremail})
+        console.log(fd, 'register serveractions')
 
     if(emailExists){
        result.data = emailExists
@@ -188,7 +192,7 @@ export const getSurveyData = async (currentUser_id?:string) => {
         
     try{
         
-        let ownerSurveyData = await DB_OwnerSurveyData.findOne({clinic_id: currentUser_id })
+        let ownerSurveyData = await DB_OwnerSurveyData.find()
         let clientSurveyData = await DB_ClientSurveyData.find()
         let teamSurveyData = await DB_TeamSurveyData.find()
 
@@ -196,17 +200,82 @@ export const getSurveyData = async (currentUser_id?:string) => {
             return null
         }
 
-        let data = {
+        let convertedSurveys = {
             ownerSurveyData: JSON.parse(JSON.stringify(ownerSurveyData)),
-            clientSurveyData: JSON.parse(JSON.stringify(clientSurveyData)).filter((i:{clinicid: any;i:any}) => i.clinicid == currentUser_id),
-            teamSurveyData: JSON.parse(JSON.stringify(teamSurveyData)).filter((i:{clinicId: any;i:any}) => i.clinicId == currentUser_id),
+            clientSurveyData: JSON.parse(JSON.stringify(clientSurveyData)),
+            teamSurveyData: JSON.parse(JSON.stringify(teamSurveyData)),
         }
 
-        let summary = surveyCalculation(data)
+
+        let clinicIds = convertedSurveys.ownerSurveyData.map((i: { clinic_id: any }) => i.clinic_id)
+        type mySurveys = {
+            [key:string]:any,
+            summary:{[key:string]:any}
+        }
+        let mySurveys:mySurveys = {
+            summary: {}
+        }
+        
+        let otherSummary: { [key: string]: any; }[] = []
+
+        clinicIds.forEach((clinicId: any) => {
+            let clinicData = {
+                ownerSurveyData: convertedSurveys.ownerSurveyData.filter((i:{clinic_id: any;i:any}) => i.clinic_id == clinicId)[0],
+                clientSurveyData: convertedSurveys.clientSurveyData.filter((i:{clinicid: any;i:any}) => i.clinicid == clinicId),
+                teamSurveyData: convertedSurveys.teamSurveyData.filter((i:{clinicId: any;i:any}) => i.clinicId == clinicId),
+            }
+
+            if(!clinicData.ownerSurveyData || !clinicData.clientSurveyData.length || !clinicData.teamSurveyData.length) return
+
+            let summary = surveyCalculation(clinicData)
+
+            if(clinicId == currentUser_id){
+                mySurveys = {
+                    ...clinicData,
+                    summary
+                }
+                
+            } else {
+                otherSummary.push(summary)
+            }
+            
+    
+        })
+
+
+        let overalls:{[key:string]:any} = {}
+
+        let other_summary = {
+            clients: {score: oldData.reduce((a,b) => Number(a) + Number(b.clients), 0) / oldData.length},
+            team: {score: oldData.reduce((a,b) => Number(a) + Number(b.team), 0) / oldData.length},
+            strategy: {score: oldData.reduce((a,b) => Number(a) + Number(b.strategy), 0) / oldData.length},
+            finance: {score: oldData.reduce((a,b) => Number(a) + Number(b.finance), 0) / oldData.length},
+        }
+
+        overalls['other'] = oldData.reduce((a,b) => Number(a) + Number(b.overall), 0) / oldData.length
+        overalls['mine'] = Object.values(mySurveys.summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
+
+        if(otherSummary.length){
+
+            let overall = otherSummary.map(summary => {
+                return Object.values(summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
+            })
+            overalls['other'] = overalls.other + (overall.reduce((a,b) => Number(a) + Number(b), 0) / overall.length)
+
+            
+            other_summary.clients.score = (other_summary.clients.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.clients), 0) / otherSummary.length) / 2)
+            other_summary.team.score = (other_summary.team.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.team), 0) / otherSummary.length) / 2)
+            other_summary.strategy.score = (other_summary.strategy.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.strategy), 0) / otherSummary.length) / 2)
+            other_summary.finance.score = (other_summary.finance.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.finance), 0) / otherSummary.length) / 2)
+            
+        }
 
         return {
-            ...data,
-            summary
+            ...mySurveys,
+            other:otherSummary,
+            other_summary,
+            oldData,
+            overalls
         }
 
     }
@@ -301,7 +370,7 @@ function surveyCalculation(data:any) {
             },
             rent_apoi: {
                 value: (data.ownerSurveyData.rent / data.ownerSurveyData.turnover) * 100,
-                weight: 10,
+                weight: 12.5,
                 score: function () {
                     // <8 = 100. >16 = 0. In between is pro-rated
                     const value = this.value; 
@@ -320,7 +389,7 @@ function surveyCalculation(data:any) {
             },
             total_salaries_apoi: {
                 value: (data.ownerSurveyData.total_wages / data.ownerSurveyData.turnover) * 100,
-                weight: 10,
+                weight: 12.5,
                 score: function () {
                     // <50 = 100. >70 = 0. In between is pro-rated
                     let value = this.value
@@ -339,7 +408,7 @@ function surveyCalculation(data:any) {
             },
             non_clinicians_salary_apoi: {
                 value: (data.ownerSurveyData.non_clinician_wages / data.ownerSurveyData.turnover) * 100,
-                weight: 10,
+                weight: 12.5,
                 score: function () {
                     // <10 = 100. >20 = 0. In between is pro-rated
                       let value = this.value
@@ -358,7 +427,7 @@ function surveyCalculation(data:any) {
             },
             cash_monthly_multiple_expense: {
                 value: data.ownerSurveyData.cash_reserves,
-                weight: 10,
+                weight: 12.5,
                 score: function () {
                     // 4+ = 100, 3=75, 2=50, 1=25 
                     const value = this.value
@@ -839,3 +908,48 @@ export const SendMailViaElastic = async (mailOptions: MailOptions) => {
         }
     }
 };
+
+
+
+export const GetProducts = async() => {
+    const stripe = new Stripe(process.env.STRIPE_SECRET!)
+    const products = await stripe.products.search({
+        query: 'active:\'true\' AND metadata[\'app_name\']:\'rmc\'',
+      });
+
+    return products.data
+}
+// Fetch prices for products
+const fetchProductPrices = async (productId: string) => {
+    const stripe = new Stripe(process.env.STRIPE_SECRET!)
+    const prices = await stripe.prices.list({
+      product: productId,
+    });
+    return prices.data; // This will give you an array of price objects
+  };
+
+export const GetProductsWithPrices = async () => {
+    try {
+      // Search for active products
+      const stripe = new Stripe(process.env.STRIPE_SECRET!)
+      const productsResponse = await stripe.products.search({
+        query: 'active:\'true\' AND metadata[\'app_name\']:\'rmc\'',
+      });
+  
+      // Fetch prices for each product
+      const productsWithPrices = await Promise.all(
+        productsResponse.data.map(async (product) => {
+          const prices = await fetchProductPrices(product.id);
+          return {
+            ...product,
+            prices, // Attach the prices to the product
+          };
+        })
+      );
+  
+      return productsWithPrices;
+    } catch (error) {
+      console.error('Error fetching products with prices:', error);
+      return [];
+    }
+  };

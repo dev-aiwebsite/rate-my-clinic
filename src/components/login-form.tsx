@@ -1,5 +1,5 @@
 "use client"
-import { AuthenticateUser } from "@/server-actions";
+import { AuthenticateUser } from "lib/server-actions";
 import Link from "next/link";
 import { useRef, useState } from "react";
 import LoginSubmitBtn from "./login-submit-btn";
@@ -47,7 +47,7 @@ export default function LoginForm() {
                     href="/forgot-password">Forgot Password
                 </Link>
                 <Link className="underline text-xs text-blue-600"
-                    href="/pricing">Not yet a member? Register here
+                    href="/signup">Not yet a member? Register here
                 </Link>
             </div>
         </form>

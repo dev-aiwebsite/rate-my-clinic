@@ -1,5 +1,5 @@
 "use client"
-import { OwnerSurveyAction, TeamSurveyAction } from "@/server-actions";
+import { OwnerSurveyAction, TeamSurveyAction } from "lib/server-actions";
 import { FormEvent, useState } from "react";
 import styles from "./page.module.css";
 

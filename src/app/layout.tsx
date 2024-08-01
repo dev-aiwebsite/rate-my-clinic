@@ -10,12 +10,12 @@ import 'primeicons/primeicons.css';
 const inter = Inter({ subsets: ["latin"] });
 
 import { Poppins } from 'next/font/google';
-import { fetchData } from './lib/data';
+import { fetchData } from 'lib/data';
 import SessionContextProvider from './context/sessionContext';
 import { auth } from './auth';
 import { ExtendedSession } from '../../typings';
-import { getSurveyData } from './server-actions';
-import SurveyDataContext from './context/surveyDataContext';
+import { getSurveyData } from 'lib/server-actions';
+import SurveyDataContext from '@/context/surveyDataContext';
 
 const poppins = Poppins({
   subsets: ['latin'],

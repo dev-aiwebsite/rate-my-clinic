@@ -4,10 +4,10 @@ import { PrimeReactProvider } from "primereact/api";
 import { auth } from "@/auth"
 import { ExtendedSession } from "../../../typings";
 import Image from "next/image";
-import { fetchData } from "@/lib/data";
+import { fetchData } from "lib/data";
 import SessionContextProvider from "@/context/sessionContext";
 import SurveyDataContext from "@/context/surveyDataContext";
-import { getSurveyData } from "@/server-actions";
+import { getSurveyData } from "lib/server-actions";
 
 
 

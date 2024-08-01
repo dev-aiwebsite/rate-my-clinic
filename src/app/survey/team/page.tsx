@@ -1,7 +1,7 @@
 "use client"
-import InputRange from "@/components/inputRange";
+import InputRange from "../../../components/inputRange";
 import { useSessionContext } from "@/context/sessionContext";
-import { TeamSurveyAction } from "@/server-actions";
+import { TeamSurveyAction } from "lib/server-actions";
 import { Button } from "primereact/button";
 import { Toast, ToastMessage } from 'primereact/toast';
 import 'primeicons/primeicons.css';

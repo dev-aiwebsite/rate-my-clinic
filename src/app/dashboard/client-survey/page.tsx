@@ -1,6 +1,6 @@
 "use client"
-import ClinicQr from "@/components/clinic-qrcode";
-import CopyButton from "@/components/copy-text-button";
+import ClinicQr from "../../../components/clinic-qrcode";
+import CopyButton from "../../../components/copy-text-button";
 import { InputText } from 'primereact/inputtext';
 import { useSessionContext } from "@/context/sessionContext";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
@@ -9,7 +9,7 @@ import { Column } from "primereact/column";
 import { DataTable, DataTableSelectionSingleChangeEvent } from "primereact/datatable";
 import { useState } from "react";
 import { Dialog } from "primereact/dialog";
-import TableData from "@/components/table-data";
+import TableData from "../../../components/table-data";
 import { formatDateTime } from "@/helperFunctions";
 
 export default function Page() {
@@ -31,7 +31,9 @@ export default function Page() {
     let ownerSurveyDone = data?.ownerSurveyData ? Object.keys(data.ownerSurveyData).length > 0 : false
 
     let clientSurvey = data?.clientSurveyData
-    clientSurvey.forEach(i => i.createdAt = formatDateTime(i.createdAt).replaceAll("/","-"))
+    if(clientSurvey){
+        clientSurvey.forEach(i => i.createdAt = formatDateTime(i.createdAt).replaceAll("/","-"))
+    }
 
     function tableRowOnClick(e: DataTableSelectionSingleChangeEvent<any[]>){
         let value = e.value
@@ -81,7 +83,7 @@ export default function Page() {
                     </>
                 }
                 
-              {!shareSurveyView && <>
+              {!shareSurveyView && clientSurvey && <>
                 <div>
                     <DataTable value={clientSurvey} selectionMode="single" onSelectionChange={(e) => tableRowOnClick(e)} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort>
                         <Column field="fname" header="First Name" sortable></Column>

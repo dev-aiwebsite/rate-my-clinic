@@ -1,7 +1,7 @@
+import Recommendations, { recommendationBank, Tcategory } from "lib/recommendations";
 import HelperCard from "./helperCard";
 import MeterChart from "./meter-chart";
 import Image from "next/image";
-
 
 
 interface Item {
@@ -14,7 +14,7 @@ interface Item {
  
 }[]
 const scoreTypeList = ['below','in line with', 'above']
-export default function NpsContent({item,className}:{item:Item,className?:string}) {
+export default function NpsContent({surveyData,item,className}:{surveyData:any,item:Item,className?:string}) {
     let discrepancy = item[0].value - item[1].value
     let discrepancy_display_text = discrepancy < 0 ? `${discrepancy.toFixed(1)}` : `+${discrepancy.toFixed(1)}`
 
@@ -28,19 +28,20 @@ export default function NpsContent({item,className}:{item:Item,className?:string
         scoreType = scoreTypeList[2]
     }
 
-
+    let category = `${item[0].name.toLowerCase()}` as Tcategory
+    const recommendations = Recommendations({surveyData,category})
 
     return (
         <div className={`${className} flex flex-col gap-14`}>
             {<div className="flex flex-row items-end justify-around max-md:card">
                     <div className="flex flex-col gap-2 items-center flex-1 md:max-w-[160px]">
-                        <Image
+                        {item[0].icon && <Image
                             className="max-md:max-w-[100px] w-[60%] aspect-square" 
                             src={item[0].icon}
                             alt={item[0].name}
                             width={40}
                             height={40}
-                        />
+                        />}
                         <div className="text-3xl whitespace-nowrap">
                             <span>{item[0].name}</span> : <span className="text-red-400">{discrepancy_display_text}</span>
                         </div>
@@ -52,39 +53,40 @@ export default function NpsContent({item,className}:{item:Item,className?:string
                         </div>
                         
                     </div>
-                
-                    <div className="max-md:hidden flex-1 max-w-96">
-                    <p className="text-xs text-neutral-400 text-center mb-3">Your Score</p>
-                        <MeterChart
-                            data={[
-                                {
-                                    value: 100,
-                                    color: item[0].color,
-                                },
-                            ]}
-                            needle={{
-                                color: "",
-                                value: item[0].value,
-                                title: item[0].value.toString()
-                            }}
-                        />
-                    </div>
+                    <div className="grid grid-cols-2 w-full">
+                        <div className="max-md:hidden flex-1 max-w-96">
+                            <p className="text-xs text-neutral-400 text-center mb-3">Your Score</p>
+                            <MeterChart
+                                data={[
+                                    {
+                                        value: 100,
+                                        color: item[0].color,
+                                    },
+                                ]}
+                                needle={{
+                                    color: "",
+                                    value: item[0].value,
+                                    title: item[0].value.toString()
+                                }}
+                            />
+                        </div>
 
-                    <div className="max-md:hidden flex-1 max-w-96">
-                        <p className="text-xs text-neutral-400 text-center mb-3">Australian Clinic Type Clinic Average</p>
-                        <MeterChart
-                            data={[
-                                {
-                                    value: 100,
-                                    color: item[1].color,
-                                },
-                            ]}
-                            needle={{
-                                color: "",
-                                value: item[1].value,
-                                title: item[1].value.toString()
-                            }}
-                        />
+                        <div className="max-md:hidden flex-1 max-w-96">
+                            <p className="text-xs text-neutral-400 text-center mb-3">Australian Clinic Average</p>
+                            <MeterChart
+                                data={[
+                                    {
+                                        value: 100,
+                                        color: item[1].color,
+                                    },
+                                ]}
+                                needle={{
+                                    color: "",
+                                    value: item[1].value,
+                                    title: item[1].value.toString()
+                                }}
+                            />
+                        </div>
                     </div>
                 </div>
             }
@@ -92,7 +94,7 @@ export default function NpsContent({item,className}:{item:Item,className?:string
             <div className="col-span-3 flex gap-7 flex-col row-span-5 text-md">
                 <div>
                     <p className="font-medium">Key points include:</p>
-                    <ul className="text-sm text-neutral-400 pl-5 mt-3 list-disc list-inside">
+                    <ul className="text-sm text-neutral-500 pl-5 mt-3 list-disc">
                         <li>Your score is {scoreType} the current national average</li>
 
                     </ul>
@@ -100,11 +102,10 @@ export default function NpsContent({item,className}:{item:Item,className?:string
 
                 <div>
                     <p className="font-medium">Recommendations</p>
-                    <ul className="text-sm text-neutral-400 pl-5 mt-3 list-disc list-inside">
-                        <li>We recommend a 1-2 page plan specific to the financial year with clear S.M.A.R.T goals.</li>
-                        <li>Commence work on your business plan for FY25.</li>
-                        <li>We recommend you review your progress quarterly.</li>
-                        <li>We recommend reviewing your exit strategy annually.</li>
+                    <ul className="text-sm text-neutral-500 pl-5 mt-3 list-disc space-y-2">
+                    {
+                        recommendations.map((i,index) => <li key={index}>{i}</li>)
+                    }
                     </ul>
                 
                 </div>

@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { InferSchemaType } from "mongoose";
 const user_schema = new mongoose.Schema({
   username: {
     type: String,
@@ -34,6 +34,9 @@ const user_schema = new mongoose.Schema({
   clinic_name: {
     type: String,
   },
+  clinic_type: {
+    type: String,
+  },
   clinic_location_state: {
     type: String,
   },
@@ -49,9 +52,19 @@ const user_schema = new mongoose.Schema({
   clinic_logo: {
     type: String,
   },
-  subscription: {
+  subscription_level: {
     type: String,
-    default: "free"
+    default: "0"
+  },
+  subscription_id: {
+    type: String,
+    default: "0"
+  },
+  subscription_product_id:{
+    type: String
+  },
+  last_checkout_session_id:{
+    type: String
   },
   profile_pic: {
     type: String,
@@ -426,3 +439,7 @@ export const UserMeta = mongoose.models.UserMeta || mongoose.model("UserMeta", u
 export const DB_TeamSurveyData = mongoose.models.TeamSurveyData || mongoose.model("TeamSurveyData", teamSurveyDataSchema);
 export const DB_ClientSurveyData = mongoose.models.ClientSurveyData || mongoose.model("ClientSurveyData", clientSurveyDataSchema);
 export const DB_OwnerSurveyData = mongoose.models.OwnerSurveyData || mongoose.model("OwnerSurveyData", ownerSurveyDataSchema);
+
+
+export type UserType = InferSchemaType<typeof user_schema>;
+

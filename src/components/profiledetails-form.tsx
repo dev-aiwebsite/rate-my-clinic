@@ -8,7 +8,7 @@ import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { useSessionContext } from "@/context/sessionContext";
 import Switcher from "./switcher";
 import { Button } from "primereact/button";
-import { UpdateUser } from "@/server-actions";
+import { UpdateUser } from "lib/server-actions";
 import { useRouter } from "next/navigation";
 
 
@@ -16,7 +16,7 @@ import { useRouter } from "next/navigation";
 
 type E164Number = string;
 
-const InputFileNoSSR = dynamic(() => import("@/components/input-file"), { ssr: false });
+const InputFileNoSSR = dynamic(() => import("./input-file"), { ssr: false });
 
 type page = number
 export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: () => void,redirectTo?:string }) {
