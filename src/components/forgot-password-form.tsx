@@ -3,7 +3,7 @@ import Link from "next/link";
 import { FormEvent, useRef, useState } from "react";
 import { Message } from 'primereact/message';
 import { Button } from 'primereact/button';
-import { fetchData } from "@/lib/data";
+import { fetchData } from "../lib/data";
 
 export default function ForgotPasswordForm({isPasswordResetValid,userEmail}:{isPasswordResetValid:boolean,userEmail:string}) {
     const formRef = useRef<HTMLFormElement>(null)

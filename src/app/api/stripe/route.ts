@@ -1,12 +1,11 @@
+"use server"
 import { NextResponse, NextRequest} from "next/server"
 import Stripe from "stripe"
-
 const stripe = new Stripe(process.env.STRIPE_SECRET!)
 export async function GET(req:NextRequest){
     const { searchParams } = new URL(req.url)
     const session_id = searchParams.get('session')
     const session = await stripe.checkout.sessions.retrieve(session_id as string);
-
     if (session) {
         return NextResponse.json(session);
       } else {
@@ -14,9 +13,12 @@ export async function GET(req:NextRequest){
       }
 }
 
+const domain = process.env.NEXT_PUBLIC_DOMAIN
+
 export async function POST(req:NextRequest, res: NextResponse){
+
     const payload = await req.text()
-    const response =  JSON.parse(payload)
+    const requestData =  JSON.parse(payload)
     const sig = req.headers.get('Stripe-Signature')
 
     if(sig){
@@ -25,64 +27,10 @@ export async function POST(req:NextRequest, res: NextResponse){
     }
 
     try {
-    
-       const {priceId} = response
-       const session = await stripe.checkout.sessions.create({
-            mode: 'payment',
-            ui_mode: 'embedded',
-            line_items: [{
-               price: priceId,
-               quantity: 1
-            }],
-            custom_fields: [
-                {
-                  key: 'clinic_name',
-                  label: {
-                    type: 'custom',
-                    custom: 'Clinic Name',
-                  },
-                  type: 'text',
-                },
-
-                {
-                    key: 'clinic_type',
-                    label: {
-                        type: 'custom',
-                        custom: 'Clinic Type',
-                    },
-                    
-                    type: 'dropdown',
-                    dropdown: {
-                       options: [
-                           {
-                               label: 'General Practitioner (GP) Clinic',
-                               value: 'GP',
-                           },
-                           {
-                               label: 'Dental Clinic',
-                               value: 'Dental',
-                           },
-                           {
-                               label: 'Community Health Clinic',
-                               value: 'Community',
-                           },
-                           {
-                               label: 'Mental Health Clinic',
-                               value: 'Mental',
-                           },
-                           {
-                               label: 'Specialist Clinic',
-                               value: 'Specialist',
-                           },
-                       ],  
-                    },
-                },
-              ],
-            // redirect_on_completion: "never",
-            return_url: `${req.headers.get('origin')}/confirmation?session_id={CHECKOUT_SESSION_ID}`,
-       })
-
-       return NextResponse.json({status: "success", id: session.id, client_secret: session.client_secret})
+     
+        const session = requestData.action == 'createPaymentIntent' ? await createPaymentIntent(requestData.amount) : await createStripeCheckoutSession(requestData)
+        return NextResponse.json({status: "success", id: session.id, client_secret: session.client_secret})
+  
     } catch (error) {
         return NextResponse.json({status: "failed", error})
     }
@@ -90,17 +38,33 @@ export async function POST(req:NextRequest, res: NextResponse){
 
 }
 
-// async function stripeListen(req:NextRequest){  
-//     const payload = await req.text()
-//     const response =  JSON.parse(payload)
-//     const dateTime = new Date(response?.created * 1000).toLocaleDateString()
-//     const timeString = new Date(response?.created * 1000).toLocaleDateString()
 
-//     try {
-//         let event = stripe.webhooks.constructEvent(payload,sig as string,process.env.STRIPE_WEBHOOK_SECRET as string)
-//         return NextResponse.json({status: "success", event: event.type})
-//     } catch (error) {
-//         return NextResponse.json({status: "failed", error})
-        
-//        }
-// }
+const createStripeCheckoutSession = async (request: { mode:Stripe.Checkout.SessionCreateParams.Mode, priceId: any, metadata?: {[key:string]:any} }) => {
+    const { priceId} = request
+    let mode = request.mode || 'subscription'
+    let meta = request.metadata || {}
+    meta['app_name'] = 'rmc'
+    meta['product_id'] = priceId
+
+    
+    return await stripe.checkout.sessions.create({
+        mode,
+        ui_mode: 'embedded',
+        line_items: [{
+           price: priceId,
+           quantity: 1
+        }],
+        metadata: meta,
+        customer_email: meta.useremail || "",
+        // redirect_on_completion: "never",
+        return_url: `${domain}/confirmation?session_id={CHECKOUT_SESSION_ID}`,
+   })
+}
+
+const createPaymentIntent = async (amount:number) => {
+    return await stripe.paymentIntents.create({
+        amount: amount,
+        currency: "AUD",
+        automatic_payment_methods: { enabled: true },
+    });
+}

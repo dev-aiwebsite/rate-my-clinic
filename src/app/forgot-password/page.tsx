@@ -1,6 +1,6 @@
-import ForgotPasswordForm from "@/components/forgot-password-form";
-import LoginForm from "@/components/login-form";
-import { fetchData } from "@/lib/data";
+import ForgotPasswordForm from "../../components/forgot-password-form";
+import LoginForm from "../../components/login-form";
+import { fetchData } from "../../lib/data";
 import Image from "next/image";
 
 export default async function LoginPage({children, search, searchParams}:any) {

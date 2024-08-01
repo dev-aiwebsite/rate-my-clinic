@@ -1,4 +1,4 @@
-import { handleLogout } from "@/server-actions";
+import { handleLogout } from "lib/server-actions";
 
 // src/app/components/logout-btn.tsx
 export default function LogoutBtn({className}:{className?: string}) {

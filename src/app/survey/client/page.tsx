@@ -1,8 +1,7 @@
 "use client"
-import InputRange from "@/components/inputRange";
+import InputRange from "../../../components/inputRange";
 import { useSessionContext } from "@/context/sessionContext";
-import { useSurveyDataContext } from "@/context/surveyDataContext";
-import { ClientSurveyAction, getSurveyData } from "@/server-actions";
+import { ClientSurveyAction, getSurveyData } from "lib/server-actions";
 import Image from "next/image";
 import { Button } from "primereact/button";
 import { Toast, ToastMessage } from 'primereact/toast';

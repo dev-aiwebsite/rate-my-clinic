@@ -2,8 +2,8 @@ import NextAuth, { CredentialsSignin, Session } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 
 import { authConfig } from './authconfig';
-import { connectToDb } from "./lib/utils";
-import { Users } from './lib/models';
+import { connectToDb } from "../lib/utils";
+import { Users } from '../lib/models';
 import bcrypt from 'bcrypt';
 import { ExtendedSession, ExtendedUser } from "../../typings";
 import { JWT } from "next-auth/jwt";

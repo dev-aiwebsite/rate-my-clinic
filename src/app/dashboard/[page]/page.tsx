@@ -1,4 +1,4 @@
-import HowItWorksPage from "@/components/howitworks";
+import HowItWorksPage from "../../../components/howitworks";
 
 
 export default function Page({params}:{params:any}){

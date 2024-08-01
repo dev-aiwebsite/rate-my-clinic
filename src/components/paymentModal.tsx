@@ -1,5 +1,6 @@
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
 import { Fragment, useState, useCallback } from 'react'
+import Stripe from 'stripe';
 import {loadStripe} from '@stripe/stripe-js';
 import {
   EmbeddedCheckoutProvider,
@@ -7,8 +8,9 @@ import {
 } from '@stripe/react-stripe-js';
 import { IoIosArrowRoundBack } from 'react-icons/io';
 
-export default function PaymentModalButton({priceId}:{priceId:string}) {
-  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY as string);
+
+export default function PaymentModalButton({priceId,meta,mode}:{priceId:string, meta?:{[key:string]:any},mode:Stripe.Checkout.SessionCreateParams.Mode}) {
+  const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string);
   let [isOpen, setIsOpen] = useState(false)
   let [isComplete, setIsComplete] = useState(false)
 
@@ -19,10 +21,11 @@ export default function PaymentModalButton({priceId}:{priceId:string}) {
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ priceId: priceId }),
+      body: JSON.stringify({mode, priceId: priceId, action:'createSession', metadata : meta }),
     });
 
     const data = await res.json();
+    console.log(data)
 
     return data.client_secret;
   }, []);
@@ -31,9 +34,9 @@ export default function PaymentModalButton({priceId}:{priceId:string}) {
   const options = {fetchClientSecret};
   
 
-  async function handleComplete(){
+  function handleComplete(){
     // setIsComplete(true)
-    
+    alert('payment successfull')
     // fetch(`/api/stripe?session={}`)
   };
   function closeModal() {

@@ -1,9 +1,12 @@
 "use client"
-import ProfileForm from "@/components/profiledetails-form";
+import MembershipDetails from "components/membership-details";
+import ProfileForm from "../../../../components/profiledetails-form";
 import { useSessionContext } from "@/context/sessionContext";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
+import { useEffect } from "react";
+
 export default function AccountPage() {
     const {currentUser} = useSessionContext()
     let tocheck = ['profile_pic','clinic_name','clinic_established','clinic_location_country','clinic_location_postcode','clinic_location_state','clinic_logo','usermobile']
@@ -13,6 +16,8 @@ export default function AccountPage() {
     const handleAfterSubmit = () => {
         redirect('/dashboard/owner-survey?journey');
       };
+      
+ 
     return (
         <>
         <div className="grid-flow-* flex-1 p-6 gap-x-6 gap-y-10 grid max-md:grid-cols-4 md:grid-cols-3 md:grid-rows-6 max-md:pb-40" >
@@ -27,16 +32,9 @@ export default function AccountPage() {
                 />
             </div>
             <div className="card col-span-2 md:col-span-1 md:col-start-1 md:row-span-2 flex">
-                <div className="flex items-center flex-col justify-between flex-1">
-                    <h3 className="text-center">Membership</h3>
-                    <p className="text-xl text-center">Basic</p>
-                    <div className="flex flex-col items-center gap-2">
-                        <Link href="#" className="text-xs font-medium text-orange-400 underline">Upgrade</Link>
-                        <Link href="#" className="text-xs font-medium text-gray-400">Cancel subscription</Link>
-                    </div>
-                </div>
+                <MembershipDetails sessionId={currentUser.last_checkout_session_id as string}/>
             </div>
-            <div className="card col-span-2 md:col-span-1 md:row-span-2 text-center">
+            {/* <div className="card col-span-2 md:col-span-1 md:row-span-2 text-center">
                 <h3>Invoices</h3>
                 <ul>
                     <li>
@@ -61,7 +59,7 @@ export default function AccountPage() {
                         </Link>
                     </li>
                 </ul>
-            </div>
+            </div> */}
            
                 {!isProfileComplete ? (<div className="setupWrapper bg-black/50 left-0 top-0 fixed h-screen setupWrapper w-screen z-10 p-10 flex gap-4">
                         <div className="w-96 flex flex-col flex-nowrap -mb-10">

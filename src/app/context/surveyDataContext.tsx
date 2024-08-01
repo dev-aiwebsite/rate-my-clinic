@@ -10,10 +10,12 @@ interface SurveyDataProviderProps {
   surveyData:surveyData
 }
 type SurveyData = {
-  ownerSurveyData: any[];
+  ownerSurveyData: any;
   clientSurveyData: any[];
   teamSurveyData: any[];
-  summary:any
+  summary:any;
+  other_summary:any;
+  overalls:any;
 };
 
 export const SurveyDataContext =  createContext<{data: SurveyData, setData:any} | null>(null);

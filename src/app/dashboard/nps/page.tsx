@@ -1,5 +1,5 @@
 "use client"
-import NpsChart from "@/components/nps-chart";
+import NpsChart from "../../../components/nps-chart";
 import { useSessionContext } from "@/context/sessionContext";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
 

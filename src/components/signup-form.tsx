@@ -1,5 +1,5 @@
 "use client"
-import { RegisterUser } from "@/server-actions";
+import { RegisterUser } from "lib/server-actions";
 import Link from "next/link";
 
 
