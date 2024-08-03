@@ -9,6 +9,7 @@ import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { redirect, usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import ConvertToPDF from "components/generateReport";
+import { useEffect } from "react";
 
 type npsData = {
     date: string;
@@ -35,8 +36,7 @@ export default function Page(){
     const {data,setData} = useSurveyDataContext()
     const {currentUser,setCurrentUser} = useSessionContext()
     const pathname = usePathname()
-
-
+    
     if(!currentUser) return
     let tocheck = ['profile_pic','clinic_name','clinic_established','clinic_location_country','clinic_location_postcode','clinic_location_state','clinic_logo','usermobile']
     const isProfileComplete = tocheck.every(i => currentUser[i])
@@ -176,5 +176,6 @@ export default function Page(){
             
         </div>
     )};
+
 
 

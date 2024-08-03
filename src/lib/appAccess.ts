@@ -44,6 +44,6 @@ const userAccess:TuserAccess[] = [
 export default function AppAcess(subscription_level:number) {
 
     const access = userAccess.find(a => a.subscription_level == subscription_level)
-    return access
+    return access ? access : userAccess[0]
     
 }

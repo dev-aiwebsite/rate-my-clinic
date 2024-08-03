@@ -6,9 +6,8 @@ import { connectToDb } from "./utils"
 import bcrypt from 'bcrypt'
 import { MailOptions, elasticTransporter, transporter } from "../../config/nodemailer.config"
 import { ExtendedSession } from '../../typings';
-import { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
+import ElasticEmail, { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
 import Stripe from "stripe"
-import { strategy } from 'sharp';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -83,6 +82,9 @@ export const OwnerSurveyAction = async (formData: FormData) => {
     const formDataObj = Object.fromEntries(formData);
     const user = await auth() as ExtendedSession;
     let currentUser_id = user?.user_id
+    const userEmail = user?.user_email
+    const userFirstname = user?.user_name?.split(" ")[0]
+    const link = `${process.env.NEXTAUTH_URL}/login?email=${userEmail}`
 
     const ownerSurveyData = await DB_OwnerSurveyData.findOne({clinic_id: currentUser_id })
     
@@ -99,6 +101,26 @@ export const OwnerSurveyAction = async (formData: FormData) => {
             await newOwnerSurvey.save()
             result['message'] = "Data saved successfully"
             result['success'] = true
+
+            // set 10 days report email
+            const sendTime = new Date(); // Set your desired send time
+            sendTime.setHours(sendTime.getDate() + 6); // Example: 10 minutes from now
+            sendTime.setDate(sendTime.getHours() + 1);
+
+            const mailOptions = {
+                to: userEmail,
+                subject: "RATE MY CLINIC - Your report is ready for download",
+                templateName: 'Report ready',
+                dynamicFields: {
+                    firstname: `${userFirstname}`,
+                    loginlink: `${link}`,
+                    useremail: userEmail
+                },
+                sendTime: sendTime,
+
+                
+            }
+            const emailed = await AppSendMail(mailOptions)
         }
         
         return result
@@ -862,6 +884,11 @@ export const SendMailViaElastic = async (mailOptions: MailOptions) => {
         apikey.apiKey = process.env.EMAIL_API_KEY;
 
         let api = new EmailsApi();
+        let timeOffset;
+        if (mailOptions.sendTime) {
+            const now = new Date();
+            timeOffset = Math.round((mailOptions.sendTime.getTime() - now.getTime()) / 60000); // Convert milliseconds to minutes
+        }
 
         let email = EmailMessageData.constructFromObject({
             Recipients: [
@@ -878,8 +905,11 @@ export const SendMailViaElastic = async (mailOptions: MailOptions) => {
                 Subject: mailOptions?.subject || "",
                 From: "RATE MY CLINIC <info.ratemyclinic@gmail.com>",
                 TemplateName: mailOptions.templateName || "",
+                Postback: mailOptions.sendTime ? mailOptions.sendTime.toISOString() : undefined,
             },
-            
+            Options: {
+                TimeOffset: timeOffset || 0, // Use TimeOffset if provided
+            }
         });
 
         // Wrap the emailsPost operation in a Promise
@@ -908,6 +938,30 @@ export const SendMailViaElastic = async (mailOptions: MailOptions) => {
         }
     }
 };
+
+
+export const handleScheduleEmail = async () => {
+    const sendTime = new Date(); // Set your desired send time
+    sendTime.setHours(sendTime.getHours() + 6); // Example: 10 minutes from now
+
+    const recipient = 'dev@aiwebsiteservices.com';
+    const subject = 'Scheduled Email';
+    const body = `Hello! This is a scheduled email 5 minutes from now. ${sendTime.toString()}`;
+   
+    const mailOptions = {
+        to: recipient,
+        subject: subject,
+        htmlBody: body,
+        sendTime: sendTime, // Include the send time here
+    };
+
+    // const result = await SendMailViaElastic(mailOptions);
+    // console.log(result);
+    // return JSON.parse(JSON.stringify(result))
+    return 
+};
+
+
 
 
 

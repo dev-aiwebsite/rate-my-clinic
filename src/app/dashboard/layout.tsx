@@ -21,7 +21,6 @@ const session = await auth() as unknown as ExtendedSession
 const Users = await fetchData()
 const currentUser = JSON.parse(JSON.stringify(Users.find(i => i._id == session.user_id)))
 const surveyData = await getSurveyData()
-
 const value = {
     ripple: true,
 };
