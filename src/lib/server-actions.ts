@@ -207,6 +207,7 @@ export const getSurveyData = async (currentUser_id?:string) => {
     if(!currentUser_id){
         const user = await auth() as ExtendedSession;
         currentUser_id = user?.user_id
+        
     }
 
     
@@ -229,6 +230,8 @@ export const getSurveyData = async (currentUser_id?:string) => {
         }
 
 
+        
+
         let clinicIds = convertedSurveys.ownerSurveyData.map((i: { clinic_id: any }) => i.clinic_id)
         type mySurveys = {
             [key:string]:any,
@@ -247,13 +250,19 @@ export const getSurveyData = async (currentUser_id?:string) => {
                 teamSurveyData: convertedSurveys.teamSurveyData.filter((i:{clinicId: any;i:any}) => i.clinicId == clinicId),
             }
 
+            if(clinicId == currentUser_id){
+                mySurveys = {
+                    ...clinicData,
+                    summary: {}
+                }
+            }
+
             if(!clinicData.ownerSurveyData || !clinicData.clientSurveyData.length || !clinicData.teamSurveyData.length) return
 
             let summary = surveyCalculation(clinicData)
 
             if(clinicId == currentUser_id){
                 mySurveys = {
-                    ...clinicData,
                     summary
                 }
                 
@@ -292,13 +301,15 @@ export const getSurveyData = async (currentUser_id?:string) => {
             
         }
 
-        return {
+        let results = {
             ...mySurveys,
             other:otherSummary,
             other_summary,
             oldData,
             overalls
         }
+        
+        return results
 
     }
     catch (error:any){

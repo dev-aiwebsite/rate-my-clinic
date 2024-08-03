@@ -10,6 +10,7 @@ import { useSessionContext } from "@/context/sessionContext";
 import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import Image from "next/image";
+import {useRouter} from "next/navigation";
 type E164Number = string;
 
 type page = number
@@ -28,12 +29,15 @@ const clinicInfoFields = [
 
 
 export default function Page({searchParams}:{searchParams:any}) {
-    
+    const router = useRouter();
     const toast = useRef<Toast>(null);
     const {data, setData} = useSurveyDataContext()
     const formValues = data?.ownerSurveyData
     let isJourney = searchParams.journey == "" ? true : false
 
+    function afterSubmit(){
+        router.push('/dashboard/client-survey?journey')
+    }
     return (<>
           <Toast className="text-sm" ref={toast} />
         
@@ -58,7 +62,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                     height={150}
                 />
                 </div>
-                <FormComponent additionalClass="w-full flex-1" data={data} setData={setData}/>
+                <FormComponent additionalClass="w-full flex-1" data={data} setData={setData} afterSubmit={afterSubmit}/>
                 </div>)
                 : (
                     <FormComponent data={data} setData={setData}/>
@@ -72,7 +76,7 @@ export default function Page({searchParams}:{searchParams:any}) {
 }
 
 
-const FormComponent = ({additionalClass,data,setData}:{additionalClass?:string,data:any,setData:any}) => { 
+const FormComponent = ({additionalClass,data,setData,afterSubmit}:{additionalClass?:string,data:any,setData:any,afterSubmit?:()=>void}) => { 
     const toast = useRef<Toast>(null);
     const max_pages = 15
     const [isLoading, setIsLoading] = useState(false)
@@ -95,6 +99,8 @@ const FormComponent = ({additionalClass,data,setData}:{additionalClass?:string,d
             redirect('/dashboard/settings/account')
         }
     }
+
+    
     
     let clinic_id = currentUser._id
 
@@ -162,6 +168,12 @@ const FormComponent = ({additionalClass,data,setData}:{additionalClass?:string,d
                 setPage(1);
                 setIsLoading(false);
                 setData(d)
+
+                if(afterSubmit){
+                   afterSubmit()
+                } 
+
+
             });
           
 
@@ -801,7 +813,7 @@ const FormComponent = ({additionalClass,data,setData}:{additionalClass?:string,d
 
             {/* <!-- Terms and Conditions Acknowledgement --> */}
             <div className="sm:col-span-1 flex flex-row-reverse items-center justify-center gap-2">
-                <label htmlFor="terms_acknowledgement" className="formLabel">Do you acknowledge you have read our terms and conditions? (insert link to them)</label>
+                <label htmlFor="terms_acknowledgement" className="formLabel">Do you acknowledge you have read our terms and conditions? (insert link to terms)</label>
                 <div className="">
                         <Checkbox className="[&_.p-checkbox-box]:!border-2 [&_.p-checkbox-box]:hover:!border-[#1d4ed8] [&.p-highlight_.p-checkbox-box]:!border-[#3b82f6]" onChange={e => setChecked(e.checked!)} checked={checked} name="terms_acknowledgement" id="terms_acknowledgement"></Checkbox>
                 </div>
