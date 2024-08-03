@@ -1,3 +1,4 @@
+import { secondsInDay } from "date-fns/constants";
 
 export type Tcategory = 'team' | 'clients' | 'strategy' | 'finance'
 
@@ -131,6 +132,8 @@ type Tparams = {
 
 export const Recommendations = ({surveyData,category}:Tparams) => {
     let recommendations = []
+    let selected:number[] = []
+    let maxTries = 5
 
     if(category == 'team'){
 
@@ -214,13 +217,21 @@ export const Recommendations = ({surveyData,category}:Tparams) => {
             let choice = choices[Math.floor(Math.random() * choices.length)]
             recommendations.push(choice)
         }
-
+     
         let choices = recommendationBank.finance.score.all
-        let choice = choices[Math.floor(Math.random() * choices.length)]
+        let firstSelection = Math.floor(Math.random() * choices.length)
+        let choice = choices[firstSelection]
         recommendations.push(choice)
 
         if(choices.length > 1){
-            let choice2 = choices[Math.floor(Math.random() * choices.length)]
+
+            let secondSelection = Math.floor(Math.random() * choices.length)
+            while(maxTries > 0 && selected.includes(secondSelection)){
+                secondSelection = Math.floor(Math.random() * choices.length)
+                maxTries -= 1
+            }
+
+            let choice2 = choices[secondSelection]
             recommendations.push(choice2)
         }
     }

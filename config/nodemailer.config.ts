@@ -31,6 +31,7 @@ export interface MailOptions {
     htmlBody?: string;
     templateName?: string;
     dynamicFields?: { [key: string]: string };
+    sendTime?: Date;
 }
 export const defaultEmailOption = {
     from: 'RATE MY CLINIC <info@ratemyclinic@gmail.com>',

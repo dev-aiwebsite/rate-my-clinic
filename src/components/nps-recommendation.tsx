@@ -2,6 +2,7 @@ import Recommendations, { recommendationBank, Tcategory } from "lib/recommendati
 import HelperCard from "./helperCard";
 import MeterChart from "./meter-chart";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 
 interface Item {
@@ -15,6 +16,7 @@ interface Item {
 }[]
 const scoreTypeList = ['below','in line with', 'above']
 export default function NpsContent({surveyData,item,className}:{surveyData:any,item:Item,className?:string}) {
+    const [recommendations, setRecommendations] = useState<any[]>([])
     let discrepancy = item[0].value - item[1].value
     let discrepancy_display_text = discrepancy < 0 ? `${discrepancy.toFixed(1)}` : `+${discrepancy.toFixed(1)}`
 
@@ -29,12 +31,16 @@ export default function NpsContent({surveyData,item,className}:{surveyData:any,i
     }
 
     let category = `${item[0].name.toLowerCase()}` as Tcategory
-    const recommendations = Recommendations({surveyData,category})
+    
+    useEffect(()=>{
+        const recommendations = Recommendations({surveyData,category})
+        setRecommendations(recommendations)
+    },[])
 
     return (
         <div className={`${className} flex flex-col gap-14`}>
-            {<div className="flex flex-row items-end justify-around max-md:card">
-                    <div className="flex flex-col gap-2 items-center flex-1 md:max-w-[160px]">
+            {<div className="flex flex-row items-end justify-around max-md:card gap-10">
+                    <div className="flex flex-col gap-2 items-center flex-1">
                         {item[0].icon && <Image
                             className="max-md:max-w-[100px] w-[60%] aspect-square" 
                             src={item[0].icon}
@@ -53,7 +59,7 @@ export default function NpsContent({surveyData,item,className}:{surveyData:any,i
                         </div>
                         
                     </div>
-                    <div className="grid grid-cols-2 w-full">
+                    <div className="grid grid-cols-2 w-full gap-10">
                         <div className="max-md:hidden flex-1 max-w-96">
                             <p className="text-xs text-neutral-400 text-center mb-3">Your Score</p>
                             <MeterChart

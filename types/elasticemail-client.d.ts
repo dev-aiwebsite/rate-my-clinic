@@ -23,6 +23,9 @@ declare module '@elasticemail/elasticemail-client' {
         From: string;
         TemplateName?: string;
       };
+      Options?: {
+        [key: string]: any;
+      }
     }
   
     interface EmailsApi {
@@ -51,7 +54,11 @@ declare module '@elasticemail/elasticemail-client' {
           Subject: string;
           From: string;
           TemplateName?: string;
+          Postback?: string;
         };
+        Options?: {
+          [key: string]: any;
+        }
       }): EmailMessageData;
     };
   }
