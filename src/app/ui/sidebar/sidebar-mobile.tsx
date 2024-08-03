@@ -1,10 +1,10 @@
 "use client"
 import Image from "next/image"
-import LogoutBtn from "../../components/logout-btn"
+import LogoutBtn from "../../../components/logout-btn"
 import Link from "next/link"
 import { Sidebar } from "primereact/sidebar"
 import { GoGear } from "react-icons/go";
-import SyncButton from "@/components/sync-btn";
+import SyncButton from "../../../components/sync-btn";
 import { useEffect, useState } from "react";
 
 const second_list_item = [

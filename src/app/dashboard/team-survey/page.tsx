@@ -1,13 +1,13 @@
 "use client"
 
-import ClinicQr from "@/components/clinic-qrcode";
-import CopyButton from "@/components/copy-text-button";
+import ClinicQr from "../../../components/clinic-qrcode";
+import CopyButton from "../../../components/copy-text-button";
 import { InputText } from 'primereact/inputtext';
 import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { useSessionContext } from "@/context/sessionContext";
 import Link from "next/link";
 import { useState } from "react";
-import TableData from "@/components/table-data";
+import TableData from "../../../components/table-data";
 import { Column } from "primereact/column";
 import { DataTable, DataTableSelectionSingleChangeEvent } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
@@ -31,7 +31,9 @@ export default function Page() {
 
 
     let teamSurvey = data?.teamSurveyData
-    teamSurvey.forEach(i => i.createdAt = formatDateTime(i.createdAt).replaceAll("/","-"))
+    if(teamSurvey){
+        teamSurvey.forEach(i => i.createdAt = formatDateTime(i.createdAt).replaceAll("/","-"))
+    }
 
     function tableRowOnClick(e: DataTableSelectionSingleChangeEvent<any[]>){
         let value = e.value
@@ -76,7 +78,7 @@ export default function Page() {
                     }
                 </>
                 }
-                 {!shareSurveyView && <>
+                 {!shareSurveyView && teamSurvey && <>
                     <div>
                         <DataTable value={teamSurvey} selectionMode="single" onSelectionChange={(e) => tableRowOnClick(e)} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort>
                             <Column field="fname" header="First Name" sortable></Column>

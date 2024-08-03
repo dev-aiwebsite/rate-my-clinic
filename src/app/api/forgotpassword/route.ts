@@ -1,11 +1,9 @@
-import { Message } from 'primereact/message';
 import { NextRequest, NextResponse } from "next/server";
-import { transporter } from "../../../../config/nodemailer.config";
-import { AppSendMail, UpdateUser } from "@/server-actions";
-import { Users } from "@/lib/models";
+import { AppSendMail, UpdateUser } from "lib/server-actions";
+import { Users } from "lib/models";
 import { randomUUID } from 'crypto';
-import { fetchData } from '@/lib/data';
-import { connectToDb } from '@/lib/utils';
+import { fetchData } from 'lib/data';
+import { connectToDb } from 'lib/utils';
 import bcrypt from 'bcrypt'
 
 export async function POST(req:NextRequest, res: NextResponse){

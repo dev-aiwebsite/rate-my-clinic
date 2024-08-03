@@ -17,11 +17,12 @@
         "name": "next"
       }
     ],
+    "baseUrl": "./src",
     "paths": {
-      "@/*": ["./src/app/*"]
+      "@/*": ["./app/*"]
     },
     "types": ["@uploadcare/blocks/types/jsx","./types/elasticemail-client"],
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/app/lib/utils.js", "public/static.js", "src/app/api/forgot-password."],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/lib/utils.js", "public/static.js", "src/app/api/forgot-password."],
   "exclude": ["node_modules"],
 }

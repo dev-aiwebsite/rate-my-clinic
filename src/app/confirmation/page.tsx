@@ -1,4 +1,4 @@
-import { AppSendMail, RegisterUser } from "@/server-actions";
+import { AppSendMail, RegisterUser } from "lib/server-actions";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { defaultEmailOption } from "../../../config/nodemailer.config";
@@ -15,43 +15,47 @@ export default async function Page({searchParams}:any) {
         let content = <></>
 
         if(sessionInfo.status == "complete"){
-            let name,fname,lname,email,clinic_name,clinic_type,password = 'Welcome1!'
+            console.log(sessionInfo)
+            let subscription_level,subscription_id,name,fname,lname,useremail,clinic_name,clinic_type,password = 'Welcome1!'
             let formData = new FormData()
 
-            name = sessionInfo?.customer_details?.name;
-            email = sessionInfo?.customer_details?.email;
-            clinic_name = sessionInfo?.custom_fields.find(i => i.key == "clinic_name")?.text?.value;
-            clinic_type = sessionInfo?.custom_fields.find(i => i.key == "clinic_type")?.dropdown?.value;
+            fname = sessionInfo?.metadata?.fname;
+            lname = sessionInfo?.metadata?.lname;
+            useremail = sessionInfo?.metadata?.useremail;
+            clinic_name = sessionInfo?.metadata?.clinic_name || "";
+            clinic_type = sessionInfo?.metadata?.clinic_type || "";
+            subscription_level = sessionInfo?.metadata?.subscription_level || "0";
             
-            let splittedName = name?.split(" ")
-            if(splittedName){
-                fname = splittedName[0]
-                lname = splittedName[1]
-            }
-
-            formData.append('username', name as string)
+            formData.append('username', `${fname} ${lname}`)
             formData.append('fname', fname as string)
             formData.append('lname', lname as string)
-            formData.append('useremail', email as string)
+            formData.append('useremail', useremail as string)
             formData.append('clinic_name', clinic_name as string)
             formData.append('clinic_type', clinic_type as string)
             formData.append('userpass', password as string)
+            formData.append('subscription_level', subscription_level as string)
+            formData.append('subscription_id', sessionInfo?.subscription as string)
+            formData.append('subscription_product_id', sessionInfo?.metadata?.product_id || "" as string)
+            formData.append('last_checkout_session_id', sessionInfo?.id as string)
+
+            console.log(formData, 'register form values')
 
             const res = await RegisterUser(formData)
+            console.log(res, 'register result')
             if(res.success){
-                const { from } = defaultEmailOption
                 const parsedData = JSON.parse(JSON.stringify(res.data))
                 type UserInfo = {
                     username: any;
                     useremail: any;
                     password: string;
-                    "clinic name": any;
-                    "clinic type": any;
+                    "clinic name": string;
+                    "clinic type": string;
+
                     [key: string]: any; // Add this line to define an index signature
                 };
     
                 const userInfo:UserInfo = {
-                    username: parsedData.username,
+                    username: parsedData.fname,
                     useremail: parsedData.useremail,
                     password: res.orig_pass,
                     "clinic name": parsedData.clinic_name,
@@ -62,7 +66,7 @@ export default async function Page({searchParams}:any) {
                 const link = process.env.NEXTAUTH_URL
     
                 const htmlBody = `
-                <p>Thank you ${name} for subscribing.</p>
+                <p>Thank you ${fname} for subscribing.</p>
                 <p>here is your account details</p><div>
                 ${Object.keys(userInfo).map(i => `<b>${i}</b>: ${userInfo[i]}`).join('<br/>')}
                 </div><br>
@@ -75,7 +79,7 @@ export default async function Page({searchParams}:any) {
                     subject: "Thank you for subscribing",
                     templateName: 'Welcome email',
                     dynamicFields: {
-                        firstname: `${name}`,
+                        firstname: `${fname}`,
                         loginlink: `${link}`,
                         userpassword: res.orig_pass,
                         useremail: parsedData.useremail

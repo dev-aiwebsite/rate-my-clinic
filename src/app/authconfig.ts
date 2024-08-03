@@ -15,6 +15,7 @@ export const authConfig = {
       const isOnDashboard = request.nextUrl.pathname.startsWith('/dashboard');
       const isOnSettings = request.nextUrl.pathname.startsWith('/settings');
       const isOnSurvey = request.nextUrl.pathname.startsWith('/survey');
+      const isOnGenerateReport = request.nextUrl.pathname.startsWith('/generate-report');
       const isOnHome = request.nextUrl.pathname === '/';
 
 
@@ -30,7 +31,7 @@ export const authConfig = {
         }
 
       } else {
-        if(isOnDashboard || isOnSettings || isOnHome){
+        if(isOnDashboard || isOnSettings || isOnHome || isOnGenerateReport){
           return false
         } else {
           return true

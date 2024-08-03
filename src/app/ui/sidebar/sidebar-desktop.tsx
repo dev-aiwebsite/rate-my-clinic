@@ -1,5 +1,5 @@
 import Image from "next/image"
-import LogoutBtn from "../../components/logout-btn"
+import LogoutBtn from "../../../components/logout-btn"
 import Link from "next/link"
 
 type list_item = {

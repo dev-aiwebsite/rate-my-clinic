@@ -4,10 +4,10 @@ import { PrimeReactProvider } from "primereact/api";
 import { auth } from "@/auth"
 import { ExtendedSession } from "../../../typings";
 import Image from "next/image";
-import { fetchData } from "@/lib/data";
+import { fetchData } from "lib/data";
 import SessionContextProvider from "@/context/sessionContext";
 import SurveyDataContext from "@/context/surveyDataContext";
-import { getSurveyData } from "@/server-actions";
+import { getSurveyData } from "lib/server-actions";
 
 
 
@@ -21,7 +21,6 @@ const session = await auth() as unknown as ExtendedSession
 const Users = await fetchData()
 const currentUser = JSON.parse(JSON.stringify(Users.find(i => i._id == session.user_id)))
 const surveyData = await getSurveyData()
-
 const value = {
     ripple: true,
 };

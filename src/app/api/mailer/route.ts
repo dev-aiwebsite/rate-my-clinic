@@ -1,8 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { transporter } from "../../../../config/nodemailer.config";
-import { AppSendMail } from "@/server-actions";
-import {ApiClient, BodyPart, EmailMessageData, EmailRecipient, EmailsApi} from "@elasticemail/elasticemail-client";
-import { error } from "console";
+import { AppSendMail } from "lib/server-actions";
 
 export async function POST(req:NextRequest, res: NextResponse){
     const payload = await req.text()
