@@ -42,7 +42,7 @@ export default function LoginForm() {
             <div>
               <LoginSubmitBtn/>
             </div>
-            <div className="flex flex-row justify-between">
+            <div className="flex flex-col max-md:items-center gap-2 md:flex-row justify-between">
                 <Link className="underline text-xs text-blue-600"
                     href="/forgot-password">Forgot Password
                 </Link>

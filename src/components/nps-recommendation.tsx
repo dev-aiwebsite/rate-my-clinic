@@ -59,7 +59,7 @@ export default function NpsContent({surveyData,item,className}:{surveyData:any,i
                         </div>
                         
                     </div>
-                    <div className="grid grid-cols-2 w-full gap-10">
+                    <div className="max-md:hidden grid grid-cols-2 w-full gap-10">
                         <div className="max-md:hidden flex-1 max-w-96">
                             <p className="text-xs text-neutral-400 text-center mb-3">Your Score</p>
                             <MeterChart
