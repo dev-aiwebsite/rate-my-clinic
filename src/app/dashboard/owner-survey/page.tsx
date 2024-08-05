@@ -36,7 +36,7 @@ export default function Page({searchParams}:{searchParams:any}) {
     let isJourney = searchParams.journey == "" ? true : false
 
     function afterSubmit(){
-        router.push('/dashboard/client-survey?journey')
+        router.push('/dashboard/team-survey?journey')
     }
     return (<>
           <Toast className="text-sm" ref={toast} />
@@ -216,7 +216,7 @@ const FormComponent = ({additionalClass,data,setData,afterSubmit}:{additionalCla
     
     return <><form className={`card max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col z-[20] ${additionalClass}`} id="owner-survey-form" onSubmit={(e) => handleDefaultSubmit(e,page)}>
 <input type="hidden" name="clinic_id" value={clinic_id}/>
-<div className="flex-1">
+<div className="flex-1 overflow-y-scroll">
     <div className={`formSectionContainer ${page == 1 ? "" : "!hidden"}`} data-formpage="1">
         <h3 className="formSectionHeader">Clinic Owner Details</h3>
         <p className="text-center text-stone-400">You can update your information in the <Link className="opacity-80 hover:opacity-100 font-medium underline text-sky-700" href="/dashboard/settings/account" >settings.</Link></p>

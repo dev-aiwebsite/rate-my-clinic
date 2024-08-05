@@ -262,9 +262,7 @@ export const getSurveyData = async (currentUser_id?:string) => {
             let summary = surveyCalculation(clinicData)
 
             if(clinicId == currentUser_id){
-                mySurveys = {
-                    summary
-                }
+                mySurveys.summary = summary
                 
             } else {
                 otherSummary.push(summary)
