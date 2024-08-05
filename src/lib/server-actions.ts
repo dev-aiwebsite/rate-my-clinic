@@ -260,7 +260,7 @@ export const getSurveyData = async (currentUser_id?:string) => {
             if(!clinicData.ownerSurveyData || !clinicData.clientSurveyData.length || !clinicData.teamSurveyData.length) return
 
             let summary = surveyCalculation(clinicData)
-
+        
             if(clinicId == currentUser_id){
                 mySurveys.summary = summary
                 
@@ -285,17 +285,18 @@ export const getSurveyData = async (currentUser_id?:string) => {
         overalls['mine'] = Object.values(mySurveys.summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
 
         if(otherSummary.length){
-
+            console.log(otherSummary,'other summary')
             let overall = otherSummary.map(summary => {
                 return Object.values(summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
             })
-            overalls['other'] = overalls.other + (overall.reduce((a,b) => Number(a) + Number(b), 0) / overall.length)
+            overalls['other'] = overalls.other + (overall.reduce((a,b) => Number(a) + Number(b), 0) / overall.length) / 2
 
             
-            other_summary.clients.score = (other_summary.clients.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.clients), 0) / otherSummary.length) / 2)
-            other_summary.team.score = (other_summary.team.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.team), 0) / otherSummary.length) / 2)
-            other_summary.strategy.score = (other_summary.strategy.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.strategy), 0) / otherSummary.length) / 2)
-            other_summary.finance.score = (other_summary.finance.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.finance), 0) / otherSummary.length) / 2)
+
+            other_summary.clients.score = (other_summary.clients.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.clients.score), 0) / otherSummary.length) / 2)
+            other_summary.team.score = (other_summary.team.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.team.score), 0) / otherSummary.length) / 2)
+            other_summary.strategy.score = (other_summary.strategy.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.strategy.score), 0) / otherSummary.length) / 2)
+            other_summary.finance.score = (other_summary.finance.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.finance.score), 0) / otherSummary.length) / 2)
             
         }
 
