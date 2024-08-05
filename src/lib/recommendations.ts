@@ -138,14 +138,15 @@ export const Recommendations = ({surveyData,category}:Tparams) => {
     if(category == 'team'){
 
         let teamWork = surveyData.teamSurveyData.map((i: { teamWork: any; }) => i.teamWork)
-        let teamWorkTotal = teamWork.reduce((a: any,b: any) => a + b, 0) / teamWork.length
-
         let communication = surveyData.teamSurveyData.map((i: { communication: any; }) => i.communication)
-        let communicationTotal = communication.reduce((a: any,b: any) => a + b, 0) / communication.length
-
         let serviceKnowledge = surveyData.teamSurveyData.map((i: { serviceKnowledge: any; }) => i.serviceKnowledge)
+
+        let teamWorkTotal = teamWork.reduce((a: any,b: any) => a + b, 0) / teamWork.length
+        let communicationTotal = communication.reduce((a: any,b: any) => a + b, 0) / communication.length
         let serviceKnowledgeTotal = serviceKnowledge.reduce((a: any,b: any) => a + b, 0) / serviceKnowledge.length
 
+        if(!teamWork || !communication || !serviceKnowledge) return recommendations = []
+        
         if((teamWorkTotal > 10 && teamWorkTotal < 80) || teamWorkTotal < 8){
             let choices = recommendationBank.team.teamWork.under
             let choice = choices[Math.floor(Math.random() * choices.length)]
@@ -178,6 +179,7 @@ export const Recommendations = ({surveyData,category}:Tparams) => {
         let nps = surveyData.clientSurveyData.map((i: { recommendation: any; }) => i.recommendation)
         let npsTotal = nps.reduce((a: any,b: any) => a + Number(b), 0) / nps.length
 
+        if(!npsTotal) return recommendations = []
         if((npsTotal > 10 && npsTotal < 70) || npsTotal < 7){
             let choices = recommendationBank.clients.score.under
             let choice = choices[Math.floor(Math.random() * choices.length)]
@@ -192,6 +194,8 @@ export const Recommendations = ({surveyData,category}:Tparams) => {
             recommendations.push(choice2)
         }
     } else if (category == 'strategy'){
+        let score = surveyData.summary?.strategy?.score || false
+        if(!score) return recommendations = []
         if(surveyData.summary.strategy.score <= 80){
             let choices = recommendationBank.strategy.score.under
             let choice = choices[Math.floor(Math.random() * choices.length)]
@@ -208,7 +212,9 @@ export const Recommendations = ({surveyData,category}:Tparams) => {
         
     } else if (category == 'finance'){
 
-        if(surveyData.summary.finance.score <= 50){
+        let score = surveyData.summary?.finance?.score || false
+        if(!score) return recommendations = []
+        if(score <= 50){
             let choices = recommendationBank.finance.score.under
             let choice = choices[Math.floor(Math.random() * choices.length)]
             recommendations.push(choice)
