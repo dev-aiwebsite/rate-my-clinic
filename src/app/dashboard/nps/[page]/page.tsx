@@ -41,18 +41,21 @@ export default function Page({params}:{params:any}){
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
     let charts = userAccess?.charts
 
+    const itemValueOne = data?.summary?.clients?.score || 0
+    const itemValueTwo = data?.other_summary?.clients?.score || 0
     let pageEnabled = charts.includes(pageName)
 
+    
     let item = [
         {
             name: items[pageName].name,
-            value: data.summary.clients.score,
+            value: itemValueOne,
             color: items[pageName].color,
             icon:  items[pageName].icon,
         },
         {
             name: 'other',
-            value: Number(data.other_summary.clients.score.toFixed(1)),
+            value: Number(itemValueTwo.toFixed(1)),
             color: items[pageName].color,
             icon:  items[pageName].icon,
         }
