@@ -30,8 +30,6 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
     const [switchEnabled, setSwitchEnabled] = useState(false);
     const profileFormRef = useRef<HTMLFormElement | null>(null)
     const [validateForm,setValidateForm] = useState<boolean | number>(1)
-    
-    console.log(currentUser)
 
     const handleSwitcherClick = () => {
         setSwitchEnabled(!switchEnabled);
@@ -155,14 +153,11 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
                         setValidateForm(1)
                         setSwitchEnabled(false)
                     }
-    
                 }
             } else {
                 handleDefaultSubmit(form)
-            }
-            
+            }         
         }
-
     }
 
 

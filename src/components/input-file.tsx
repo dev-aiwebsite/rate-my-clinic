@@ -7,7 +7,7 @@ LR.registerBlocks(LR);
 
 function InputFile({ defaultValue, name, required = false, isHidden, customElement,disabled }: { defaultValue: string, name: string, required?: boolean, isHidden?: boolean, customElement?: React.ReactNode, disabled?: boolean, }) {
 
-  const [inputValue, setInputValue] = useState(defaultValue);
+  const [inputValue, setInputValue] = useState(defaultValue || "");
   const [fileName, setFileName] = useState("");
   const ctxProviderRef = useRef<any>(null);
 
@@ -22,8 +22,6 @@ function InputFile({ defaultValue, name, required = false, isHidden, customEleme
         const fileName = e.detail.allEntries[0].name;
         setFileName(fileName);
         setInputValue(fileUrl);
-        console.log(fileUrl, 'from InputFile');
-        console.log(e);
       } catch (error) {
         console.log(error);
       }
