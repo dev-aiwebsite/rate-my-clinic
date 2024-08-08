@@ -1,12 +1,24 @@
-import { CSSProperties } from "react";
+import { CSSProperties, useRef, useState } from "react";
 import Image from "next/image";
+import { Button } from "primereact/button";
 const shapeStyle: CSSProperties = {
     shapeOutside: `inset(calc(100% - 100px) 0px 20px 50px)`
 }
 
-export default function HelperCard({className}:any) {
+type Tparams = {
+    className?:string;
+    canClose?:boolean;
+}
+export default function HelperCard({className,canClose}:Tparams) {
+    const [isHidden,setIsHidden] = useState(false);
+    
+
+    function handleClose(){
+        setIsHidden(true)
+    }
     return (
-        <div className={`${className} md:max-w-[320px] bg-white ring-1 ring-gray-500 rounded-lg p-10 flex pb-0 overflow-hidden mb-px text-sm`}> 
+        <div className={`${className} ${isHidden ? 'hidden' : ''} targetParent md:max-w-[320px] bg-white ring-1 ring-gray-500 rounded-lg p-10 flex pb-0 overflow-hidden mb-px text-sm`}> 
+        {canClose && <button className="absolute top-4 right-4 transition duration-150 ease-in-out hover:rotate-[10deg] hover:scale-125" type="button" onClick={handleClose}><span className="pi pi-times"></span></button>}
         <div>
             <div className="inline-flex items-end float-right h-full -mr-10 -mb-10" style={shapeStyle}>
                 <Image
