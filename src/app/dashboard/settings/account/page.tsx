@@ -5,12 +5,16 @@ import { useSessionContext } from "@/context/sessionContext";
 import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 export default function AccountPage() {
     const {currentUser} = useSessionContext()
     let tocheck = ['profile_pic','clinic_name','clinic_established','clinic_location_country','clinic_location_postcode','clinic_location_state','clinic_logo','usermobile']
-    const isProfileComplete = tocheck.every(i => currentUser[i])
+    const [isProfileComplete, setIsprofileComplete] = useState(false)
+    useEffect(()=>{
+        const isComplete = tocheck.every(i => currentUser[i])
+        setIsprofileComplete(isComplete)
+    },[])
     // const isProfileComplete = false
 
     const handleAfterSubmit = () => {
