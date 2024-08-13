@@ -27,6 +27,11 @@ const poppins = Poppins({
 export const metadata: Metadata = {
   title: "Rate my clinic",
   description: "rate my clinic",
+  icons: {
+    icon: '/favicons/favicon-32x32.png', // Default favicon
+    shortcut: '/favicons/favicon-16x16.png', // Shortcut icon for specific use cases
+    apple: '/favicons/apple-touch-icon.png', // Apple touch icon
+  },
 };
 
 
@@ -47,6 +52,7 @@ export default async function RootLayout({children}: Readonly<{children: React.R
   return (
     <PrimeReactProvider>
     <html lang="en">
+    <link rel="icon" href="/favicons/favicon-32x32.png" sizes="any" />
       <body className={`${poppins.className}`}>
         <SurveyDataContext surveyData={surveyData}>
            <SessionContextProvider users={users} current_user={current_user}>{children}</SessionContextProvider>    
