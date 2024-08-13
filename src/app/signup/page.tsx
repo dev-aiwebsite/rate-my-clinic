@@ -50,6 +50,19 @@ export default function SignupPage({children}:any) {
         handleNext()
     }
 
+    function handleClinicType(){
+        const clinic_type_select = document.getElementById('clinic_type') as HTMLFormElement
+        const clinic_type_other = document.getElementById('clinic_type_other') as HTMLFormElement
+
+        if(clinic_type_select.value == "other"){
+            clinic_type_select.name = ''
+            clinic_type_other.name = 'clinic_type'
+        } else {
+            clinic_type_select.name = 'clinic_type'
+            clinic_type_other.name = ''
+        }
+    }
+
     
 
     return (
@@ -97,14 +110,29 @@ export default function SignupPage({children}:any) {
                                         <div>
                                             <label className="text-xs text-neutral-400"
                                                 htmlFor="clinic_type">Clinic type</label>
-                                        <select id="clinic_type" name="clinic_type"  className="block w-full bg-transparent ring-1 ring-gray-400 border-none rounded-md px-4 py-2 hover:ring-appblue-350 focus:ring-appblue-350 active:ring-appblue-350"
-                                        defaultValue={userInfo?.clinic_type || ""} required>
-                                                <option value="GP">General Practitioner (GP) Clinic</option>
-                                                <option value="Dental">Dental Clinic</option>
-                                                <option value="Community">Community Health Clinic</option>
-                                                <option value="Mental">Mental Health Clinic</option>
-                                                <option value="Specialist">Specialist Clinic</option>
-                                        </select>
+
+                                            <div className="group ring-1 ring-gray-400 border-none rounded-md *:rounded-md *:px-4 *:py-2 hover:ring-appblue-350 focus:ring-appblue-350 active:ring-appblue-350">
+
+                                                <select id="clinic_type" name="clinic_type"  className="
+                                                group-has-[[value=other]:checked]:absolute block relative z-1 w-full bg-white outline-none border-none"
+                                                defaultValue={userInfo?.clinic_type || ""} onChange={handleClinicType} required>
+                                                        <option value="physiotherapy">Physiotherapy</option>
+                                                        <option value="exercise-physiology">Exercise Physiology</option>
+                                                        <option value="chiropractic">Chiropractic</option>
+                                                        <option value="podiatry">Podiatry</option>
+                                                        <option value="dentistry">Dentistry</option>
+                                                        <option value="osteopathy">Osteopathy</option>
+                                                        <option value="occupational-therapy">Occupational Therapy</option>
+                                                        <option value="speech-therapy">Speech Therapy</option>
+                                                        <option value="ndis-provider">NDIS Provider</option>
+                                                        <option value="other">Other (please specify)</option>
+                                                </select>
+                                                <input id="clinic_type_other" name="" className="group-has-[[value=other]:checked]:block hidden relative z-2 w-3/4 bg-white outline-none border-none"
+                                                 type="text" placeholder="Please specify"/>
+                                            </div>
+                                       
+
+
                                         </div>
                                         
                                         <button
@@ -149,7 +177,8 @@ export default function SignupPage({children}:any) {
                                 </div>}
                         </div>
                     </div>
-                </>}
+                </>
+                }
                         
             </div>
         </div>

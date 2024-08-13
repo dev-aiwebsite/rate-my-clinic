@@ -95,7 +95,6 @@ export default function Page({searchParams}:{searchParams:any}) {
                                 <InputText value={url} className="ring-1 text-xs p-2 flex-1" readOnly />
                                 <CopyButton className="!bg-appblue-300 !text-white hover:!bg-appblue-350 grid align-center px-4 gap-2 !ring-0 !flex flex-row" buttonText="Copy" textToCopy={`${url}`}/>
                             </div>
-                            <p className="text-center text-sm text-neutral-400 mt-auto">* You can also include this link in your marketing emails.</p>
                             <p className="text-center ">Or share this link for them to visit</p>
                         </div>
                     </div>
@@ -141,7 +140,6 @@ export default function Page({searchParams}:{searchParams:any}) {
                                 <InputText value={url} className="ring-1 text-xs p-2 flex-1" readOnly />
                                 <CopyButton className="!bg-appblue-300 !text-white hover:!bg-appblue-350 grid align-center px-4 gap-2 !ring-0 !flex flex-row" buttonText="Copy" textToCopy={`${url}`}/>
                             </div>
-                            <p className="text-center text-sm text-neutral-400 mt-auto">* You can also include this link in your marketing emails.</p>
                             <p className="text-center ">Or share this link for them to visit</p>
                         </div>
                     </div>

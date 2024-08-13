@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 export default function AccountPage() {
     const {currentUser} = useSessionContext()
-    let tocheck = ['profile_pic','clinic_name','clinic_established','clinic_location_country','clinic_location_postcode','clinic_location_state','clinic_logo','usermobile']
+    let tocheck = ['clinic_name','clinic_established','clinic_location_country','clinic_location_postcode','clinic_location_state','clinic_logo','usermobile']
     const [isProfileComplete, setIsprofileComplete] = useState(false)
     useEffect(()=>{
         const isComplete = tocheck.every(i => currentUser[i])
