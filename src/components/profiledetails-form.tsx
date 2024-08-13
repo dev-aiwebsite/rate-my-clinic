@@ -42,18 +42,7 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
         // Update form fields with default values
         const form = document.getElementById('profile-details-form') as HTMLFormElement;
         if (form) {
-            Object.keys(currentUser).forEach((key: string | number) => {
-                const input = form.querySelector(`[name="${key}"]`) as HTMLInputElement;
-                
-                if (input) {
-                    if (key == "usermobile") {
-                        setPhoneValue(currentUser[key])
-                    } else {
-                        input.value = currentUser[key];
-                    }
-                }
-            });
-
+        
             if(validateForm){
                 if (profileFormRef.current) {
                     let invalidElements = profileFormRef.current.querySelectorAll(':invalid');
@@ -72,7 +61,24 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
             }
 
         }
-    }, [currentUser,validateForm]);
+    }, [validateForm]);
+
+    useEffect(()=>{
+        const form = document.getElementById('profile-details-form') as HTMLFormElement;
+        if (form) {
+            Object.keys(currentUser).forEach((key: string | number) => {
+                const input = form.querySelector(`[name="${key}"]`) as HTMLInputElement;
+                
+                if (input) {
+                    if (key == "usermobile") {
+                        setPhoneValue(currentUser[key])
+                    } else {
+                        input.value = currentUser[key];
+                    }
+                }
+            });
+        }
+    },[currentUser])
 
 
     const handlePhoneValidation = useCallback((value: typeof phoneValue) => {
@@ -177,11 +183,11 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
                     <div className={`formSectionContainer ${!switchEnabled ? "" : "hidden"}`}  data-formpage="1">
                         <div className="formSectionContent">
                             <div>
-                            <label className="formLabel">Profile image</label>
+                            <label className="formLabel">Profile image <span className="text-xs text-slate-400">(Optional)</span></label>
                             <div className="mt-2">
                                 <div className="formField">
 
-                                <InputFileNoSSR defaultValue={currentUser?.profile_pic} name={"profile_pic"} required={true}/>
+                                <InputFileNoSSR defaultValue={currentUser?.profile_pic} name={"profile_pic"}/>
                                 </div>
                             </div>
                             </div>
@@ -216,11 +222,12 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
                                 <div className="mt-2">
                                     <div className="formField">
                                     <PhoneInput
+                                        international
                                         className="px-3"
                                         ref={phoneInputRef}
                                         name="usermobile"
-                                        
                                         placeholder="Enter phone number"
+                                        defaultCountry="AU"
                                         value={phoneValue}
                                         onChange={(value)=> handlePhoneValidation(value)}
                                         required

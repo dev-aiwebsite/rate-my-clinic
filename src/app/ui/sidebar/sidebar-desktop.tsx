@@ -48,7 +48,7 @@ const second_list_item:list_item = [
 ]
 
 const SidebarDesktop = ({userData}:{userData:any}) => {
-    return <aside className="w-64 h-full bg-white px-5 flex flex-col pb-10 border-solid border-0 border-r border-gray-200">
+    return <aside className="w-64 h-[calc(100vh_-_4rem)] bg-white px-5 flex flex-col pb-10 border-solid border-0 border-r border-gray-200">
         <div className="text-center">
             <Image
             className="h-24 w-auto m-auto p-5"
