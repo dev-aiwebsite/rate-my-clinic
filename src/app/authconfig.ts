@@ -1,5 +1,4 @@
 import type { NextAuthConfig } from 'next-auth';
-import { NextRequest, NextResponse, userAgent } from 'next/server'
  
 export const authConfig = {
   providers: [],
@@ -11,21 +10,24 @@ export const authConfig = {
   secret: process.env.NEXTAUTH_SECRET,
   callbacks: {
     authorized({ auth, request }) {
+      const url = request.nextUrl.clone();
       const isLoggedIn = auth?.user;
-      const isOnDashboard = request.nextUrl.pathname.startsWith('/dashboard');
-      const isOnSettings = request.nextUrl.pathname.startsWith('/settings');
-      const isOnSurvey = request.nextUrl.pathname.startsWith('/survey');
-      const isOnGenerateReport = request.nextUrl.pathname.startsWith('/generate-report');
-      const isOnHome = request.nextUrl.pathname === '/';
+      const isOnDashboard = url.pathname.startsWith('/dashboard');
+      const isOnSettings = url.pathname.startsWith('/settings');
+      const isOnSurvey = url.pathname.startsWith('/survey');
+      const isOnGenerateReport = url.pathname.startsWith('/generate-report');
+      const isOnHome = url.pathname === '/';
+      const loginRestrictedPath = url.pathname.startsWith('/login') || 
+      url.pathname.startsWith('/forgot-password') || 
+      url.pathname.startsWith('/signup')
+    
 
 
-
-      // console.log (userAgent(request))
 
       if(isLoggedIn){
         
-        if(isOnHome){
-          return Response.redirect(new URL('/dashboard', request.nextUrl));
+        if(isOnHome || loginRestrictedPath){
+          return Response.redirect(new URL('/dashboard', url));
         } else {
           return true
         }
