@@ -243,7 +243,7 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
                     <div className={`formSectionContainer ${switchEnabled ? "" : 'hidden'}`} data-formpage="2">
                         <div className="formSectionContent">
                         <div className="">
-                                <label htmlFor="logo_upload" className="formLabel">Clinic Logo</label>
+                                <label htmlFor="logo_upload" className="formLabel">Clinic Logo <span className="text-xs text-slate-400">(Optional)</span></label>
                                 <div className="mt-2">
                                     <div className="formField">
                                         <InputFileNoSSR defaultValue={currentUser?.clinic_logo} name={"clinic_logo"}/>
