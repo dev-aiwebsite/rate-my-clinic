@@ -257,7 +257,13 @@ export const getSurveyData = async (currentUser_id?:string) => {
                 }
             }
 
-            if(!clinicData.ownerSurveyData || !clinicData.clientSurveyData.length || !clinicData.teamSurveyData.length) return
+            if(clinicData.ownerSurveyData && clinicId == currentUser_id){
+                let summary = surveyCalculation(clinicData)
+                mySurveys.summary = summary
+                return
+            }
+
+            if(!clinicData.clientSurveyData.length || !clinicData.teamSurveyData.length) return
 
             let summary = surveyCalculation(clinicData)
         

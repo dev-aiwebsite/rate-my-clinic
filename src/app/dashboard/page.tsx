@@ -36,11 +36,9 @@ export default function Page(){
     const {data,setData} = useSurveyDataContext()
     const {currentUser,setCurrentUser} = useSessionContext()
     const pathname = usePathname()
-
-    console.log(data)
     
     if(!currentUser) return
-    let tocheck = ['profile_pic','clinic_name','clinic_established','clinic_location_country','clinic_location_postcode','clinic_location_state','clinic_logo','usermobile']
+    let tocheck = ['clinic_name','clinic_established','clinic_location_country','clinic_location_postcode','clinic_location_state','usermobile']
     const isProfileComplete = tocheck.every(i => currentUser[i])
     
     if(pathname != '/dashboard/settings/account'){
@@ -95,7 +93,7 @@ export default function Page(){
             })
     
             const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-            clientNpsAvg = sum / npsValues.length || 0
+            clientNpsAvg = (sum / npsValues.length) * 10 || 0
     
     
             filteredData_team.forEach((i)=> {
@@ -159,7 +157,7 @@ export default function Page(){
                             <p>Client NPS</p>
                             <p className="font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
                         </div>
-                        <CircleChart data={clientNps} max={10}/>
+                        <CircleChart className="!max-w-36" data={clientNps} max={10}/>
                     </Link>
                 </div>
                 <div className={`card md:row-span-1 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
@@ -168,7 +166,7 @@ export default function Page(){
                             <p>Team Satisfaction</p>
                             <p className="font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
                         </div>
-                        <CircleChart data={teamNps} max={10}/>
+                        <CircleChart className="!max-w-36" data={teamNps} max={10}/>
                     </Link>
                 </div>
                 <div className={`card md:row-span-1 !p-0 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>

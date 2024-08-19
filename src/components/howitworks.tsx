@@ -9,7 +9,7 @@ export default function HowItWorksPage({ additionalClass }:{additionalClass?:str
                         <div className="flex flex-row gap-10">
                             <div className="space-y-4">
                                 <h3 className="text-xl font-medium">Take the owner survey</h3>
-                                <p>Your journey starts by taking the owner survey. On the left option panel, click on the Owner Survey and answer all the questions as accurate as you can. Once submitted your response is recorded in our database.</p>
+                                <p>Your journey starts by taking the owner survey. On the left option panel, click on the Owner Survey and answer all the questions as accurately as you can. Once submitted your response is recorded in our database.</p>
                             </div>
                             <Image className="rounded-xl shadow-xl w-80 h-fit object-contain"
                                 src='/images/owner_survey.webp'
@@ -24,7 +24,7 @@ export default function HowItWorksPage({ additionalClass }:{additionalClass?:str
                         <div className="flex flex-row gap-10">
                             <div className="space-y-4">
                                 <h3 className="text-xl font-medium">Invite your team to answer the survey</h3>
-                                <p>Next, select Team Survey from the option panel, have your team scan the QR code or copy the link and distribute it to your preferred communication channel (email, messenger, etc)</p>
+                                <p>Next, select Team Survey from the option panel, have your team scan the QR code or copy the link and distribute it via your preferred communication channel (email, messenger, etc)</p>
                             </div>
                             <Image className="rounded-xl shadow-xl w-80 h-fit object-contain"
                                 src='/images/share-tips.webp'
@@ -39,7 +39,7 @@ export default function HowItWorksPage({ additionalClass }:{additionalClass?:str
                         <div className="flex flex-row gap-10">
                             <div className="space-y-4">
                                 <h3 className="text-xl font-medium">Invite your clients to answer the survey </h3>
-                                <p>Finally, select Client Survey from the option panel: Copy the Client Survey link. Create an email campaign to using your marketing software (Mailchimp, ActiveCampaign, etc) Add the link to the CTA/Button in your email. Send the email to all clients that visited your clinic in the last 12 months.</p>
+                                <p>Finally, select Client Survey from the option panel: Copy the Client Survey link. Create an email campaign using your marketing software (Mailchimp, ActiveCampaign, etc) to a button in your email to help it stand out. Please send this to all clients that have visited your clinic in the last 12 months.</p>
                             </div>
                             <Image className="rounded-xl shadow-xl w-80 h-fit object-contain"
                                 src='/images/share-tips.webp'
