@@ -53,17 +53,33 @@ export default function Page({searchParams}:{searchParams:any}) {
         setDialogVisible(true)
     }
 
+    let isRestricted = false
+    if(currentUser.subscription_level == 0){
+        isRestricted = true
+    }
+
+
     return (
         <div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 flex flex-col overflow-scroll min-h-full max-h-[calc(100vh_-_4rem)]">
              <div className="card flex flex-row items-center justify-between">
                 <h1 className="text-xl font-medium">Client Survey</h1>
-                <ul className="flex-1 max-w-lg grid gap-[1px] grid-cols-2 divide-x *:cursor-pointer *:border-none rounded-xl overflow-hidden ring-1 ring-gray-300 *:py-2 *:px-1 *:block text-sm text-neutral-500 *:text-center *:bg-white bg-gray-300">
+                {!isRestricted && <ul className="flex-1 max-w-lg grid gap-[1px] grid-cols-2 divide-x *:cursor-pointer *:border-none rounded-xl overflow-hidden ring-1 ring-gray-300 *:py-2 *:px-1 *:block text-sm text-neutral-500 *:text-center *:bg-white bg-gray-300">
                     <li onClick={()=> setShareSurveyView(true)} className={shareSurveyView ? '!bg-orange-400 text-white' : ''}>Share survey</li>
                     <li onClick={()=> setShareSurveyView(false)} className={!shareSurveyView ? '!bg-orange-400 text-white' : ''}>Survey data</li>
-                </ul>
+                </ul>}
              </div>
+
+             {isRestricted && <div className="card flex-1 p-20 w-full">
+                <div className="group text-orange-400 space-x-2 hover:cursor-pointer hover:text-orange-500">
+                <span className="pi pi-lock"></span>
+                <span className="group-hover:underline ">
+                    Upgrade plan to unlock
+                </span>
+                </div>
+                
+            </div>}
             
-                {shareSurveyView && <> 
+                {!isRestricted && shareSurveyView && <> 
                     {isJourney ? (<div className="setupWrapper bg-black/50 left-0 top-0 fixed h-screen setupWrapper w-screen z-10 p-10 flex gap-4">          
                         <div className="w-96 flex flex-col flex-nowrap -mb-10">
                             <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
@@ -149,7 +165,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                 }
                 
                 
-              {!shareSurveyView && clientSurvey && <>
+              {!isRestricted && !shareSurveyView && clientSurvey && <>
                 <div>
                     <DataTable value={clientSurvey} selectionMode="single" onSelectionChange={(e) => tableRowOnClick(e)} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort>
                         <Column field="fname" header="First Name" sortable></Column>
@@ -167,7 +183,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                 }
                 
 
-        
+                
             
            
         
