@@ -68,7 +68,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                             <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                                 <h1 className="inline-block text-lg font-bold">3. Invite your team to answer the survey</h1>
                                 
-                                <p className="text-md text-gray-700">{`Next, select Team Survey from the option panel, have your team scan the QR code or copy the link and distribute it to your preferred communication channel (email, messenger, etc)`}</p>
+                                <p className="text-md text-gray-700">{`Next, select Team Survey from the option panel, have your team scan the QR code or copy the link and distribute it via your preferred communication channel (email, messenger, etc)`}</p>
                                 <div className="w-full flex items-end">
                                     <button onClick={redirectTo} className="ml-auto btn btn-primary">Next</button>
                                 </div>

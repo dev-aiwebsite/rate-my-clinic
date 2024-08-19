@@ -94,11 +94,11 @@ async function resetPassword(email:string,newpass:string){
         </ul>
         <p>If you have any questions, feel free to <a href="mailto:info@ratemyclinic.com">contact our support team</a>.</p>
         <p>Best regards,</p>
-        <p>RATE MY CLINIC Team</p>
+        <p>Rate My Clinic Team</p>
     `;
     
     const mailOptions = {
-        from: 'RATE MY CLINIC <info@ratemyclinic.com>', // Corrected email format
+        from: 'Rate My Clinic <info@ratemyclinic.com>', // Corrected email format
         to: email,
         subject: 'Password reset',
         htmlBody, // Use 'html' instead of 'htmlBody'

@@ -227,11 +227,11 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none flex flex-row gap-5 text-base">
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input type="radio" name="recommendedPreviously" value="no" defaultChecked/>
+                                                <input className="!w-4" type="radio" name="recommendedPreviously" value="no" defaultChecked/>
                                                 <span>No</span>
                                              </label>
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input type="radio" name="recommendedPreviously" value="yes"required/>
+                                                <input className="!w-4" type="radio" name="recommendedPreviously" value="yes"required/>
                                                 <span>Yes</span>
                                              </label>
                                         </div>
@@ -247,7 +247,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                         {surveyData?.ownerSurveyData.services_provided?.split(",").map((item:any,index:number)=> {
                                             return (
                                             <label key={index} className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input type="checkbox" name="servicesUsed" value={item} />
+                                                <input className="!w-4" type="checkbox" name="servicesUsed" value={item} />
                                                 <span>{item}</span>
                                             </label>
                                             )
@@ -407,11 +407,11 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none flex flex-row gap-5 text-base">
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input type="radio" name="followUpBookingConfirmation" value="no" defaultChecked/>
+                                                <input className="!w-4" type="radio" name="followUpBookingConfirmation" value="no" defaultChecked/>
                                                 <span>No</span>
                                              </label>
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input type="radio" name="followUpBookingConfirmation" value="yes"required/>
+                                                <input className="!w-4" type="radio" name="followUpBookingConfirmation" value="yes"required/>
                                                 <span>Yes</span>
                                              </label>
                                         </div>
@@ -443,7 +443,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="comments_questions" className="formLabel">Do you have any other comments or questions?</label>
                                     <div className="mt-2">
                                         <div className="formField">
-                                             <textarea rows={5} name="comments_questions" id="comments_questions" className="" placeholder="" required></textarea>
+                                             <textarea rows={5} name="comments_questions" id="comments_questions" className="" placeholder=""></textarea>
                                         </div>
                                     </div>
                                 </div>

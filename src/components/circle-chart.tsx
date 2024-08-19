@@ -10,10 +10,11 @@ type npsData = {
         text:string,
         class?:string
     },
-        max?:number
+    max?:number,
+    className?: string
 }
 
-export default function CircleChart({max = 100,data = [{value: 0}],subtext}:npsData) {
+export default function CircleChart({max = 100,data = [{value: 0}],subtext,className}:npsData) {
     let chart_visual = ""
     let percentage1,percentage2
     if(data.length){
@@ -51,7 +52,7 @@ export default function CircleChart({max = 100,data = [{value: 0}],subtext}:npsD
     }
 
     return (
-        <div className="container flex items-center justify-center rounded-full relative w-full h-full max-w-36 max-h-36 aspect-square">
+        <div className={`${className} container flex items-center justify-center rounded-full relative w-full h-full max-w-60 max-h-60 aspect-square`}>
        
         <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path style={{
