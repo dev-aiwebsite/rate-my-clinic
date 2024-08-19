@@ -198,11 +198,11 @@ const GenerateReport = () => {
     const npsContentItems = npsContentItemsDefault.filter(subArray =>
         subArray.some(item => enabled.includes(item.name.toLowerCase()))
     );
-
-    
+    let clientNpsScoreArray = surveyData.clientSurveyData.map(i => Number(i.recommendation))
+    let clientNpsScoreTotal = (clientNpsScoreArray.reduce((a,b) => Number(a) + Number(b), 0) / clientNpsScoreArray.length ) * 10
     let clientNps = {
-        score: Number(surveyData.summary.clients.nps) / 30,
-        quality: getQuality(Number(surveyData.summary.clients.nps) / 30)
+        score: clientNpsScoreTotal,
+        quality: getQuality(clientNpsScoreTotal)
     }
    
     let teamSatisfactionArray= surveyData.teamSurveyData.map(i => i.recommendation)
@@ -293,11 +293,15 @@ const GenerateReport = () => {
                     </div>
                     <div className='text-[4.5mm] mt-[10mm]'>
                         <h1 className='font-medium'>Key points include:</h1>
-                        <ul className='font-[300] text-neutral-500 list-disc p-4'>
+                       {currentUser.subscription_level > 0 ? (<ul className='font-[300] text-neutral-500 list-disc p-4'>
                             <li>Your client NPS of {clientNps.score.toFixed(1)} is {clientNps.quality}</li>
                             <li>Your team satisfaction was {teamNps.score} out of 10 which is {teamNps.quality}</li>
-                            {/* <li>Your passive net profit % is (lower, at par, higher) than the national average</li> */}
-                        </ul>
+                        </ul>) : 
+                        (<ul className='font-[300] text-neutral-500 list-disc p-4'>
+                            <li>Upgrade now to view client NPS</li>
+                            <li>Upgrade now to view team satisfaction</li>
+                        </ul>)
+                        }
                     </div>
                 </div>
                 

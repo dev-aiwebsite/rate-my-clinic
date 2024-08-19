@@ -246,7 +246,7 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
                                 <label htmlFor="logo_upload" className="formLabel">Clinic Logo</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <InputFileNoSSR defaultValue={currentUser?.clinic_logo} name={"clinic_logo"} required={true}/>
+                                        <InputFileNoSSR defaultValue={currentUser?.clinic_logo} name={"clinic_logo"}/>
                                     </div>
                                 </div>
                             </div>
@@ -261,11 +261,22 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
                             </div>
 
                             <div className="">
-                                <label htmlFor="clinic_location" className="formLabel">Clinic location</label>
+                                <label htmlFor="clinic_location" className="formLabel">State/Territory</label>
                                 <div className="mt-2">
                                     <div className="formField">
                                         <input type="text" name="clinic_location_state" id="clinic_location_state" className="" placeholder="State/Territory" required/>
+                                    </div>
+                                </div>
+
+                                <div className="mt-2">
+                                <label htmlFor="clinic_location" className="formLabel">Country</label>
+                                    <div className="formField">
                                         <input type="text" name="clinic_location_country" id="clinic_location_country" className="" placeholder="Country" required/>
+                                    </div>
+                                </div>
+                                <div className="mt-2">
+                                <label htmlFor="clinic_location" className="formLabel">Postcode/Zipcode</label>
+                                    <div className="formField">
                                         <input type="text" name="clinic_location_postcode" id="clinic_location_postcode" className="" placeholder="Postcode/Zipcode" required/>
                                     </div>
                                 </div>

@@ -51,7 +51,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                     <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                         <h1 className="inline-block text-lg font-bold">2. Take the owner survey.</h1>
                         
-                        <p className="text-md text-gray-700">{`You need to answer all the questions as accurate as you can. Once submitted your response is recorded in our database.`}</p>
+                        <p className="text-md text-gray-700">{`You need to answer all the questions as accurately as you can. Once submitted your response is recorded in our database.`}</p>
                         <p className="text-md text-gray-700">{`You must complete this step before you can share the Team and Client surveys.`}</p>
                     </div>
                     <Image
@@ -91,7 +91,7 @@ const FormComponent = ({additionalClass,data,setData,afterSubmit}:{additionalCla
     const formValues = data?.ownerSurveyData
 
     const pathname = usePathname()
-    let tocheck = ['profile_pic','clinic_name','clinic_established','clinic_location_country','clinic_location_postcode','clinic_location_state','clinic_logo','usermobile']
+    let tocheck = ['clinic_name','clinic_established','clinic_location_country','clinic_location_postcode','clinic_location_state','usermobile']
     const isProfileComplete = tocheck.every(i => currentUser[i])
     
     if(pathname != '/dashboard/settings/account'){
@@ -100,7 +100,6 @@ const FormComponent = ({additionalClass,data,setData,afterSubmit}:{additionalCla
         }
     }
 
-    
     
     let clinic_id = currentUser._id
 

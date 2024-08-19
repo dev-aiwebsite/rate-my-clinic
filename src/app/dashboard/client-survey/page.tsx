@@ -69,7 +69,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                             <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                                 <h1 className="inline-block text-lg font-bold">Finally, invite your clients to answer the survey.</h1>
                                 
-                                <p className="text-md text-gray-700">{`Copy the Client Survey link. Create an email campaign using your marketing software (Mailchimp, ActiveCampaign, etc). Add the link to the CTA/Button in your email. Send the email to all clients that visited your clinic in the last 12 months.`}</p>
+                                <p className="text-md text-gray-700">{`Copy the Client Survey link. Create an email campaign using your marketing software (Mailchimp, ActiveCampaign, etc) to a button in your email to help it stand out. Please send this to all clients that have visited your clinic in the last 12 months.`}</p>
                                 <div className="w-full flex items-end">
                                     <button onClick={redirectTo} className="ml-auto btn btn-primary">Done</button>
                                 </div>
@@ -123,11 +123,10 @@ export default function Page({searchParams}:{searchParams:any}) {
                                 <p>Let your clients scan the QR code</p>
                             </div>
                             <div className="flex flex-col">
-                                <div className="flex flex-row gap-2 mt-auto">
+                                <div className="flex flex-row gap-2 mt-auto mb-5">
                                     <InputText value={url} className="ring-1 text-xs p-2 flex-1" readOnly />
                                     <CopyButton className="!bg-appblue-300 !text-white hover:!bg-appblue-350 grid align-center px-4 gap-2 !ring-0 !flex flex-row" buttonText="Copy" textToCopy={`${url}`}/>
                                 </div>
-                                <p className="mt-auto text-center text-sm text-neutral-400">* You can also include this link in your marketing emails.</p>
                                 <p className="text-center">Or share this link for them to visit</p>
                             </div>
                         </div>
