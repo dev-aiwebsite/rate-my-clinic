@@ -11,30 +11,19 @@ import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import Image from "next/image";
 import {useRouter} from "next/navigation";
+import { clinicFields,mobileNavbarHeight } from "lib/Const";
 type E164Number = string;
 
 type page = number
-const clinicInfoFields = [
-    "owner_fname",
-    "owner_lname",
-    "owner_email",
-    "owner_mobile",
-    "clinic_name",
-    "clinic_location_state",
-    "clinic_location_country",
-    "clinic_location_postcode",
-    "clinic_established"
-  ];
-
-
+const clinicInfoFields = clinicFields
 
 export default function Page({searchParams}:{searchParams:any}) {
+    
     const router = useRouter();
     const toast = useRef<Toast>(null);
     const {data, setData} = useSurveyDataContext()
     const formValues = data?.ownerSurveyData
     let isJourney = searchParams.journey == "" ? true : false
-
     function afterSubmit(){
         router.push('/dashboard/team-survey?journey')
     }
@@ -45,9 +34,9 @@ export default function Page({searchParams}:{searchParams:any}) {
             <div className="card col-span-3 row-span-1 flex flex-row items-center justify-between text-xl font-medium">
                 Owner survey
             </div>
-            {!formValues || isJourney ? (<div className="setupWrapper bg-black/50 left-0 top-0 fixed h-screen setupWrapper w-screen z-10 p-10 flex gap-4">
+            {!formValues || isJourney ? (<div className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-[calc(100vh_-_${mobileNavbarHeight})] md:h-screen setupWrapper w-screen z-10 p-10 flex gap-4`}>
             
-                <div className="w-96 flex flex-col flex-nowrap -mb-10">
+                <div className="md:w-96 flex flex-col flex-nowrap -mb-10">
                     <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                         <h1 className="inline-block text-lg font-bold">2. Take the owner survey.</h1>
                         
@@ -55,14 +44,16 @@ export default function Page({searchParams}:{searchParams:any}) {
                         <p className="text-md text-gray-700">{`You must complete this step before you can share the Team and Client surveys.`}</p>
                     </div>
                     <Image
-                    className="w-[150px] aspect-square" 
+                    className="w-32 md:w-36 aspect-square" 
                     src="/images/logos/helper_avatar.png"
                     alt="recommendation avatar"
                     width={150}
                     height={150}
                 />
                 </div>
-                <FormComponent additionalClass="w-full flex-1" data={data} setData={setData} afterSubmit={afterSubmit}/>
+                <div className=" max-md:overflow-auto rounded-xl bg-white">
+                  <FormComponent additionalClass="w-full flex-1" data={data} setData={setData} afterSubmit={afterSubmit}/>
+                </div>
                 </div>)
                 : (
                     <FormComponent data={data} setData={setData}/>
@@ -200,10 +191,10 @@ const FormComponent = ({additionalClass,data,setData,afterSubmit}:{additionalCla
                         
                         key.includes('name') ? key = key.replace("owner_","") : key = key.replace("owner_","user")
                         
-                        ff.value = currentUser[key];
+                        ff.value = currentUser[key] || "";
                     } else {
                         if(formValues){
-                            ff.value = formValues[key];
+                            ff.value = formValues[key] || "";
                         }
                     }
 
@@ -287,6 +278,8 @@ const FormComponent = ({additionalClass,data,setData,afterSubmit}:{additionalCla
                 <label htmlFor="clinic_location" className="formLabel">Clinic location</label>
                 <div className="mt-2">
                     <div className="formField">
+                        <input type="text" name="clinic_location_address1" id="clinic_location_address1" className="" placeholder="123 Example Street" required readOnly/>
+                        <input type="text" name="clinic_location_address2" id="clinic_location_address2" className="" placeholder="Apartment 45, Building B" readOnly/>
                         <input type="text" name="clinic_location_state" id="clinic_location_state" className="" placeholder="You can add/edit this field in profile settings" required readOnly/>
                         <input type="text" name="clinic_location_country" id="clinic_location_country" className="" placeholder="" required readOnly/>
                         <input type="text" name="clinic_location_postcode" id="clinic_location_postcode" className="" placeholder="" required readOnly/>

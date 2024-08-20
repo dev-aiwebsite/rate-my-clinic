@@ -6,11 +6,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
+import { isProfileCompleteCheckList, mobileNavbarHeight } from "lib/Const";
 
-export default function AccountPage() {
+export default function AccountPage({searchParams}:{searchParams:any}) {
     const {currentUser} = useSessionContext()
-    let tocheck = ['clinic_name','clinic_established','clinic_location_country','clinic_location_postcode','clinic_location_state','usermobile']
+    let tocheck = isProfileCompleteCheckList
     const [isProfileComplete, setIsprofileComplete] = useState(false)
+    let isJourney = searchParams.journey == "" ? true : false
     useEffect(()=>{
         const isComplete = tocheck.every(i => currentUser[i])
         setIsprofileComplete(isComplete)
@@ -65,7 +67,7 @@ export default function AccountPage() {
                 </ul>
             </div> */}
            
-                {!isProfileComplete ? (<div className="setupWrapper bg-black/50 left-0 top-0 fixed h-screen setupWrapper w-screen z-10 p-10 flex gap-4">
+                {!isProfileComplete || isJourney ? (<div className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-[calc(100vh_-_${mobileNavbarHeight})] md:h-screen setupWrapper w-screen z-10 p-10 flex gap-4`}>
                         <div className="w-96 flex flex-col flex-nowrap -mb-10">
                             <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                                 <h1 className="inline-block text-lg font-bold">Welcome {currentUser.fname},</h1>
@@ -73,14 +75,14 @@ export default function AccountPage() {
                                 <p className="text-md text-gray-700">{`To make the App work, let's continue setting up your details.`}</p>
                             </div>
                             <Image
-                                className="w-[150px] aspect-square" 
+                                className="w-32 md:w-36 aspect-square" 
                                 src="/images/logos/helper_avatar.png"
                                 alt="recommendation avatar"
                                 width={150}
                                 height={150}
                             />
                         </div>
-                        <div className="card w-full">
+                        <div className="card w-full max-md:overflow-hidden">
                              <ProfileForm redirectTo="/dashboard/owner-survey?journey"/>
                         </div>
                         </div>) : (

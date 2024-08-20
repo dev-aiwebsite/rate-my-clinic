@@ -38,7 +38,7 @@ const value = {
                     height={600}
                     alt="Wrh logo"  
                 />
-                <div className="h-full max-h-[calc(100vh_-_4rem)] overflow-y-hidden flex-1 flex flex-row max-md:!pb-20 max-md:-mt-10">
+                <div className="h-full max-h-[calc(100vh_-_4rem)] overflow-y-hidden flex-1 flex flex-row max-md:!pb-20">
                     <Sidebar/>
                     <div className="flex-1 overflow-y-auto"><SurveyDataContext surveyData={surveyData}>{children}</SurveyDataContext></div>
                 </div>
