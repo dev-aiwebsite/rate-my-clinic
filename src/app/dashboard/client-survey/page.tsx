@@ -35,8 +35,9 @@ export default function Page({searchParams}:{searchParams:any}) {
     let ownerSurveyDone = data?.ownerSurveyData ? Object.keys(data.ownerSurveyData).length > 0 : false
 
     let clientSurvey = data?.clientSurveyData
+    console.log(clientSurvey)
     if(clientSurvey){
-        clientSurvey.forEach(i => i.createdAt = formatDateTime(i.createdAt).replaceAll("/","-"))
+        clientSurvey.forEach(i => i.createdAt = formatDateTime(i.createdAt))
     }
 
     function redirectTo(){
