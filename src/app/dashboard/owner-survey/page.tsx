@@ -51,7 +51,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                     height={150}
                 />
                 </div>
-                <div className=" max-md:overflow-auto rounded-xl bg-white">
+                <div className="flex-1 max-md:overflow-auto rounded-xl bg-white">
                   <FormComponent additionalClass="w-full flex-1" data={data} setData={setData} afterSubmit={afterSubmit}/>
                 </div>
                 </div>)
