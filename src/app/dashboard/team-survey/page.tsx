@@ -14,6 +14,7 @@ import { Dialog } from "primereact/dialog";
 import { formatDateTime } from "@/helperFunctions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { mobileNavbarHeight } from "lib/Const";
 
 export default function Page({searchParams}:{searchParams:any}) {
     const router = useRouter()
@@ -81,19 +82,19 @@ export default function Page({searchParams}:{searchParams:any}) {
 
             {!isRestricted && <>
 
-             {isJourney ? (<div className="setupWrapper bg-black/50 left-0 top-0 fixed h-screen setupWrapper w-screen z-10 p-10 flex gap-4">          
-                        <div className="w-96 flex flex-col flex-nowrap -mb-10">
+             {isJourney ? (<div className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-[calc(100vh_-_${mobileNavbarHeight})] md:h-screen setupWrapper w-screen z-10 p-10 flex gap-4`}>          
+                        <div className="md:w-96 flex flex-col flex-nowrap -mb-10">
                             <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
-                                <h1 className="inline-block text-lg font-bold">3. Invite your team to answer the survey</h1>
+                                <h1 className="inline-block text-lg font-bold">Next, Invite your team to answer the survey</h1>
                                 
-                                <p className="text-md text-gray-700">{`Next, select Team Survey from the option panel, have your team scan the QR code or copy the link and distribute it via your preferred communication channel (email, messenger, etc)`}</p>
+                                <p className="text-md text-gray-700">{`Select Client Survey from the option panel: have your team scan the QR code or copy the link and distribute it via your preferred communication channel (email, messenger, etc)`}</p>
                                 <div className="w-full flex items-end">
                                     <button onClick={redirectTo} className="ml-auto btn btn-primary">Next</button>
                                 </div>
                             </div>
                             
                             <Image
-                                className="w-[150px] aspect-square" 
+                                className="w-32 md:w-36 aspect-square" 
                                 src="/images/logos/helper_avatar.png"
                                 alt="recommendation avatar"
                                 width={150}
@@ -101,7 +102,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                             />
                         
                         </div>
-                        <div className="card flex-1 p-20">
+                        <div className="card flex-1 p-20 max-md:overflow-auto bg-white">
                 {!isRestricted && shareSurveyView && <>
                     {ownerSurveyDone && <div className="flex flex-row flex-wrap gap-20 justify-center mt-20">
                         <div className="flex flex-col items-center gap-5">

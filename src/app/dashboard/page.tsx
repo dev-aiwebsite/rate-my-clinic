@@ -10,6 +10,7 @@ import { redirect, usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import ConvertToPDF from "components/generateReport";
 import { useEffect } from "react";
+import { isProfileCompleteCheckList } from "lib/Const";
 
 type npsData = {
     date: string;
@@ -38,7 +39,7 @@ export default function Page(){
     const pathname = usePathname()
     
     if(!currentUser) return
-    let tocheck = ['clinic_name','clinic_established','clinic_location_country','clinic_location_postcode','clinic_location_state','usermobile']
+    let tocheck = isProfileCompleteCheckList
     const isProfileComplete = tocheck.every(i => currentUser[i])
     
     if(pathname != '/dashboard/settings/account'){
@@ -58,7 +59,7 @@ export default function Page(){
 
     if(is_ownerSurveyData_complete){
         if(data.ownerSurveyData){
-            const maxDays = 10;
+            const maxDays = 14;
             let createdAt = new Date(data.ownerSurveyData.createdAt); // Assuming data.ownerSurveyData.createdAt is a valid date string
             let today = new Date();
             
@@ -72,12 +73,9 @@ export default function Page(){
             // Calculate the difference in days
             daysRemaining = Math.ceil(timeDifference / (1000 * 3600 * 24));
             
-            
-
-
-            
         }
         
+
         if(data){
             let filteredData = data.clientSurveyData.filter((i:any)=> i.clinicid == currentUser._id)
             let filteredData_team = data.teamSurveyData.filter((i:any)=> i.clinicId == currentUser._id)
@@ -153,7 +151,7 @@ export default function Page(){
                 <SummaryOverview enabled={charts} showReport={showReport} surveyData={data} additionalClass={`card max-md:basis-full !px-0 md:*:px-6 gap-6 ${is_ownerSurveyData_complete ? "" : 'disabled'}`}/>
                 <div className={`card md:row-span-1 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
                     <Link className="h-full gap-5 flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps?nps=client">
-                        <div className="flex-1 min-w-24 grid items-center justify-around">
+                        <div className="flex-1 min-w-24 grid items-center md:justify-around">
                             <p>Client NPS</p>
                             <p className="font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
                         </div>
@@ -162,7 +160,7 @@ export default function Page(){
                 </div>
                 <div className={`card md:row-span-1 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
                     <Link className="h-full gap-5 flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps?nps=team">
-                        <div className="flex-1 min-w-24 grid items-center justify-around">
+                        <div className="flex-1 min-w-24 grid items-center md:justify-around">
                             <p>Team Satisfaction</p>
                             <p className="font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
                         </div>

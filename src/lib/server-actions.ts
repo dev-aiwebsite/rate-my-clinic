@@ -102,14 +102,14 @@ export const OwnerSurveyAction = async (formData: FormData) => {
             result['message'] = "Data saved successfully"
             result['success'] = true
 
-            // set 10 days report email
-            const sendTime = new Date(); // Set your desired send time
-            sendTime.setHours(sendTime.getDate() + 6); // Example: 10 minutes from now
-            sendTime.setDate(sendTime.getHours() + 1);
+            // set 14 days report email
+            const sendTime = new Date();
+            sendTime.setDate(sendTime.getDate() + 14);
+            sendTime.setHours(8, 0, 0, 0);
 
             const mailOptions = {
                 to: userEmail,
-                subject: "RATE MY CLINIC - Your report is ready for download",
+                subject: "Your report is ready for download",
                 templateName: 'Report ready',
                 dynamicFields: {
                     firstname: `${userFirstname}`,
@@ -889,6 +889,7 @@ function surveyCalculation(data:any) {
 
 
 export const SendMailViaElastic = async (mailOptions: MailOptions) => {
+    let fromEmail = process.env.ELASTIC_EMAIL || "info.ratemyclinic@gmail.com";
     try {
         let defaultClient = ApiClient.instance;
 
@@ -919,7 +920,7 @@ export const SendMailViaElastic = async (mailOptions: MailOptions) => {
                 ],
                 Merge: mailOptions.dynamicFields,
                 Subject: mailOptions?.subject || "",
-                From: "RATE MY CLINIC <info.ratemyclinic@gmail.com>",
+                From: `Rate my clinic <${fromEmail}>`,
                 TemplateName: mailOptions.templateName || "",
                 Postback: mailOptions.sendTime ? mailOptions.sendTime.toISOString() : undefined,
             },
