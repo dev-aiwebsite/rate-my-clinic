@@ -8,7 +8,7 @@ import { redirect } from "next/navigation";
 import { useEffect, useState } from "react";
 import { isProfileCompleteCheckList, mobileNavbarHeight } from "lib/Const";
 
-export default function AccountPage({searchParams}:{searchParams:any}) {
+export default function AccountPage({searchParams}:{searchParams?:any}) {
     const {currentUser} = useSessionContext()
     let tocheck = isProfileCompleteCheckList
     const [isProfileComplete, setIsprofileComplete] = useState(false)
