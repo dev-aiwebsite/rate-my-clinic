@@ -37,6 +37,13 @@ const user_schema = new mongoose.Schema({
   clinic_type: {
     type: String,
   },
+  clinic_location_address1: {
+    type: String,
+  },
+  clinic_location_address2: {
+    type: String,
+    default: "",
+  },
   clinic_location_state: {
     type: String,
   },

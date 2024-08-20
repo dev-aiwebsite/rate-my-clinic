@@ -13,6 +13,7 @@ import TableData from "../../../components/table-data";
 import { formatDateTime } from "@/helperFunctions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
+import { mobileNavbarHeight } from "lib/Const";
 
 export default function Page({searchParams}:{searchParams:any}) {
     const router = useRouter()
@@ -81,19 +82,19 @@ export default function Page({searchParams}:{searchParams:any}) {
             </div>}
             
                 {!isRestricted && shareSurveyView && <> 
-                    {isJourney ? (<div className="setupWrapper bg-black/50 left-0 top-0 fixed h-screen setupWrapper w-screen z-10 p-10 flex gap-4">          
-                        <div className="w-96 flex flex-col flex-nowrap -mb-10">
+                    {isJourney ? (<div className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-[calc(100vh_-_${mobileNavbarHeight})] md:h-screen setupWrapper w-screen z-10 p-10 flex gap-4`}>          
+                        <div className="md:w-96 flex flex-col flex-nowrap -mb-10">
                             <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                                 <h1 className="inline-block text-lg font-bold">Finally, invite your clients to answer the survey.</h1>
                                 
-                                <p className="text-md text-gray-700">{`Copy the Client Survey link. Create an email campaign using your marketing software (Mailchimp, ActiveCampaign, etc) to a button in your email to help it stand out. Please send this to all clients that have visited your clinic in the last 12 months.`}</p>
+                                <p className="text-md text-gray-700">{`Select Client Survey from the option panel: Copy the Client Survey link. Create an email campaign using your email marketing software (e.g. Mailchimp, Active Campaign etc.). Add the link to a button in your email to help it stand out. Please send this to all clients that have visited your clinic in the last 12 months.`}</p>
                                 <div className="w-full flex items-end">
                                     <button onClick={redirectTo} className="ml-auto btn btn-primary">Done</button>
                                 </div>
                             </div>
                             
                             <Image
-                                className="w-[150px] aspect-square" 
+                                className="w-32 md:w-36  aspect-square" 
                                 src="/images/logos/helper_avatar.png"
                                 alt="recommendation avatar"
                                 width={150}
@@ -102,7 +103,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                         </div>
 
 
-                            <div className="card flex-1 p-20">
+                            <div className="max-md:overflow-auto rounded-xl bg-white card flex-1 p-20">
                                 {ownerSurveyDone && <>
                                 <p className="text-md text-center text-gray-600">Please send this survey to all clients that visited your clinic in the last 12 months. We recommend offering a major prize of $200 to one lucky winner. To distribute the survey, we suggest using Mailchimp or similar to email. It may also be worthwhile creating a flyer with the QR code to display in your clinic to encourage more responses.</p>
                                 <div className="flex flex-row flex-wrap gap-20 justify-center mt-20">

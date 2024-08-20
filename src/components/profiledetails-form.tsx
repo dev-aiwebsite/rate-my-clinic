@@ -171,15 +171,18 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
     return (
         <>
           <Toast className="text-sm" ref={toast} />
-            <form ref={profileFormRef} className="[&_label]:!text-sm max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col" id="profile-details-form">
+            <form ref={profileFormRef} className="h-full [&_label]:!text-sm max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col" id="profile-details-form">
                <div className="flex flex-row items-center justify-center">
-                <Switcher
+                     <Switcher
                     enabled={switchEnabled}
                     setEnabled={handleSwitcherClick}
                     textone="Profile details"
                     texttwo="Clinic details"
                     />
-               </div>
+                </div>
+                <div className="max-md:overflow-auto p-1">
+
+                
                     <div className={`formSectionContainer ${!switchEnabled ? "" : "hidden"}`}  data-formpage="1">
                         <div className="formSectionContent">
                             <div>
@@ -261,22 +264,13 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
                             </div>
 
                             <div className="">
-                                <label htmlFor="clinic_location" className="formLabel">State/Territory</label>
+                                <label className="formLabel">Clinic Location</label>
                                 <div className="mt-2">
                                     <div className="formField">
+                                        <input type="text" name="clinic_location_address1" id="clinic_location_address1" className="" placeholder="123 Example Street" required/>
+                                        <input type="text" name="clinic_location_address2" id="clinic_location_address2" className="" placeholder="Apartment 45, Building B"/>
                                         <input type="text" name="clinic_location_state" id="clinic_location_state" className="" placeholder="State/Territory" required/>
-                                    </div>
-                                </div>
-
-                                <div className="mt-2">
-                                <label htmlFor="clinic_location" className="formLabel">Country</label>
-                                    <div className="formField">
                                         <input type="text" name="clinic_location_country" id="clinic_location_country" className="" placeholder="Country" required/>
-                                    </div>
-                                </div>
-                                <div className="mt-2">
-                                <label htmlFor="clinic_location" className="formLabel">Postcode/Zipcode</label>
-                                    <div className="formField">
                                         <input type="text" name="clinic_location_postcode" id="clinic_location_postcode" className="" placeholder="Postcode/Zipcode" required/>
                                     </div>
                                 </div>
@@ -293,8 +287,8 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
                         </div>
                     </div>
                
-                   
-                <div className="w-full flex flex-row justify-end md:items-end mt-10">
+                </div>
+                <div className="w-full flex flex-row justify-end md:items-end md:mt-10">
                     <Button className="btn-primary md:min-w-32 justify-center" onClick={(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => handleFormValidation(e)} type="button" loading={isLoading}><span>Save</span></Button>
                 </div>
             </form>
