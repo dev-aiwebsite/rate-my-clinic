@@ -42,7 +42,7 @@ export default function Page({searchParams}:{searchParams:any}) {
 
     let teamSurvey = data?.teamSurveyData
     if(teamSurvey){
-        teamSurvey.forEach(i => i.createdAt = formatDateTime(i.createdAt).replaceAll("/","-"))
+        teamSurvey.forEach(i => i.createdAt = formatDateTime(i.createdAt))
     }
 
     function tableRowOnClick(e: DataTableSelectionSingleChangeEvent<any[]>){
@@ -179,7 +179,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                             <Column field="createdAt" header="Date" sortable></Column>
                         </DataTable>
                     </div>
-                    <Dialog header={dialogHeaderText} visible={dialogVisible} style={{ width: '50vw' }} onHide={() => {if (!dialogVisible) return; setDialogVisible(false); }}>
+                    <Dialog header={dialogHeaderText} visible={dialogVisible} style={{ width: 'min(90vw, 70rem)' }} onHide={() => {if (!dialogVisible) return; setDialogVisible(false); }}>
                         <div className="m-0">
                             <TableData data={dialogData}/>
                         </div>
