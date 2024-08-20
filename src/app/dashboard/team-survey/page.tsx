@@ -69,12 +69,13 @@ export default function Page({searchParams}:{searchParams:any}) {
                 </ul>}
              </div>
              {isRestricted && <div className="card flex-1 p-20 w-full">
-                <div className="group text-orange-400 space-x-2 hover:cursor-pointer hover:text-orange-500">
-                <span className="pi pi-lock"></span>
-                <span className="group-hover:underline ">
-                    Upgrade plan to unlock
-                </span>
+                <div className="flex items-center flex-col gap-2">
+                <div className="text-neutral-400 space-x-1">
+                    <span className="text-lg !font-bold pi pi-lock"></span>
+                    <span>This feature is currently not available.</span>
                 </div>
+                <Link className="text-orange-400 text-lg underline" href={"/pricing"} target="_blank">Upgrade plan to unlock</Link>
+            </div>
                 
             </div>}
 
