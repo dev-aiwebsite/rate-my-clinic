@@ -20,10 +20,8 @@ export const authConfig = {
       const loginRestrictedPath = url.pathname.startsWith('/login') || 
       url.pathname.startsWith('/forgot-password') || 
       url.pathname.startsWith('/signup')
+      
     
-
-
-
       if(isLoggedIn){
         
         if(isOnHome || loginRestrictedPath){

@@ -1,11 +1,58 @@
-"use client"
-import { redirect, usePathname } from "next/navigation";
 
 
-export function IsProfileComplete({currentUser}:{currentUser:any}) {
-    const pathname = usePathname();
-    console.log(currentUser, 'from isProfileComplete')
-    
+type rgb = {
+    [key:string]:number
+}
+
+export function getColor(value: number) {
+    const maxStep = 255 * 3.5
+    // const maxStep = 940
+    const stepRatio = maxStep / 100
+    let stepsToDo = value * stepRatio
+
+    let rgb:rgb = {
+        red: 255,
+        green: 0,
+        blue: 0,
+    }
+
+    let colorSequence = ['green', 'red', 'blue']
+    let maxTries = 10
+
+    while (stepsToDo > 0 && maxTries > 0) {
+        maxTries = maxTries - 1
+        colorSequence.forEach((v, i) => {
+            let currentValue = rgb[v]
+            let toAdjust = 255
+
+            if (stepsToDo - toAdjust < 0) {
+                toAdjust = stepsToDo
+
+            }
+
+            stepsToDo = stepsToDo - toAdjust
+
+            if (currentValue >= 255) {
+                rgb[v] = currentValue - toAdjust
+                if (rgb[v] < 0) {
+                    stepsToDo = stepsToDo - rgb[v]
+                    rgb[v] = 0
+                }
+
+            } else {
+                rgb[v] = toAdjust
+
+                if (rgb[v] >= 255) {
+                    stepsToDo = stepsToDo + (rgb[v] - 255)
+                    rgb[v] = 255
+                }
+
+            }
+
+        })
+
+    }
+    return `rgb(${rgb['red']}, ${rgb['green']}, ${rgb['blue']})`;
 }
 
 export function formatDateTime(date:Date){

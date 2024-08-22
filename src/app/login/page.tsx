@@ -1,7 +1,9 @@
 import LoginForm from "../../components/login-form";
 import Image from "next/image";
 
-export default async function LoginPage({children}:any) {
+export default async function Page({searchParams}:{ searchParams:any}) {
+    let isViaAdmin = searchParams.va || ""
+
     return (
         <div className="max-md:flex-col max-md:items-center flex sm:items-center sm:justify-center h-screen w-screen p-10">
               <Image 
@@ -15,7 +17,7 @@ export default async function LoginPage({children}:any) {
             <div className="relative grid grid-cols-1 sm:grid-cols-2 max-w-screen-lg mx-auto rounded-lg shadow-2xl p-20 gap-20 ring-1 ring-gray-200">
                 <div className="sm:mt-auto relative z-10">
                   <h1 className="text-lg font-bold text-center font-medium mb-10">Enter Login Credentials</h1>
-                  <LoginForm/>
+                  <LoginForm viaAdmin={isViaAdmin}/>
                 </div>
                 <div className="max-md:hidden absolute top-0 sm:relative -z-0 opacity-10 sm:opacity-100">
                     <Image 

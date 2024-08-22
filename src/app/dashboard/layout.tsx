@@ -1,3 +1,4 @@
+"use server"
 import Navbar from "@/ui/navbar/navbar"
 import Sidebar from "@/ui/sidebar/sidebar"
 import { PrimeReactProvider } from "primereact/api";
@@ -19,7 +20,9 @@ const Layout = async ({
 
 const session = await auth() as unknown as ExtendedSession
 const Users = await fetchData()
-const currentUser = JSON.parse(JSON.stringify(Users.find(i => i._id == session.user_id)))
+const c_user = JSON.stringify(Users.find(i => i._id == session.user_id))
+const currentUser = JSON.parse(c_user)
+
 const surveyData = await getSurveyData()
 const value = {
     ripple: true,
