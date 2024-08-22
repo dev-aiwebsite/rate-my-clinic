@@ -23,10 +23,17 @@ export default function Page({searchParams}:{searchParams:any}) {
     const toast = useRef<Toast>(null);
     const {data, setData} = useSurveyDataContext()
     const formValues = data?.ownerSurveyData
-    let isJourney = searchParams.journey == "" ? true : false
+    let defaultisJourney = searchParams.journey == "" ? true : false
+    const [isJourney,setIsJourney] = useState(defaultisJourney);
     function afterSubmit(){
         router.push('/dashboard/team-survey?journey')
     }
+    // handle closing journey
+    function exitJourney(){
+        router.replace('/dashboard/owner-survey')
+        setIsJourney(false)
+    }
+    
     return (<>
           <Toast className="text-sm" ref={toast} />
         
@@ -35,9 +42,11 @@ export default function Page({searchParams}:{searchParams:any}) {
                 Owner survey
             </div>
             {!formValues || isJourney ? (<div className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-[calc(100vh_-_${mobileNavbarHeight})] md:h-screen setupWrapper w-screen z-10 p-10 flex gap-4`}>
-            
+                
+                
                 <div className="md:w-96 flex flex-col flex-nowrap -mb-10">
                     <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
+                    {formValues && <button className="absolute right-4 group" onClick={exitJourney}><span className="pi pi-times flex items-center justify-center text-lg text-gray-600 transform transition-transform duration-300 hover:scale-110 hover:text-red-400"></span></button>}
                         <h1 className="inline-block text-lg font-bold">2. Take the owner survey.</h1>
                         
                         <p className="text-md text-gray-700">{`You need to answer all the questions as accurately as you can. Once submitted your response is recorded in our database.`}</p>

@@ -42,7 +42,14 @@
   rotate:270deg;
   transform-origin: center;
 }
+/* input, textarea, select {
+  font-size: 16px !important;
+} */
 
+.print .pdf_page {
+  width: 210mm !important;
+  height: 297mm !important;
+}
 
 @media screen and (max-width: 768px) {
   html {

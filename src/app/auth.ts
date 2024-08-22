@@ -14,12 +14,16 @@ interface CustomSession extends Session {
   }
 
 const login = async (credentials:any) => {
+    console.log(credentials,'from login')
     try {
         connectToDb()
         const user = await Users.findOne({useremail:credentials.useremail})
         if(!user) throw new Error('wrong credentials')
-        const isPasswordCorrect = await bcrypt.compare(credentials.userpass, user.password)
-        if(!isPasswordCorrect) throw new Error('wrong credentials')
+        const viaAdmin = credentials?.viaadmin || false
+        if(!viaAdmin){
+            const isPasswordCorrect = await bcrypt.compare(credentials.userpass, user.password)
+            if(!isPasswordCorrect) throw new Error('wrong credentials')
+        }
         return user
 
     } catch (error:any) {

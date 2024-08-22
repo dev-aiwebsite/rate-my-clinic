@@ -16,6 +16,7 @@ import { auth } from './auth';
 import { ExtendedSession } from '../../typings';
 import { getSurveyData } from 'lib/server-actions';
 import SurveyDataContext from '@/context/surveyDataContext';
+import type { Viewport } from 'next'
 
 const poppins = Poppins({
   subsets: ['latin'],
@@ -24,6 +25,12 @@ const poppins = Poppins({
   weight: ['100', '200', '300', '400', '500', '600', '700', '800', '900']
 });
 
+export const viewport:Viewport = {
+  width: "device-width",
+  initialScale: 1.0,
+  maximumScale: 1.0,
+  userScalable: false,
+};
 export const metadata: Metadata = {
   title: "Rate my clinic",
   description: "rate my clinic",
@@ -46,6 +53,8 @@ export default async function RootLayout({children}: Readonly<{children: React.R
     current_user = users?.find((i: { _id: any; }) => i._id == session.user_id) || null
     current_user_id = session.user_id
   }
+
+  console.log(Users)
   
   const surveyData = await getSurveyData(current_user_id)
 

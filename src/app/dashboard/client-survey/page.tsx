@@ -27,7 +27,7 @@ export default function Page({searchParams}:{searchParams:any}) {
         dialogHeaderText = `${dialogData.fname} ${dialogData.lname}`
     }    
     let isThisJourney = searchParams.journey == "" ? true : false
-    const [isJourney,setIsjourney] = useState(isThisJourney)
+    const [isJourney,setIsJourney] = useState(isThisJourney)
 
     let clinicId = currentUser._id
     let url = `${process.env.NEXT_PUBLIC_DOMAIN}/survey/client?cid=${clinicId}`;
@@ -35,14 +35,13 @@ export default function Page({searchParams}:{searchParams:any}) {
     let ownerSurveyDone = data?.ownerSurveyData ? Object.keys(data.ownerSurveyData).length > 0 : false
 
     let clientSurvey = data?.clientSurveyData
-    console.log(clientSurvey)
     if(clientSurvey){
         clientSurvey.forEach(i => i.createdAt = formatDateTime(i.createdAt))
     }
 
     function redirectTo(){
         router.push('/dashboard/client-survey')
-        setIsjourney(false)
+        setIsJourney(false)
     }
 
     function tableRowOnClick(e: DataTableSelectionSingleChangeEvent<any[]>){
@@ -60,7 +59,10 @@ export default function Page({searchParams}:{searchParams:any}) {
         isRestricted = true
     }
 
-
+    function exitJourney(){
+        router.replace('/dashboard/client-survey')
+        setIsJourney(false)
+    }
     return (
         <div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 flex flex-col overflow-scroll min-h-full max-h-[calc(100vh_-_4rem)]">
              <div className="card flex flex-row items-center justify-between">
@@ -86,6 +88,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                     {isJourney ? (<div className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-[calc(100vh_-_${mobileNavbarHeight})] md:h-screen setupWrapper w-screen z-10 p-10 flex gap-4`}>          
                         <div className="md:w-96 flex flex-col flex-nowrap -mb-10">
                             <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
+                            <button className="absolute right-4 group" onClick={exitJourney}><span className="pi pi-times flex items-center justify-center text-lg text-gray-600 transform transition-transform duration-300 hover:scale-110 hover:text-red-400"></span></button>
                                 <h1 className="inline-block text-lg font-bold">Finally, invite your clients to answer the survey.</h1>
                                 
                                 <p className="text-md text-gray-700">{`Select Client Survey from the option panel: Copy the Client Survey link. Create an email campaign using your email marketing software (e.g. Mailchimp, Active Campaign etc.). Add the link to a button in your email to help it stand out. Please send this to all clients that have visited your clinic in the last 12 months.`}</p>

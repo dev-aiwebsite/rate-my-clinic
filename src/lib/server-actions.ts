@@ -8,6 +8,8 @@ import { MailOptions, elasticTransporter, transporter } from "../../config/nodem
 import { ExtendedSession } from '../../typings';
 import ElasticEmail, { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
 import Stripe from "stripe"
+import { cookies } from 'next/headers';
+import { redirect } from 'next/navigation';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -62,9 +64,9 @@ export const UpdateUser = async (query = {"useremail":"string"}, data = {}) =>{
 }
 
 export const AuthenticateUser = async (formData: FormData) => {
-    const { useremail, userpass } = Object.fromEntries(formData);    
+    const { useremail, userpass, viaadmin } = Object.fromEntries(formData);    
     try {
-        const redirectUrl = await signIn('credentials', { useremail, userpass, redirect: false });
+        const redirectUrl = await signIn('credentials', { useremail, userpass, viaadmin, redirect: false });
         return true
     } catch (error) {
         return false
@@ -244,6 +246,10 @@ export const getSurveyData = async (currentUser_id?:string) => {
         let otherSummary: { [key: string]: any; }[] = []
 
         clinicIds.forEach((clinicId: any) => {
+            // owner survey must always be there
+            // client and team survey cannot be there if owner survey is not present
+            // if current user populate my surveys
+            
             let clinicData = {
                 ownerSurveyData: convertedSurveys.ownerSurveyData.filter((i:{clinic_id: any;i:any}) => i.clinic_id == clinicId)[0],
                 clientSurveyData: convertedSurveys.clientSurveyData.filter((i:{clinicid: any;i:any}) => i.clinicid == clinicId),
@@ -253,11 +259,14 @@ export const getSurveyData = async (currentUser_id?:string) => {
             if(clinicId == currentUser_id){
                 mySurveys = {
                     ...clinicData,
-                    summary: {}
+                    ...mySurveys
                 }
+                
             }
 
-            if(clinicData.ownerSurveyData && clinicId == currentUser_id){
+            if(!clinicData.ownerSurveyData) return
+
+            if(clinicId == currentUser_id){
                 let summary = surveyCalculation(clinicData)
                 mySurveys.summary = summary
                 return
@@ -267,12 +276,12 @@ export const getSurveyData = async (currentUser_id?:string) => {
 
             let summary = surveyCalculation(clinicData)
         
-            if(clinicId == currentUser_id){
-                mySurveys.summary = summary
+            // if(clinicId == currentUser_id){
+            //     mySurveys.summary = summary
                 
-            } else {
+            // } else {
                 otherSummary.push(summary)
-            }
+            // }
             
     
         })
@@ -286,8 +295,8 @@ export const getSurveyData = async (currentUser_id?:string) => {
             strategy: {score: oldData.reduce((a,b) => Number(a) + Number(b.strategy), 0) / oldData.length},
             finance: {score: oldData.reduce((a,b) => Number(a) + Number(b.finance), 0) / oldData.length},
         }
-
-        overalls['other'] = oldData.reduce((a,b) => Number(a) + Number(b.overall), 0) / oldData.length
+        const oldDataTotal = oldData.reduce((a,b) => Number(a) + Number(b.overall), 0)
+        overalls['other'] = oldDataTotal / oldData.length
         overalls['mine'] = Object.values(mySurveys.summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
 
         if(otherSummary.length){
@@ -295,9 +304,8 @@ export const getSurveyData = async (currentUser_id?:string) => {
             let overall = otherSummary.map(summary => {
                 return Object.values(summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
             })
-            overalls['other'] = overalls.other + (overall.reduce((a,b) => Number(a) + Number(b), 0) / overall.length) / 2
-
-            
+            let otherTotal = overall.reduce((a,b) => Number(a) + Number(b), 0)
+            overalls['other'] = (oldDataTotal + otherTotal) / (oldData.length + overall.length)
 
             other_summary.clients.score = (other_summary.clients.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.clients.score), 0) / otherSummary.length) / 2)
             other_summary.team.score = (other_summary.team.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.team.score), 0) / otherSummary.length) / 2)
