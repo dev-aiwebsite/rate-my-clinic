@@ -6,10 +6,12 @@ import LoginSubmitBtn from "./login-submit-btn";
 import { revalidatePath } from "next/cache";
 import { useRouter } from 'next/navigation'
 
-export default function LoginForm() {
+type Tparams = {viaAdmin?:any}
+export default function LoginForm({viaAdmin}:Tparams) {
     const formRef = useRef<HTMLFormElement>(null)
     const [error, setError] = useState(false)
     const router = useRouter()
+
     return (
         <form action={async (formdata) => {
             formRef.current?.reset()
@@ -27,6 +29,7 @@ export default function LoginForm() {
         ref={formRef}
         className="flex flex-col gap-6">
             {error && <span className="rounded bg-red-200 bg-opacity-50 ring-red-400 text-center px-4 py-2 text-red-500 text-xs">Wrong credentials</span>}
+            <input type="hidden" name="viaadmin" value={viaAdmin}/>
             <div>
                 <label className="text-xs text-neutral-400"
                     htmlFor="useremail">Email Address</label>

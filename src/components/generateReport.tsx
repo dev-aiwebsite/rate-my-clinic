@@ -59,7 +59,7 @@ const GenerateReport = () => {
                 const pageHeight = pdf.internal.pageSize.getHeight();
                 let position = 0;
               
-
+                document.body.classList.add('print');
                 // // pdf.textWithLink('Click here to visit Google', 10, 10, {
                 // //     url: 'https://www.google.com/',
                 // //     color: [0, 0, 255], // Blue color for the link
@@ -67,10 +67,8 @@ const GenerateReport = () => {
                 // // });
               
     
-
-
-
                     const elements = document.querySelectorAll('.pdf_page');
+                    
 
                     for (let i = 0; i < elements.length; i++) {
                         const element = elements[i] as HTMLElement;
@@ -95,6 +93,7 @@ const GenerateReport = () => {
                 
                 pdf.save(`RMC Report - ${clinicName}.pdf`);
                 setLoading(false)
+                document.body.classList.remove('print');
             } catch (error) {
                 console.error('Error generating PDF:', error);
             }
@@ -232,13 +231,13 @@ const GenerateReport = () => {
             return "great";
         }
     }
-
+// w = 215.9
     return (
-        <div className='bg-gray-200 p-10 rounded-lg'>
+        <div className='bg-gray-200 p-2 md:p-10 rounded-lg'>
             <Button className="btn sticky left-full top-2 right-2 bg-red-500 text-white" label="Download pdf" icon="" loading={loading} onClick={handleGeneratePDF} />
-            <div id='contentToPrint' ref={captureRef} className='*:w-[215.9mm] *:px-[15mm] *:py-[10mm] w-fit bg-white space-y-[15mm] mx-auto' >
+            <div id='contentToPrint' ref={captureRef} className='w-full *:md:w-[210mm] *:md:px-[15mm] *:md:py-[10mm] w-fit bg-white space-y-[15mm] mx-auto' >
                 <div
-                className='pdf_page p-[15mm] w-[215.9mm]'>
+                className='pdf_page'>
                     <img className='block mx-auto w-[70mm]' src="/images/logos/rmc-logo.png" alt=""></img>
                     <div className="!pb-8 font-[300] flex flex-col items-center justify-center gap-5">
                     <div className='*:!max-w-full w-[65mm] *:text-[5mm]'>
@@ -307,7 +306,7 @@ const GenerateReport = () => {
                 
 
                 {npsContentItems.map((item, index) =>
-                    <div key={index} className='pdf_page p-[15mm] w-[215.9mm] !mt-[20mm] [&_>_*_>_*:nth-child(1)]:flex-col [&_>_*_>_*:nth-child(1)]:items-start [&_>_*_>_*:nth-child(1)]:!gap-[15mm] [&_>_*_>_*:nth-child(1)_>_*:nth-child(1)]:!max-w-full [&_>_*_>_*:nth-child(1)_>_*:nth-child(2)]:!gap-6 [&_>_*_>_*:nth-child(2)_*]:!text-[4.5mm] [&_>_*_>_*:nth-child(2)_ul]:font-[300] [&_>_*_>_*:nth-child(2)_ul]:text-neutral-500'>
+                    <div key={index} className='pdf_page !mt-[20mm] [&_>_*_>_*:nth-child(1)]:flex-col [&_>_*_>_*:nth-child(1)]:items-start [&_>_*_>_*:nth-child(1)]:!gap-[15mm] [&_>_*_>_*:nth-child(1)_>_*:nth-child(1)]:!max-w-full [&_>_*_>_*:nth-child(1)_>_*:nth-child(2)]:!gap-6 [&_>_*_>_*:nth-child(2)_*]:!text-[4.5mm] [&_>_*_>_*:nth-child(2)_ul]:font-[300] [&_>_*_>_*:nth-child(2)_ul]:text-neutral-500'>
                         <NpsContent surveyData={surveyData} item={item} />
                     </div>
 
