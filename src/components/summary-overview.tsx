@@ -111,7 +111,7 @@ let subtext = {
                                 </TransitionChild>
 
                                 <div className="fixed inset-0 overflow-y-auto">
-                                    <div className="flex min-h-full items-center justify-center p-2 md:p-4 text-center">
+                                    <div className="flex min-h-full md:items-center md:justify-center p-2 md:p-4 text-center">
                                     <TransitionChild
                                         as={Fragment}
                                         enter="ease-out duration-300"
@@ -121,7 +121,7 @@ let subtext = {
                                         leaveFrom="opacity-100 scale-100"
                                         leaveTo="opacity-0 scale-95"
                                     >
-                                        <DialogPanel className="overflow-y-scroll w-full max-w-[70rem] max-h-[90vh] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
+                                        <DialogPanel className="overflow-y-hidden w-full max-w-[70rem] max-h-[90vh] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
                                         <DialogTitle
                                             as="h3"
                                             className="sticky top-0 text-lg font-medium leading-6 text-gray-900"
@@ -159,7 +159,7 @@ let subtext = {
                             <p className="text-[1.5vw] font-medium">{item?.value || "-/-"}</p>
                         </div>
                         <p className="md:hidden font-medium mx-auto text-center">{item?.name}</p>
-                        <div className="flex-1">
+                        <div className="flex-1 max-w-40">
                                 <MeterChart
                                     data={[
                                         {

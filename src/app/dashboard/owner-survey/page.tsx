@@ -12,6 +12,7 @@ import { redirect, usePathname } from "next/navigation";
 import Image from "next/image";
 import {useRouter} from "next/navigation";
 import { clinicFields,mobileNavbarHeight } from "lib/Const";
+import { Button } from "primereact/button";
 type E164Number = string;
 
 type page = number
@@ -41,7 +42,7 @@ export default function Page({searchParams}:{searchParams:any}) {
             <div className="card col-span-3 row-span-1 flex flex-row items-center justify-between text-xl font-medium">
                 Owner survey
             </div>
-            {!formValues || isJourney ? (<div className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-[calc(100vh_-_${mobileNavbarHeight})] md:h-screen setupWrapper w-screen z-10 p-10 flex gap-4`}>
+            {!formValues || isJourney ? (<div style={{maxHeight:`calc(100svh - ${mobileNavbarHeight})`}} className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-full md:h-screen setupWrapper w-screen z-10 p-5 md:p-10 flex gap-4`}>
                 
                 
                 <div className="md:w-96 flex flex-col flex-nowrap -mb-10">
@@ -142,8 +143,9 @@ const FormComponent = ({additionalClass,data,setData,afterSubmit}:{additionalCla
     }, [page, max_pages, setPage, setSubmitBtnText]);
 
 
-    const handleDefaultSubmit = useCallback(async (e: FormEvent, index: page) => {
+    const handleDefaultSubmit = async (e: FormEvent, index: page) => {
         e.preventDefault();
+        console.log('submitting')
         const Alert = ({ severity = 'info', summary = 'Info', detail = 'Message Content' }: ToastMessage) => {
             toast.current?.show({ severity, summary, detail });
         };
@@ -179,7 +181,7 @@ const FormComponent = ({additionalClass,data,setData,afterSubmit}:{additionalCla
         } else {
             Alert({ severity: 'error', summary: 'Error', detail: res.message });
         }
-    }, [setIsLoading, setPage, setSubmitBtnText]);
+    };
 
             
     useEffect(() => {
@@ -213,7 +215,8 @@ const FormComponent = ({additionalClass,data,setData,afterSubmit}:{additionalCla
     }, []);
 
     
-    return <><form className={`card max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col z-[20] ${additionalClass}`} id="owner-survey-form" onSubmit={(e) => handleDefaultSubmit(e,page)}>
+    return <>
+    <form className={`h-full card max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col z-[20] ${additionalClass}`} id="owner-survey-form" onSubmit={(e) => handleDefaultSubmit(e,page)}>
 <input type="hidden" name="clinic_id" value={clinic_id}/>
 <div className="flex-1 overflow-y-scroll *:p-2">
     <div className={`formSectionContainer ${page == 1 ? "" : "!hidden"}`} data-formpage="1">
@@ -961,7 +964,9 @@ const FormComponent = ({additionalClass,data,setData,afterSubmit}:{additionalCla
 </div>
 <div className="w-full flex flex-row justify-end items-end">
     <button className={`btn ${page != 1 ? "" : "!hidden"}`} onClick={() => handlePrev(page)} type="button">Back</button>
-    <button className="btn-primary min-w-60" type={submitBtnType as "button" | "submit"} onClick={() => handleNext(page)} form="owner-survey-form">{submitBtnText}</button>
+    {submitBtnType == 'submit' && <Button className="btn btn-primary min-w-60 text-center" type="submit" label="" icon="" loading={isLoading}><span className="mx-auto">Submit</span></Button>}
+    {submitBtnType != 'submit' && <button className="btn-primary min-w-60" type="button" onClick={() => handleNext(page)} form="owner-survey-form">{submitBtnText}</button>}
 </div>
-    </form></>
+    </form>
+    </>
 }

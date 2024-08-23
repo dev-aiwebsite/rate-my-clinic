@@ -34,16 +34,23 @@ const value = {
         <SessionContextProvider current_user={currentUser}>
             <div className="h-screen flex flex-col max-md:bg-slate-100">
                 <Navbar/>
+                <div className="!bg-slate-100 md:hidden sticky top-0 h-full w-full  max-h-32 my-0 mx-auto p-5 md:hidden !bg-transparent !shadow-none">
                 <Image
-                    className="md:hidden h-42 w-auto m-auto p-5 md:hidden !bg-transparent !shadow-none"
+                    className="max-h-32 mx-auto w-auto"
                     src="/images/logos/wrh-logo.png"
                     width={600}
                     height={600}
                     alt="Wrh logo"  
                 />
-                <div className="h-full max-h-[calc(100vh_-_4rem)] overflow-y-hidden flex-1 flex flex-row max-md:!pb-20">
+                </div>
+               
+                <div className="h-full max-h-[calc(100vh_-_11.25rem)] overflow-y-hidden flex-1 flex flex-row">
                     <Sidebar/>
-                    <div className="flex-1 overflow-y-auto"><SurveyDataContext surveyData={surveyData}>{children}</SurveyDataContext></div>
+                    <div className="flex-1 overflow-y-auto">
+                        <SurveyDataContext surveyData={surveyData}>
+                            {children}
+                        </SurveyDataContext>
+                    </div>
                 </div>
             </div>
         </SessionContextProvider>

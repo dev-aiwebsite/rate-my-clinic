@@ -8,8 +8,6 @@ import { useSessionContext } from "@/context/sessionContext";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { redirect, usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
-import ConvertToPDF from "components/generateReport";
-import { useEffect } from "react";
 import { isProfileCompleteCheckList } from "lib/Const";
 
 type npsData = {
@@ -37,7 +35,7 @@ export default function Page(){
     const {data,setData} = useSurveyDataContext()
     const {currentUser,setCurrentUser} = useSessionContext()
     const pathname = usePathname()
-    console.log(data)
+    
     if(!currentUser) return
     let tocheck = isProfileCompleteCheckList
     const isProfileComplete = tocheck.every(i => currentUser[i])
@@ -75,32 +73,34 @@ export default function Page(){
             
         }
         
+        if(currentUser.subscription_level > 0){
+            if(data){
+                let filteredData = data.clientSurveyData.filter((i:any)=> i.clinicid == currentUser._id)
+                let filteredData_team = data.teamSurveyData.filter((i:any)=> i.clinicId == currentUser._id)
+                let npsValues: number[] = []
+                let npsValues_team: number[] = []
+                filteredData.forEach((i)=> {
+        
+                    const date = new Date(i.createdAt);
+                    const formattedDate = date.toISOString().split('T')[0];
+    
+                    npsValues.push(Number(i.recommendation))
+        
+                })
+        
+                const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                clientNpsAvg = (sum / npsValues.length) * 10 || 0
+        
+        
+                filteredData_team.forEach((i)=> {
+                    npsValues_team.push(Number(i.recommendation))
+                })
+                
+                const sum2 = npsValues_team.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                teamNpsAvg = sum2 / npsValues_team.length || 0
+        
+            }
 
-        if(data){
-            let filteredData = data.clientSurveyData.filter((i:any)=> i.clinicid == currentUser._id)
-            let filteredData_team = data.teamSurveyData.filter((i:any)=> i.clinicId == currentUser._id)
-            let npsValues: number[] = []
-            let npsValues_team: number[] = []
-            filteredData.forEach((i)=> {
-    
-                const date = new Date(i.createdAt);
-                const formattedDate = date.toISOString().split('T')[0];
-
-                npsValues.push(Number(i.recommendation))
-    
-            })
-    
-            const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-            clientNpsAvg = (sum / npsValues.length) * 10 || 0
-    
-    
-            filteredData_team.forEach((i)=> {
-                npsValues_team.push(Number(i.recommendation))
-            })
-            
-            const sum2 = npsValues_team.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-            teamNpsAvg = sum2 / npsValues_team.length || 0
-    
         }
     
         clientNps = [
