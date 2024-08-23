@@ -155,7 +155,7 @@ export default function Page(){
                             <p>Client NPS</p>
                             <p className="font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
                         </div>
-                        <CircleChart className="!max-w-36" data={clientNps} max={10}/>
+                        <CircleChart className="!max-w-36" data={clientNps} max={100}/>
                     </Link>
                 </div>
                 <div className={`card md:row-span-1 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
