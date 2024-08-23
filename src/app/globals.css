@@ -64,9 +64,9 @@
   body:not(.print) .pdf_page {
     scale: 0.4;
     translate: -30% -30%;
-    margin-bottom: -55rem;
+    margin-bottom: -53rem;
     height: fit-content !important;
-    min-height: 65rem;
+    min-height: 70rem;
   }
 
 }
