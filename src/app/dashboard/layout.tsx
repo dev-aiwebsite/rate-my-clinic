@@ -34,7 +34,7 @@ const value = {
         <SessionContextProvider current_user={currentUser}>
             <div className="h-screen flex flex-col max-md:bg-slate-100">
                 <Navbar/>
-                <div className="!bg-slate-100 md:hidden sticky top-0 h-full w-full  max-h-32 my-0 mx-auto p-5 md:hidden !bg-transparent !shadow-none">
+                <div className="!bg-slate-100 md:hidden sticky top-0 h-full w-full  max-h-32 my-0 mx-auto p-5 md:hidden !shadow-none !z-[99999]">
                 <Image
                     className="max-h-32 mx-auto w-auto"
                     src="/images/logos/wrh-logo.png"
