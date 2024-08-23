@@ -15,6 +15,8 @@ import { formatDateTime } from "@/helperFunctions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { mobileNavbarHeight } from "lib/Const";
+import UpgradePlanBlock from "components/upgrade-plan-block";
+import NavbarMobile from "@/ui/navbar/navbar-mobile";
 
 export default function Page({searchParams}:{searchParams:any}) {
     const router = useRouter()
@@ -67,7 +69,7 @@ export default function Page({searchParams}:{searchParams:any}) {
         setIsJourney(false)
     }
     return (
-        <div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 flex flex-col overflow-scroll min-h-full max-h-[calc(100vh_-_4rem)]">
+        <div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 flex flex-col md:overflow-scroll min-h-full max-h-[calc(100vh_-_4rem)]">
              <div className="card col-span-3 row-span-1 flex flex-row gap-5 items-center justify-between">
                 <h1 className="text-xl font-medium">Team Survey</h1>
                 {!isRestricted && <ul className="flex-1 max-w-lg grid gap-[1px] grid-cols-2 divide-x *:cursor-pointer *:border-none rounded-xl overflow-hidden ring-1 ring-gray-300 *:py-2 *:px-1 *:block text-sm text-neutral-500 *:text-center *:bg-white bg-gray-300">
@@ -76,19 +78,15 @@ export default function Page({searchParams}:{searchParams:any}) {
                 </ul>}
              </div>
              {isRestricted && <div className="card flex-1 p-20 w-full">
-                <div className="flex items-center flex-col gap-2">
-                <div className="text-neutral-400 space-x-1">
-                    <span className="text-lg !font-bold pi pi-lock"></span>
-                    <span>This feature is currently not available.</span>
-                </div>
-                <Link className="text-orange-400 text-lg underline" href={"/pricing"} target="_blank">Upgrade plan to unlock</Link>
+                <div className="flex items-center flex-col gap-2 text-center">
+                <UpgradePlanBlock/>
             </div>
                 
             </div>}
 
             {!isRestricted && <>
 
-             {isJourney ? (<div className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-[calc(100vh_-_${mobileNavbarHeight})] md:h-screen setupWrapper w-screen z-10 p-10 flex gap-4`}>          
+             {isJourney ? (<div style={{maxHeight:`calc(100svh - ${mobileNavbarHeight})`}} className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed max-md:h-full md:h-screen setupWrapper w-screen z-10 p-5 md:p-10 flex gap-4`}>          
                         <div className="md:w-96 flex flex-col flex-nowrap -mb-10">
                             <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                             <button className="absolute right-4 group" onClick={exitJourney}><span className="pi pi-times flex items-center justify-center text-lg text-gray-600 transform transition-transform duration-300 hover:scale-110 hover:text-red-400"></span></button>
@@ -111,7 +109,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                         </div>
                         <div className="card flex-1 p-20 max-md:overflow-auto bg-white">
                 {!isRestricted && shareSurveyView && <>
-                    {ownerSurveyDone && <div className="flex flex-row flex-wrap gap-20 justify-center mt-20">
+                    {ownerSurveyDone && <div className="flex flex-row flex-wrap gap-20 justify-center md:mt-20">
                         <div className="flex flex-col items-center gap-5">
                             <ClinicQr text={url}/>
                             <p>Let your team scan the QR code</p>

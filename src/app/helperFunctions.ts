@@ -4,55 +4,71 @@ type rgb = {
     [key:string]:number
 }
 
-export function getColor(value: number) {
-    const maxStep = 255 * 3.5
-    // const maxStep = 940
-    const stepRatio = maxStep / 100
-    let stepsToDo = value * stepRatio
+// export function getColor(value: number) {
+//     const maxStep = 255 * 3.5
+//     // const maxStep = 940
+//     const stepRatio = maxStep / 100
+//     let stepsToDo = value * stepRatio
 
-    let rgb:rgb = {
-        red: 255,
-        green: 0,
-        blue: 0,
+//     let rgb:rgb = {
+//         red: 255,
+//         green: 0,
+//         blue: 0,
+//     }
+
+//     let colorSequence = ['green', 'red', 'blue']
+//     let maxTries = 10
+
+//     while (stepsToDo > 0 && maxTries > 0) {
+//         maxTries = maxTries - 1
+//         colorSequence.forEach((v, i) => {
+//             let currentValue = rgb[v]
+//             let toAdjust = 255
+
+//             if (stepsToDo - toAdjust < 0) {
+//                 toAdjust = stepsToDo
+
+//             }
+
+//             stepsToDo = stepsToDo - toAdjust
+
+//             if (currentValue >= 255) {
+//                 rgb[v] = currentValue - toAdjust
+//                 if (rgb[v] < 0) {
+//                     stepsToDo = stepsToDo - rgb[v]
+//                     rgb[v] = 0
+//                 }
+
+//             } else {
+//                 rgb[v] = toAdjust
+
+//                 if (rgb[v] >= 255) {
+//                     stepsToDo = stepsToDo + (rgb[v] - 255)
+//                     rgb[v] = 255
+//                 }
+
+//             }
+
+//         })
+
+//     }
+//     return `rgb(${rgb['red']}, ${rgb['green']}, ${rgb['blue']})`;
+// }
+
+export function getColor(value:number){
+    // 0-39 is Orange, 40-69 is blue and 70+ is green.
+    const blue = '#94BDE5'
+    const orange = '#fb923c'
+    const green = '#4ade80'
+
+    if(value < 40){
+        return orange
+    } else if(value < 70){
+        return blue
+    } else {
+        return green
     }
 
-    let colorSequence = ['green', 'red', 'blue']
-    let maxTries = 10
-
-    while (stepsToDo > 0 && maxTries > 0) {
-        maxTries = maxTries - 1
-        colorSequence.forEach((v, i) => {
-            let currentValue = rgb[v]
-            let toAdjust = 255
-
-            if (stepsToDo - toAdjust < 0) {
-                toAdjust = stepsToDo
-
-            }
-
-            stepsToDo = stepsToDo - toAdjust
-
-            if (currentValue >= 255) {
-                rgb[v] = currentValue - toAdjust
-                if (rgb[v] < 0) {
-                    stepsToDo = stepsToDo - rgb[v]
-                    rgb[v] = 0
-                }
-
-            } else {
-                rgb[v] = toAdjust
-
-                if (rgb[v] >= 255) {
-                    stepsToDo = stepsToDo + (rgb[v] - 255)
-                    rgb[v] = 255
-                }
-
-            }
-
-        })
-
-    }
-    return `rgb(${rgb['red']}, ${rgb['green']}, ${rgb['blue']})`;
 }
 
 export function formatDateTime(date:Date){

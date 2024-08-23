@@ -39,10 +39,10 @@ export default function NpsContent({surveyData,item,className}:{surveyData:any,i
 
     return (
         <div className={`${className} flex flex-col gap-14`}>
-            {<div className="flex flex-row items-end justify-around max-md:card gap-10">
+            <div className="flex flex-row items-end justify-around group-[:not(.pdf\\_page)]:max-md:card gap-10">
                     <div className="flex flex-col gap-2 items-center flex-1">
                         {item[0].icon && <Image
-                            className="max-md:max-w-[100px] w-[60%] aspect-square" 
+                            className="group-[:not(.pdf\\_page)]:max-md:max-w-[100px] w-[60%] aspect-square" 
                             src={item[0].icon}
                             alt={item[0].name}
                             width={40}
@@ -51,16 +51,16 @@ export default function NpsContent({surveyData,item,className}:{surveyData:any,i
                         <div className="text-3xl whitespace-nowrap">
                             <span>{item[0].name}</span> : <span className="text-red-400">{discrepancy_display_text}</span>
                         </div>
-                        <div className="text-base md:hidden text-center">
+                        <div className="text-base group-[.pdf\\_page]:!hidden md:hidden text-center">
                             <span>Your score</span> : <span>{item[0].value}</span>
                         </div>
-                        <div className="md:hidden text-center">
+                        <div className="group-[.pdf\\_page]:!hidden md:hidden text-center">
                             <span>Average Australian Clinic</span> : <span>{item[1].value}</span>
                         </div>
                         
                     </div>
-                    <div className="max-md:hidden grid grid-cols-2 w-full gap-10">
-                        <div className="max-md:hidden flex-1 max-w-96">
+                    <div className="group-[:not(.pdf\\_page)]:max-md:hidden grid grid-cols-2 w-full gap-10">
+                        <div className="group-[:not(.pdf\\_page)]:max-md:hidden flex-1 max-w-96">
                             <p className="text-xs text-neutral-400 text-center mb-3">Your Score</p>
                             <MeterChart
                                 data={[
@@ -77,7 +77,7 @@ export default function NpsContent({surveyData,item,className}:{surveyData:any,i
                             />
                         </div>
 
-                        <div className="max-md:hidden flex-1 max-w-96">
+                        <div className="group-[:not(.pdf\\_page)]:max-md:hidden flex-1 max-w-96">
                             <p className="text-xs text-neutral-400 text-center mb-3">Australian Clinic Average</p>
                             <MeterChart
                                 data={[
@@ -95,7 +95,7 @@ export default function NpsContent({surveyData,item,className}:{surveyData:any,i
                         </div>
                     </div>
                 </div>
-            }
+            
 
             <div className="col-span-3 flex gap-7 flex-col row-span-5 text-md">
                 <div>

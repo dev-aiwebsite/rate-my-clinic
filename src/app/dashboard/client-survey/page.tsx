@@ -14,6 +14,7 @@ import { formatDateTime } from "@/helperFunctions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { mobileNavbarHeight } from "lib/Const";
+import UpgradePlanBlock from "components/upgrade-plan-block";
 
 export default function Page({searchParams}:{searchParams:any}) {
     const router = useRouter()
@@ -74,18 +75,14 @@ export default function Page({searchParams}:{searchParams:any}) {
              </div>
 
              {isRestricted && <div className="card flex-1 p-20 w-full">
-                <div className="flex items-center flex-col gap-2">
-                <div className="text-neutral-400 space-x-1">
-                    <span className="text-lg !font-bold pi pi-lock"></span>
-                    <span>This feature is currently not available.</span>
-                </div>
-                <Link className="text-orange-400 text-lg underline" href={"/pricing"} target="_blank">Upgrade plan to unlock</Link>
+                <div className="flex items-center flex-col gap-2 text-center">
+                <UpgradePlanBlock/>
             </div>
                 
             </div>}
             
                 {!isRestricted && shareSurveyView && <> 
-                    {isJourney ? (<div className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-[calc(100vh_-_${mobileNavbarHeight})] md:h-screen setupWrapper w-screen z-10 p-10 flex gap-4`}>          
+                    {isJourney ? (<div style={{maxHeight:`calc(100svh - ${mobileNavbarHeight})`}} className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed max-md:h-full md:h-screen setupWrapper w-screen z-10 p-5 md:p-10 flex gap-4`}>          
                         <div className="md:w-96 flex flex-col flex-nowrap -mb-10">
                             <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                             <button className="absolute right-4 group" onClick={exitJourney}><span className="pi pi-times flex items-center justify-center text-lg text-gray-600 transform transition-transform duration-300 hover:scale-110 hover:text-red-400"></span></button>
@@ -116,7 +113,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                                         <p>Let your clients scan the QR code</p>
                                     </div>
                                     <div className="flex flex-col">
-                                        <div className="flex flex-row gap-2 mt-auto">
+                                        <div className="flex flex-row gap-2 mt-auto mb-5">
                                             <InputText value={url} className="ring-1 text-xs p-2 flex-1" readOnly />
                                             <CopyButton className="!bg-appblue-300 !text-white hover:!bg-appblue-350 grid align-center px-4 gap-2 !ring-0 !flex flex-row" buttonText="Copy" textToCopy={`${url}`}/>
                                         </div>

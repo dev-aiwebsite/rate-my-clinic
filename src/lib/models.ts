@@ -315,7 +315,6 @@ const ownerSurveyDataSchema = new mongoose.Schema({
   },
   clinic_logo: {
     type: String,
-    required: true,
   },
   services_provided: {
     type: String,

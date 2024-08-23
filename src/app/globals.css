@@ -46,15 +46,29 @@
   font-size: 16px !important;
 } */
 
-.print .pdf_page {
+ .pdf_page {
   width: 210mm !important;
   height: 297mm !important;
+  padding: 10mm 15mm !important;
+}
+
+ .pdf_page {
+  margin:auto;
 }
 
 @media screen and (max-width: 768px) {
   html {
     font-size: 12px;
   }
+
+  body:not(.print) .pdf_page {
+    scale: 0.4;
+    translate: -30% -30%;
+    margin-bottom: -55rem;
+    height: fit-content !important;
+    min-height: 65rem;
+  }
+
 }
 @layer utilities {
   .text-balance {

@@ -4,17 +4,26 @@ import Link from "next/link";
 import { useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { ProductCards } from "components/product-cards";
+import { useSessionContext } from "@/context/sessionContext";
 
-export default function PricingPage({ children }:any) {
+export default function PricingPage({searchParams,children }:any) {
     const [enabled, setEnabled] = useState(false);
+    const {currentUser} = useSessionContext()
+    
     const handleSwitcherClick = () => {
         setEnabled(!enabled);
     };
 
-
-    let metadata = {
-        'app_name': 'rmc'
+    let metadata:any = {
+        'app_name': 'rmc',
     }
+
+    if(currentUser?._id){
+        metadata['user_id'] = currentUser._id
+    }
+
+
+
     return (
         <div className="flex items-center justify-center h-screen w-screen">
         <div className="w-full max-w-screen-lg h-[90vh] mx-auto rounded-lg shadow-2xl p-10 py-10 gap-20 ring-1 ring-gray-200 relative">
