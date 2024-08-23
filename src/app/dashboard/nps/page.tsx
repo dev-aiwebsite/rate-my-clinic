@@ -64,7 +64,7 @@ export default function Page({searchParams}:{searchParams:any}) {
         npsAverage = "0.0"
     }
 
-    if(hasAccess){
+    if(!hasAccess){
         npsAverage = "--"
     }
 

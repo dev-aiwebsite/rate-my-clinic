@@ -24,7 +24,7 @@ interface DataVisibilityType {
     "promoters": boolean;
 }
 
-export default function NpsChart({data,enabled}:{data?:DataType,enabled?:boolean}) {
+export default function NpsChart({data,enabled = true}:{data?:DataType,enabled?:boolean}) {
 
     const [dataVisibility, setDataVisibility] = useState({
         detractors: true,
