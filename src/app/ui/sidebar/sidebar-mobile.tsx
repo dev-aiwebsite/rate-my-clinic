@@ -60,7 +60,7 @@ const SidebarMobile = ({userData,isVisible = false,position = "right",onHide}:{o
                 </li>
             {second_list_item.map((item, index) => (
                 <li key={index} className="mb-1 bg-white hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400" >
-                    <a href={item.link} className="flex flex-row items-center gap-3 text-xs py-3 px-6">
+                    <Link href={item.link} className="flex flex-row items-center gap-3 text-xs py-3 px-6">
                         {typeof(item.icon) === "string" && <Image
                             className="w-5 h-5" 
                             src={item.icon}
@@ -70,7 +70,7 @@ const SidebarMobile = ({userData,isVisible = false,position = "right",onHide}:{o
 
                         />}
                         {typeof(item.icon) === "object" && item.icon}
-                        {item.name}</a>
+                        {item.name}</Link>
                 </li>
             ))}
         </ul>
