@@ -11,7 +11,7 @@ export default function AccountPage({searchParams}:{searchParams?:any}) {
     const router = useRouter();
     const {currentUser} = useSessionContext()
     let tocheck = isProfileCompleteCheckList
-    const [isProfileComplete, setIsprofileComplete] = useState(false)
+    const [isProfileComplete, setIsprofileComplete] = useState(true)
     let defaultisJourney = searchParams.journey == "" ? true : false
     const [isJourney,setIsJourney] = useState(defaultisJourney);
 
@@ -19,7 +19,6 @@ export default function AccountPage({searchParams}:{searchParams?:any}) {
         const isComplete = tocheck.every(i => currentUser[i])
         setIsprofileComplete(isComplete)
     },[])
-    // const isProfileComplete = false
 
     const handleAfterSubmit = () => {
         router.push('/dashboard/owner-survey?journey');
@@ -32,7 +31,7 @@ export default function AccountPage({searchParams}:{searchParams?:any}) {
  
     return (
         <>
-        <div className="grid-flow-* flex-1 p-6 gap-x-6 gap-y-10 grid max-md:grid-cols-4 md:grid-cols-3 md:grid-rows-6 max-md:pb-40" >
+        <div className="grid-flow-* flex-1 p-6 gap-x-6 gap-y-10 grid max-md:grid-cols-4 md:grid-cols-3 md:grid-rows-6 max-md:pb-40 overflow-scroll max-h-[calc(100vh_-_11.25rem)] md:max-h-[calc(100vh_-_4rem)]" >
             <div className="card col-span-2 md:col-span-1 md:row-span-2 text-center">
                 <h3 className="">Clinic Logo</h3>
                 <Image
