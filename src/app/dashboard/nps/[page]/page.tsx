@@ -6,6 +6,7 @@ import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { useSessionContext } from "@/context/sessionContext";
 import AppAcess from "lib/appAccess";
 import Link from "next/link";
+import UpgradePlanBlock from "components/upgrade-plan-block";
 
 
 type Titems = {
@@ -73,12 +74,8 @@ export default function Page({params}:{params:any}){
         <div className="h-fit min-h-full col-span-3 row-span-5 max-md:!pb-30 md:card md:p-16">
             {pageEnabled && <NpsContent surveyData={data} item={item}/>}
             {!pageEnabled &&
-            <div className="flex items-center flex-col gap-2">
-                <div className="text-neutral-400 space-x-1">
-                    <span className="text-lg !font-bold pi pi-lock"></span>
-                    <span>This feature is currently not available.</span>
-                </div>
-                <Link className="text-orange-400 text-lg underline" href={"/pricing"} target="_blank">Upgrade plan to unlock</Link>
+            <div className="flex items-center flex-col gap-2 text-center">
+               <UpgradePlanBlock/>
             </div>
                 }
            

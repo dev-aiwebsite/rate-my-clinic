@@ -46,6 +46,10 @@ const createStripeCheckoutSession = async (request: { mode:Stripe.Checkout.Sessi
     meta['app_name'] = 'rmc'
     meta['product_id'] = priceId
 
+    let oldMember = meta['user_id'] || ""
+    if(oldMember){
+        oldMember = `&uid=${oldMember}`
+    }
     
     return await stripe.checkout.sessions.create({
         mode,
@@ -58,7 +62,7 @@ const createStripeCheckoutSession = async (request: { mode:Stripe.Checkout.Sessi
         customer_email: meta.useremail || "",
         allow_promotion_codes: true,
         // redirect_on_completion: "never",
-        return_url: `${domain}/confirmation?session_id={CHECKOUT_SESSION_ID}`,
+        return_url: `${domain}/confirmation?session_id={CHECKOUT_SESSION_ID${oldMember}}`,
    })
 }
 

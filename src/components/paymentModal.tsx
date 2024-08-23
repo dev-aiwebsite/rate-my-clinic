@@ -21,7 +21,7 @@ export default function PaymentModalButton({priceId,meta,mode}:{priceId:string, 
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({mode, priceId: priceId, action:'createSession', metadata : meta }),
+      body: JSON.stringify({mode, priceId: priceId, action:'createSession', metadata: meta }),
     });
 
     const data = await res.json();

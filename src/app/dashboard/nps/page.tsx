@@ -19,6 +19,7 @@ type npsItem = {
 export default function Page({searchParams}:{searchParams:any}) {
     const {currentUser} = useSessionContext()
     const {data} = useSurveyDataContext()
+    let hasAccess = currentUser.subscription_level > 0 || false
     let filteredData 
     let npsCategory = searchParams.nps
     let npsTextHeader = 'Client NPS'
@@ -63,13 +64,17 @@ export default function Page({searchParams}:{searchParams:any}) {
         npsAverage = "0.0"
     }
 
+    if(hasAccess){
+        npsAverage = "--"
+    }
+
     return (<>
         <div className="col-span-3 row-span-1 flex flex-row items-center justify-between card">
             <h1 className="text-2xl capitalize">{`${npsTextHeader}: ${npsAverage}`}</h1>
         </div>
 
         <div className="col-span-3 row-span-5 h-fit max-md:!pb-30 md:card">
-            <NpsChart data={npsData} />
+           {hasAccess ?  (<NpsChart data={npsData} /> ) : (<NpsChart enabled={false}/>)}
         </div>
     </>);
 }

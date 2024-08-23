@@ -3,6 +3,8 @@ import Image from "next/image";
 import { useState } from "react";
 import { Tooltip } from 'primereact/tooltip'
 import CopyButton from "./copy-text-button";
+import Link from "next/link";
+import UpgradePlanBlock from "./upgrade-plan-block";
         
 
 type DataType = {
@@ -22,7 +24,7 @@ interface DataVisibilityType {
     "promoters": boolean;
 }
 
-export default function NpsChart({data}:{data?:DataType}) {
+export default function NpsChart({data,enabled}:{data?:DataType,enabled?:boolean}) {
 
     const [dataVisibility, setDataVisibility] = useState({
         detractors: true,
@@ -88,14 +90,16 @@ export default function NpsChart({data}:{data?:DataType}) {
     }
     function handleClick(dataType:"detractors" | "passives" | "promoters") {
 
-        console.log('Button clicked!',dataVisibility);
-
         setDataVisibility({...dataVisibility,
             [dataType]: !dataVisibility[dataType]
         })
     }
     return (<>
-        <div className="width-full flex flex-col h-auto">
+        <div className="relative width-full flex flex-col h-auto">
+            {!enabled &&  <div className="z-10 absolute inset-0 w-full h-full pt-20 bg-[#fffa] flex items-center flex-col gap-2">
+                <UpgradePlanBlock/>
+            </div>}
+
                     
             <div className="text-sm text-neutral-500 font-[300] flex items-center justify-center gap-5">
                 <button className="flex flex-row gap-2 items-center shadow-sm ring-1 ring-gray-200 hover:shadow-lg bg-white rounded-full py-2 px-3"
@@ -141,32 +145,33 @@ export default function NpsChart({data}:{data?:DataType}) {
             </div>
         
 
-                    <div className="h-full w-full flex flex-col py-10 px-5 my-10">
+            <div className="h-full w-full flex flex-col py-10 px-5 my-10">
 
-                        <div className="h-full flex-1 flex relative">
-                             <div className="absolute grid grid-rows-10 h-full w-full pointer-events-none z-0">
-                                {numbers.map((number) => (
-                                <div key={number} className="border-0 border-dashed border-t-2 border-gray-200">
-                                </div>
-                                ))}
-                            </div>
-                            <div className="no-scrollbar overflow-y-clip grid grid-rows-10 h-[calc(100%_+_4rem)] py-8 -my-8 overflow-x-auto flex-1 z-2 relative">
-                               {chartItems}
-                            </div>
-                            <div className="grid grid-rows-10 h-auto">
-                                {numbers.map((number) => (
-                                <div key={number} className="text-xs text-neutral-500 border-0 border-l-4 border-t-4 border-gray-200">
-                                    <span className="block -translate-y-[calc(50%_+_2px)] translate-x-full">{number}</span>
-                                </div>
-                                ))}
-                            </div>
+                <div className="h-full flex-1 flex relative">
+                        <div className="absolute grid grid-rows-10 h-full w-full pointer-events-none z-0">
+                        {numbers.map((number) => (
+                        <div key={number} className="border-0 border-dashed border-t-2 border-gray-200">
                         </div>
-
-                        <div className="w-full text-xs text-neutral-500 border-0 border-t-4 border-gray-200 relative">
-                            <span className="absolute right-0 -translate-y-[calc(50%_+_2px)] translate-x-full">0</span>
-                        </div>
-
+                        ))}
                     </div>
+                    <div className="no-scrollbar overflow-y-clip grid grid-rows-10 h-[calc(100%_+_4rem)] py-8 -my-8 overflow-x-auto flex-1 z-2 relative">
+                        {chartItems}
+                    </div>
+                    <div className="grid grid-rows-10 h-auto">
+                        {numbers.map((number) => (
+                        <div key={number} className="text-xs text-neutral-500 border-0 border-l-4 border-t-4 border-gray-200">
+                            <span className="block -translate-y-[calc(50%_+_2px)] translate-x-full">{number}</span>
+                        </div>
+                        ))}
+                    </div>
+                </div>
+
+                <div className="w-full text-xs text-neutral-500 border-0 border-t-4 border-gray-200 relative">
+                    <span className="absolute right-0 -translate-y-[calc(50%_+_2px)] translate-x-full">0</span>
+                </div>
+
+            </div>
+
         </div>
 
         

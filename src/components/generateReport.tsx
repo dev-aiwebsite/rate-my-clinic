@@ -9,8 +9,6 @@ import { useSurveyDataContext } from '@/context/surveyDataContext';
 import { useSessionContext } from '@/context/sessionContext';
 import AppAcess from 'lib/appAccess';
 import { Button } from 'primereact/button';
-import html2pdf from 'html2pdf.js';
-import { image } from 'html2canvas/dist/types/css/types/image';
 
 type Tparams = {
     clinicId: string
@@ -74,13 +72,13 @@ const GenerateReport = () => {
                         const element = elements[i] as HTMLElement;
         
                         // Capture each element as an image
-                        const canvas = await html2canvas(element, { scale: 3 });
+                        const canvas = await html2canvas(element, { scale: 3, useCORS: true });
                         const imgData = canvas.toDataURL('image/png');
                         const imgProps = pdf.getImageProperties(imgData);
                         const pdfWidth = pdf.internal.pageSize.getWidth();
                         const pdfHeight = (imgProps.height * pdfWidth) / imgProps.width;
         
-                        if (position + pdfHeight > pageHeight) {
+                        if (i != 0 && position + pdfHeight > pageHeight) {
                             pdf.addPage();
                             position = 0;
                         }
@@ -88,6 +86,7 @@ const GenerateReport = () => {
                         // Add image to PDF
                         pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
                         position += pdfHeight;
+                        console.log(position,pdfHeight,pageHeight)
                     }
                 
                 
@@ -232,9 +231,14 @@ const GenerateReport = () => {
         }
     }
 // w = 215.9
+
     return (
-        <div className='bg-gray-200 p-2 md:p-10 rounded-lg'>
-            <Button className="btn sticky left-full top-2 right-2 bg-red-500 text-white" label="Download pdf" icon="" loading={loading} onClick={handleGeneratePDF} />
+        <div className={`relative bg-gray-200 p-2 md:p-10 rounded-lg ${loading ? 'overflow-hidden' : 'overflow-scroll'}`}>
+            <Button className="btn sticky left-full top-0 z-10 right-2 bg-red-500 text-white" label="Download pdf" icon="" loading={loading} onClick={handleGeneratePDF} />
+            {loading && <div className='absolute z-10 h-full w-full inset-0 bg-gray-100 flex justify-center gap-5 pt-40'>
+                <div><span className='pi pi-spinner-dotted pi-spin text-2xl'></span></div>
+                <p className='text-2xl'>Generating pdf</p>
+            </div>}
             <div id='contentToPrint' ref={captureRef} className='w-full *:md:w-[210mm] *:md:px-[15mm] *:md:py-[10mm] w-fit bg-white space-y-[15mm] mx-auto' >
                 <div
                 className='pdf_page'>
@@ -306,7 +310,7 @@ const GenerateReport = () => {
                 
 
                 {npsContentItems.map((item, index) =>
-                    <div key={index} className='pdf_page !mt-[20mm] [&_>_*_>_*:nth-child(1)]:flex-col [&_>_*_>_*:nth-child(1)]:items-start [&_>_*_>_*:nth-child(1)]:!gap-[15mm] [&_>_*_>_*:nth-child(1)_>_*:nth-child(1)]:!max-w-full [&_>_*_>_*:nth-child(1)_>_*:nth-child(2)]:!gap-6 [&_>_*_>_*:nth-child(2)_*]:!text-[4.5mm] [&_>_*_>_*:nth-child(2)_ul]:font-[300] [&_>_*_>_*:nth-child(2)_ul]:text-neutral-500'>
+                    <div key={index} className='group pdf_page print !mt-[20mm] [&_>_*_>_*:nth-child(1)]:flex-col [&_>_*_>_*:nth-child(1)]:items-start [&_>_*_>_*:nth-child(1)]:!gap-[15mm] [&_>_*_>_*:nth-child(1)_>_*:nth-child(1)]:!max-w-full [&_>_*_>_*:nth-child(1)_>_*:nth-child(2)]:!gap-6 [&_>_*_>_*:nth-child(2)_*]:!text-[4.5mm] [&_>_*_>_*:nth-child(2)_ul]:font-[300] [&_>_*_>_*:nth-child(2)_ul]:text-neutral-500'>
                         <NpsContent surveyData={surveyData} item={item} />
                     </div>
 
