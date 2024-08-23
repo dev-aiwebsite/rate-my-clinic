@@ -58,12 +58,42 @@ const GenerateReport = () => {
                 let position = 0;
               
                 document.body.classList.add('print');
-                // // pdf.textWithLink('Click here to visit Google', 10, 10, {
-                // //     url: 'https://www.google.com/',
-                // //     color: [0, 0, 255], // Blue color for the link
-                // //     underline: true // Optional: underline the text
-                // // });
-              
+            
+                    // Function to add footer content to each page
+                    const addFooter = (pdfWidth:number) => {
+                        const footerText = 'For assistance, please contact me at ';
+                        const email = 'paulhedges@ratemyclinic.com.au';
+                        const phone = ' or 0400 117 320.';
+                    
+                        // Font size and positioning
+                        const fontSize = 12;
+                        pdf.setFontSize(fontSize);
+                    
+                        // Calculate widths
+                        const footerTextWidth = pdf.getTextWidth(footerText);
+                        const emailWidth = pdf.getTextWidth(email);
+                        const phoneWidth = pdf.getTextWidth(phone);
+                    
+                        // Total width of the text
+                        const totalWidth = footerTextWidth + emailWidth + phoneWidth;
+                    
+                        // Center align calculation
+                        const startX = (pdfWidth - totalWidth) / 2;
+                        const startY = pageHeight - 10; // Position from bottom
+                    
+                        // Add the initial part of the text
+                        pdf.setTextColor(0, 0, 0); // Set text color to black
+                        pdf.text(footerText, startX, startY);
+                    
+                        // Add the email address in blue
+                        pdf.setTextColor(0, 0, 255); // Set text color to blue
+                        pdf.textWithLink(email, startX + footerTextWidth, startY, { link: 'mailto:paulhedges@ratemyclinic.com.au' });
+                    
+                        // Add the phone number in black
+                        pdf.setTextColor(0, 0, 0); // Set text color to black
+                        pdf.text(phone, startX + footerTextWidth + emailWidth, startY);
+                    };
+                    
     
                     const elements = document.querySelectorAll('.pdf_page');
                     
@@ -83,10 +113,28 @@ const GenerateReport = () => {
                             position = 0;
                         }
         
+                     
                         // Add image to PDF
                         pdf.addImage(imgData, 'PNG', 0, position, pdfWidth, pdfHeight);
+                        if(i != 0){
+                            addFooter(pdfWidth)
+                        }
+                        // pdf.setTextColor(0, 0, 255); // Set text color to blue
+                        // pdf.textWithLink('For assistance, please contact me at paulhedges@ratemyclinic.com.au', 10, 10, {
+                        //     url: 'mailto:paulhedges@ratemyclinic.com.au',
+                        //     underline: true
+                        // });
+                        // // Reset text color for the phone number
+                        // pdf.setTextColor(0, 0, 0); // Set text color to black
+                        // pdf.text(' or 0400 117 320.', 10, 20);
+                         // Add HTML content below the image
+
+                         
+
+                        // position += 20; // Adjust as needed based on the HTML content height
+
                         position += pdfHeight;
-                        console.log(position,pdfHeight,pageHeight)
+                        
                     }
                 
                 
@@ -150,6 +198,20 @@ const GenerateReport = () => {
         ],
         [
             {
+                name: 'Team',
+                value: surveyData.summary.team.score,
+                color: 'var(--appgreen-300)',
+                icon: "",
+            },
+            {
+                name: 'other',
+                value: Number(surveyData.other_summary.team.score.toFixed(1)),
+                color: 'var(--appgreen-300)',
+                icon: "",
+            }
+        ],
+        [
+            {
                 name: 'Finance',
                 value: surveyData.summary.finance.score,
                 color: 'var(--appgreen-300)',
@@ -176,26 +238,22 @@ const GenerateReport = () => {
                 icon: "",
             }
         ],
-        [
-            {
-                name: 'Team',
-                value: surveyData.summary.team.score,
-                color: 'var(--appgreen-300)',
-                icon: "",
-            },
-            {
-                name: 'other',
-                value: Number(surveyData.other_summary.team.score.toFixed(1)),
-                color: 'var(--appgreen-300)',
-                icon: "",
-            }
-        ]
 
     ]
 
-    const npsContentItems = npsContentItemsDefault.filter(subArray =>
-        subArray.some(item => enabled.includes(item.name.toLowerCase()))
+    const npsContentItems = npsContentItemsDefault.filter(subArray => 
+        subArray.some(item => {
+            let toCheck = item.name.toLowerCase()
+            if(toCheck == 'team'){
+                toCheck = 'teams'
+            }
+            return enabled.includes(toCheck)
+        })
     );
+
+
+
+
     let clientNpsScoreArray = surveyData.clientSurveyData.map(i => Number(i.recommendation))
     let clientNpsScoreTotal = (clientNpsScoreArray.reduce((a,b) => Number(a) + Number(b), 0) / clientNpsScoreArray.length ) * 10
     let clientNps = {
@@ -231,15 +289,14 @@ const GenerateReport = () => {
         }
     }
 // w = 215.9
-
     return (
-        <div className={`relative bg-gray-200 p-2 md:p-10 rounded-lg ${loading ? 'overflow-hidden' : 'overflow-scroll'}`}>
+        <div className={`h-full md:h-[80vh]  bg-gray-200 p-2 md:p-10 rounded-lg ${loading ? 'overflow-hidden' : 'overflow-scroll'}`}>
             <Button className="btn sticky left-full top-0 z-10 right-2 bg-red-500 text-white" label="Download pdf" icon="" loading={loading} onClick={handleGeneratePDF} />
             {loading && <div className='absolute z-10 h-full w-full inset-0 bg-gray-100 flex justify-center gap-5 pt-40'>
-                <div><span className='pi pi-spinner-dotted pi-spin text-2xl'></span></div>
                 <p className='text-2xl'>Generating pdf</p>
+                <div><span className='pi pi-spinner-dotted pi-spin text-2xl'></span></div>
             </div>}
-            <div id='contentToPrint' ref={captureRef} className='w-full *:md:w-[210mm] *:md:px-[15mm] *:md:py-[10mm] w-fit bg-white space-y-[15mm] mx-auto' >
+            <div id='contentToPrint' ref={captureRef} className='max-md:h-[410mm] w-full *:md:w-[210mm] *:md:px-[15mm] *:md:py-[10mm] w-fit bg-white space-y-[15mm] mx-auto' >
                 <div
                 className='pdf_page'>
                     <img className='block mx-auto w-[70mm]' src="/images/logos/rmc-logo.png" alt=""></img>
@@ -266,7 +323,7 @@ const GenerateReport = () => {
                                 item.value = 0
                             }
                             return (
-                                <div key={index} className={`${!isEnabled ? 'disabled' : ""} grid grid-cols-1 items-center justify-center`}>
+                                <div key={index + 1} className={`${!isEnabled ? 'disabled' : ""} grid grid-cols-1 items-center justify-center`}>
                                     <div className="flex-1 [&_*]:text-xs">
                                         <MeterChart
                                             data={[

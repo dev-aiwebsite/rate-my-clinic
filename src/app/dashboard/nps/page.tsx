@@ -73,7 +73,7 @@ export default function Page({searchParams}:{searchParams:any}) {
             <h1 className="text-2xl capitalize">{`${npsTextHeader}: ${npsAverage}`}</h1>
         </div>
 
-        <div className="col-span-3 row-span-5 h-fit max-md:!pb-30 md:card">
+        <div className="col-span-3 row-span-5 h-fit max-md:!pb-30 card">
            {hasAccess ?  (<NpsChart data={npsData} /> ) : (<NpsChart enabled={false}/>)}
         </div>
     </>);

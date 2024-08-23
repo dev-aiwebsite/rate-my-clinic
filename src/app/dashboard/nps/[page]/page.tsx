@@ -71,7 +71,7 @@ export default function Page({params}:{params:any}){
 
     return (<>
         <NpsNavButtonGroup className="max-md:hidden card"/>
-        <div className="h-fit min-h-full col-span-3 row-span-5 max-md:!pb-30 md:card md:p-16">
+        <div className="group h-fit min-h-full col-span-3 row-span-5 max-md:!pb-30 md:card md:p-16">
             {pageEnabled && <NpsContent surveyData={data} item={item}/>}
             {!pageEnabled &&
             <div className="flex items-center flex-col gap-2 text-center">
