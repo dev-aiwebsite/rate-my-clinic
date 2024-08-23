@@ -37,8 +37,7 @@ export default function Page({searchParams}:{searchParams:any}) {
     
     return (<>
           <Toast className="text-sm" ref={toast} />
-          {/* bg-transparent flex-1 p-6 gap-x-6 gap-y-10 flex flex-col overflow-scroll max-md:pb-20 min-h-full max-h-[calc(100vh_-_11.25rem)] md:max-h-[calc(100vh_-_4rem)] */}
-          <div className="flex-1 p-6 gap-x-10 gap-y-10 flex flex-col gap-10 overflow-scroll max-md:pb-20 min-h-full max-h-[calc(100vh_-_11.25rem)] md:max-h-[calc(100vh_-_4rem)]">
+          <div className="flex-1 p-6 gap-x-10 gap-y-10 flex flex-col gap-10 h-full">
             <div className="card col-span-3 row-span-1 flex flex-row items-center justify-between text-xl font-medium">
                 Owner survey
             </div>

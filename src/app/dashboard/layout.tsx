@@ -48,7 +48,9 @@ const value = {
                     <Sidebar/>
                     <div className="flex-1 md:overflow-y-auto">
                         <SurveyDataContext surveyData={surveyData}>
+                            <div className="overflow-scroll max-md:pb-20 min-h-full max-h-[calc(100vh_-_11.25rem)] md:max-h-[calc(100vh_-_4rem)]">
                             {children}
+                            </div>
                         </SurveyDataContext>
                     </div>
                 </div>

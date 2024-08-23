@@ -135,7 +135,7 @@ export default function Page(){
     }
 
 
-    return (<div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 max-md:flex max-md:flex-row max-md:flex-wrap md:grid md:grid-cols-3 overflow-scroll max-md:pb-20 min-h-full max-h-[calc(100vh_-_11.25rem)] md:max-h-[calc(100vh_-_4rem)]">
+    return (<div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 max-md:flex max-md:flex-row max-md:flex-wrap md:grid md:grid-cols-3">
             <div className="card hidden col-span-3 row-span-1 md:flex flex-row items-center justify-between">
                 <div>
                     <h1 className="text-2xl inline-block mr-2 capitalize">{userName}</h1>
