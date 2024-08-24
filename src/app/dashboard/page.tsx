@@ -9,6 +9,8 @@ import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { redirect, usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import { isProfileCompleteCheckList } from "lib/Const";
+import DialogConfirm from "components/confirm-dialog";
+import AppDialog from "components/dialog";
 
 type npsData = {
     date: string;
@@ -134,7 +136,6 @@ export default function Page(){
          headerInfoText = 'To access app functionality, please complete the Owner survey.'
     }
 
-
     return (<div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 max-md:flex max-md:flex-row max-md:flex-wrap md:grid md:grid-cols-3">
             <div className="card hidden col-span-3 row-span-1 md:flex flex-row items-center justify-between">
                 <div>
@@ -147,7 +148,7 @@ export default function Page(){
                     <SyncButton/>
                 </div>
             </div>
-            
+           
                 <SummaryOverview enabled={charts} showReport={showReport} surveyData={data} additionalClass={`card max-md:basis-full !px-0 md:*:px-6 gap-6 ${is_ownerSurveyData_complete ? "" : 'disabled'}`}/>
                 <div className={`card md:row-span-1 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
                     <Link className="h-full gap-5 flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps?nps=client">

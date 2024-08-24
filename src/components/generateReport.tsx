@@ -9,6 +9,10 @@ import { useSurveyDataContext } from '@/context/surveyDataContext';
 import { useSessionContext } from '@/context/sessionContext';
 import AppAcess from 'lib/appAccess';
 import { Button } from 'primereact/button';
+import DialogConfirm from './confirm-dialog';
+import AppDialog from './dialog';
+import { ProgressBar } from 'primereact/progressbar';
+import { throttle } from 'lodash';
 
 type Tparams = {
     clinicId: string
@@ -18,7 +22,11 @@ const GenerateReport = () => {
     const allData = useSurveyDataContext()
     const {currentUser} = useSessionContext()
     const surveyData = allData.data
-
+    const [showDialog, setShowDialog] = useState(false);
+    const [pdfUrl, setPdfUrl] = useState('');
+    const [pdfFileName, setPdfFileName] = useState('');
+    const [pdfProgress, setPdfProgress] = useState(0);
+    const throttledSetProgress = throttle((value) => setPdfProgress(value), 500);
     const [loading, setLoading] = useState<boolean>(false);
 
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
@@ -96,9 +104,9 @@ const GenerateReport = () => {
                     
     
                     const elements = document.querySelectorAll('.pdf_page');
-                    
+                    const totalElements = elements.length
 
-                    for (let i = 0; i < elements.length; i++) {
+                    for (let i = 0; i < totalElements; i++) {
                         const element = elements[i] as HTMLElement;
         
                         // Capture each element as an image
@@ -134,11 +142,20 @@ const GenerateReport = () => {
                         // position += 20; // Adjust as needed based on the HTML content height
 
                         position += pdfHeight;
-                        
+                        throttledSetProgress(((i + 1) / totalElements) * 100);
                     }
                 
+                    const pdfBlob = pdf.output('blob');
+
+                    // Create a URL for the Blob
+                    const pdfUrl = URL.createObjectURL(pdfBlob);
+                    setPdfUrl(pdfUrl)
+                    setPdfFileName(`RMC Report - ${clinicName}.pdf`)
+                    setShowDialog(true)
+                    window.open(pdfUrl, '_blank')
+                    // Optional: Clean up the URL object after use
+                    // pdf.save(`RMC Report - ${clinicName}.pdf`);
                 
-                pdf.save(`RMC Report - ${clinicName}.pdf`);
                 setLoading(false)
                 document.body.classList.remove('print');
             } catch (error) {
@@ -288,13 +305,30 @@ const GenerateReport = () => {
             return "great";
         }
     }
-// w = 215.9
+
+    const handleCloseDialog = () => {
+        setShowDialog(false);
+      };
+
     return (
         <div className={`h-full md:h-[80vh]  bg-gray-200 p-2 md:p-10 rounded-lg ${loading ? 'overflow-hidden' : 'overflow-scroll'}`}>
+             <AppDialog isVisible={showDialog} header={'Download Report'}>
+                    <div className='!select-none'>
+                        <p>You can download the PDF using the link below.</p>
+                        <a className='select-none block mx-auto text-center mt-10 text-white btn bg-red-400 hover:bg-red-500' href={pdfUrl} download={`${pdfFileName}`} target='_blank'>{`${pdfFileName}`}</a>
+                    </div>
+             </AppDialog>
             <Button className="btn sticky left-full top-0 z-10 right-2 bg-red-500 text-white" label="Download pdf" icon="" loading={loading} onClick={handleGeneratePDF} />
-            {loading && <div className='absolute z-10 h-full w-full inset-0 bg-gray-100 flex justify-center gap-5 pt-40'>
-                <p className='text-2xl'>Generating pdf</p>
-                <div><span className='pi pi-spinner-dotted pi-spin text-2xl'></span></div>
+            {loading && <div className='absolute z-10 h-full w-full inset-0 bg-gray-100 pt-40'>
+                <div className='flex justify-center gap-5'>
+                    <p className='text-2xl'>Generating pdf</p>
+                    <div>
+                        <span className='pi pi-spinner-dotted pi-spin text-2xl'></span>
+                    </div>
+                </div>
+                <div className='p-10'>
+                    <ProgressBar value={pdfProgress}></ProgressBar>
+                </div>
             </div>}
             <div id='contentToPrint' ref={captureRef} className='max-md:h-[410mm] w-full *:md:w-[210mm] *:md:px-[15mm] *:md:py-[10mm] w-fit bg-white space-y-[15mm] mx-auto' >
                 <div
