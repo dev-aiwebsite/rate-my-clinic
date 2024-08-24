@@ -56,7 +56,16 @@
   margin:auto;
 }
 
+[role="dialog"] {
+  z-index: 999;
+}
+
+
+
 @media screen and (max-width: 768px) {
+  .desktop-shape{
+    shape-outside: unset !important;
+  }
   html {
     font-size: 12px;
   }
