@@ -97,7 +97,7 @@ let subtext = {
                     </div>
                     {showReport && <>
                         <Transition appear show={isOpen} as={Fragment}>
-                            <Dialog as="div" className="relative z-10" onClose={closeModal}>
+                            <Dialog as="div" className="max-md:!max-h-[calc(100svh_-_3.5rem)] relative z-10" onClose={closeModal}>
                                 <TransitionChild
                                     as={Fragment}
                                     enter="ease-out duration-300"
@@ -107,10 +107,10 @@ let subtext = {
                                     leaveFrom="opacity-100"
                                     leaveTo="opacity-0"
                                 >
-                                    <div className="fixed inset-0 bg-black/25" />
+                                    <div className="max-md:!max-h-[calc(100svh_-_3.5rem)] fixed inset-0 bg-black/25"/>
                                 </TransitionChild>
 
-                                <div className="fixed inset-0 overflow-y-auto">
+                                <div className="max-md:!max-h-[calc(100svh_-_3.5rem)] fixed inset-0 overflow-y-auto">
                                     <div className="flex min-h-full md:items-center md:justify-center p-2 md:p-4 text-center">
                                     <TransitionChild
                                         as={Fragment}
@@ -159,7 +159,7 @@ let subtext = {
                             <p className="text-[1.5vw] font-medium">{item?.value || "-/-"}</p>
                         </div>
                         <p className="md:hidden font-medium mx-auto text-center">{item?.name}</p>
-                        <div className="flex-1 max-w-40">
+                        <div className="flex-1 max-w-40 mx-auto">
                                 <MeterChart
                                     data={[
                                         {
