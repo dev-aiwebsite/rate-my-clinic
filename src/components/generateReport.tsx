@@ -13,8 +13,6 @@ import DialogConfirm from './confirm-dialog';
 import AppDialog from './dialog';
 import { ProgressBar } from 'primereact/progressbar';
 import { throttle } from 'lodash';
-import saveAs from 'file-saver';
-import { formatDate } from 'date-fns/format';
 
 type Tparams = {
     clinicId: string
@@ -29,12 +27,12 @@ const GenerateReport = () => {
     const [pdfFileName, setPdfFileName] = useState('');
     const [pdfProgress, setPdfProgress] = useState(0);
     const [loadingText, setLoadingText] = useState('Generating pdf');
+
     const throttledSetProgress = throttle((value) => setPdfProgress(value), 500);
     const [loading, setLoading] = useState<boolean>(false);
 
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
     let enabled = userAccess?.charts || ['strategy','finance']
-
     let clinicName = surveyData?.ownerSurveyData?.clinic_name
 
     let overAll = [
@@ -112,6 +110,7 @@ const GenerateReport = () => {
         
                         // Capture each element as an image
                         const canvas = await html2canvas(element, { scale: 1, useCORS: true });
+
                         const imgData = canvas.toDataURL('image/png');
                         const imgProps = pdf.getImageProperties(imgData);
                         const pdfWidth = pdf.internal.pageSize.getWidth();
