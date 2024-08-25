@@ -111,7 +111,7 @@ const GenerateReport = () => {
                         const element = elements[i] as HTMLElement;
         
                         // Capture each element as an image
-                        const canvas = await html2canvas(element, { scale: 3, useCORS: true });
+                        const canvas = await html2canvas(element, { scale: 1, useCORS: true });
                         const imgData = canvas.toDataURL('image/png');
                         const imgProps = pdf.getImageProperties(imgData);
                         const pdfWidth = pdf.internal.pageSize.getWidth();
