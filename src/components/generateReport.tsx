@@ -26,14 +26,13 @@ const GenerateReport = () => {
     const [pdfUrl, setPdfUrl] = useState('');
     const [pdfFileName, setPdfFileName] = useState('');
     const [pdfProgress, setPdfProgress] = useState(0);
+    const [loadingText, setLoadingText] = useState('Generating pdf');
+
     const throttledSetProgress = throttle((value) => setPdfProgress(value), 500);
     const [loading, setLoading] = useState<boolean>(false);
 
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
     let enabled = userAccess?.charts || ['strategy','finance']
-
-    console.log(surveyData,enabled)
-
     let clinicName = surveyData?.ownerSurveyData?.clinic_name
 
     let overAll = [
@@ -110,7 +109,8 @@ const GenerateReport = () => {
                         const element = elements[i] as HTMLElement;
         
                         // Capture each element as an image
-                        const canvas = await html2canvas(element, { scale: 3, useCORS: true });
+                        const canvas = await html2canvas(element, { scale: 1, useCORS: true });
+
                         const imgData = canvas.toDataURL('image/png');
                         const imgProps = pdf.getImageProperties(imgData);
                         const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -149,15 +149,48 @@ const GenerateReport = () => {
 
                     // Create a URL for the Blob
                     const pdfUrl = URL.createObjectURL(pdfBlob);
-                    setPdfUrl(pdfUrl)
-                    setPdfFileName(`RMC Report - ${clinicName}.pdf`)
-                    setShowDialog(true)
-                    window.open(pdfUrl, '_blank')
+                    
+                    const formData = new FormData();
+                    formData.append('file', pdfBlob,`RMC Report - ${clinicName}`)
+            
+                      // Save PDF to public folder
+                      try {
+                        setLoadingText('Creating download link')
+                        
+                        const response = await fetch('/api/save-pdf', {
+                            method: 'POST',
+                            body: formData,
+                        });
+                
+                        if (!response.ok) {
+                            throw new Error('Network response was not ok');
+                        }
+                
+                        const result = await response.json();
+                        const pdfUrl = result.url;
+                        setPdfUrl(pdfUrl);
+                        setPdfFileName(`RMC Report - ${clinicName}.pdf`);
+                        setShowDialog(true);
+                    } catch (error) {
+                        console.error('Error saving PDF:', error);
+                    } finally {
+                        setLoading(false);
+                        document.body.classList.remove('print');
+                    }
+                    
+            
+
+                    // setPdfUrl(pdfUrl)
+                    // setPdfFileName(`RMC Report - ${clinicName}.pdf`)
+                    // setShowDialog(true)
+                    
                     // Optional: Clean up the URL object after use
                     // pdf.save(`RMC Report - ${clinicName}.pdf`);
-                
-                setLoading(false)
-                document.body.classList.remove('print');
+                    
+                    // saveAs(pdfBlob, `RMC Report - ${clinicName}.pdf`);
+
+                // setLoading(false)
+                // document.body.classList.remove('print');
             } catch (error) {
                 console.error('Error generating PDF:', error);
             }
@@ -321,7 +354,7 @@ const GenerateReport = () => {
             <Button className="btn sticky left-full top-0 z-10 right-2 bg-red-500 text-white" label="Download pdf" icon="" loading={loading} onClick={handleGeneratePDF} />
             {loading && <div className='absolute z-10 h-full w-full inset-0 bg-gray-100 pt-40'>
                 <div className='flex justify-center gap-5'>
-                    <p className='text-2xl'>Generating pdf</p>
+                    <p className='text-2xl'>{loadingText}</p>
                     <div>
                         <span className='pi pi-spinner-dotted pi-spin text-2xl'></span>
                     </div>

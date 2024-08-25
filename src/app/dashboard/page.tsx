@@ -147,7 +147,7 @@ export default function Page(){
                 <div className="m-w-42">
                     <SyncButton/>
                 </div>
-            </div>
+                </div>
            
                 <SummaryOverview enabled={charts} showReport={showReport} surveyData={data} additionalClass={`card max-md:basis-full !px-0 md:*:px-6 gap-6 ${is_ownerSurveyData_complete ? "" : 'disabled'}`}/>
                 <div className={`card md:row-span-1 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
