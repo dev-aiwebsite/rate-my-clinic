@@ -16,11 +16,13 @@ export async function POST(request: NextRequest) {
         const fileBuffer = Buffer.from(await file.arrayBuffer());
         const today = new Date()
         const dateString = today.toLocaleDateString().replaceAll('/','-')
-        const pdfFileName = `${file.name} ${dateString}.pdf`;
-        const initialFileName = `${pdfFileName}.pdf`;
+        const pdfFileName = `${file.name} ${dateString}`;
+        const fileExtension = 'pdf'
+        const initialFileName = `${pdfFileName}`;
         const publicFolderPath = path.join(process.cwd(), 'public', 'reports');
         const newFileName = getUniqueFilename(publicFolderPath,initialFileName)
-        const pdfFilePath = path.join(publicFolderPath, newFileName);
+        const newFullFileName = `${newFileName}.${fileExtension}`
+        const pdfFilePath = path.join(publicFolderPath, newFullFileName);
 
         // Create the directory if it doesn't exist
         if (!fs.existsSync(publicFolderPath)) {
@@ -31,7 +33,7 @@ export async function POST(request: NextRequest) {
         fs.writeFileSync(pdfFilePath, fileBuffer);
 
         // Return the URL of the saved PDF
-        const pdfUrl = `/reports/${newFileName}`;
+        const pdfUrl = `/reports/${newFullFileName}`;
         return NextResponse.json({ url: pdfUrl });
     } catch (error) {
         console.error('Error saving file:', error);
