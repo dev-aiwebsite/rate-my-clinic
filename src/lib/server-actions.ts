@@ -209,7 +209,6 @@ export const getSurveyData = async (currentUser_id?:string) => {
     if(!currentUser_id){
         const user = await auth() as ExtendedSession;
         currentUser_id = user?.user_id
-        
     }
 
     
@@ -289,12 +288,8 @@ export const getSurveyData = async (currentUser_id?:string) => {
 
         let overalls:{[key:string]:any} = {}
 
-        let other_summary = {
-            clients: {score: oldData.reduce((a,b) => Number(a) + Number(b.clients), 0) / oldData.length},
-            team: {score: oldData.reduce((a,b) => Number(a) + Number(b.team), 0) / oldData.length},
-            strategy: {score: oldData.reduce((a,b) => Number(a) + Number(b.strategy), 0) / oldData.length},
-            finance: {score: oldData.reduce((a,b) => Number(a) + Number(b.finance), 0) / oldData.length},
-        }
+        let other_summary = {}
+        
         const oldDataTotal = oldData.reduce((a,b) => Number(a) + Number(b.overall), 0)
         overalls['other'] = oldDataTotal / oldData.length
         overalls['mine'] = Object.values(mySurveys.summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
@@ -304,14 +299,33 @@ export const getSurveyData = async (currentUser_id?:string) => {
             let overall = otherSummary.map(summary => {
                 return Object.values(summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
             })
+            
             let otherTotal = overall.reduce((a,b) => Number(a) + Number(b), 0)
             overalls['other'] = (oldDataTotal + otherTotal) / (oldData.length + overall.length)
 
-            other_summary.clients.score = (other_summary.clients.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.clients.score), 0) / otherSummary.length) / 2)
-            other_summary.team.score = (other_summary.team.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.team.score), 0) / otherSummary.length) / 2)
-            other_summary.strategy.score = (other_summary.strategy.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.strategy.score), 0) / otherSummary.length) / 2)
-            other_summary.finance.score = (other_summary.finance.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.finance.score), 0) / otherSummary.length) / 2)
+            const otherTotalScore = {
+                clients: otherSummary.reduce((a,b) => Number(a) + Number(b.clients.score), 0),
+                team: otherSummary.reduce((a,b) => Number(a) + Number(b.team.score), 0),
+                strategy: otherSummary.reduce((a,b) => Number(a) + Number(b.strategy.score), 0),
+                finance: otherSummary.reduce((a,b) => Number(a) + Number(b.finance.score), 0),
+            }
+        
+            let numbersOfSurveys = otherSummary.length + oldData.length
             
+            other_summary = {
+                clients: {score: (oldData.reduce((a,b) => Number(a) + Number(b.clients), 0) + otherTotalScore.clients) / numbersOfSurveys},
+                team: {score: (oldData.reduce((a,b) => Number(a) + Number(b.team), 0) + otherTotalScore.team) / numbersOfSurveys},
+                strategy: {score: (oldData.reduce((a,b) => Number(a) + Number(b.strategy), 0) + otherTotalScore.strategy) / numbersOfSurveys},
+                finance: {score: (oldData.reduce((a,b) => Number(a) + Number(b.finance), 0) + otherTotalScore.finance) / numbersOfSurveys},
+            }
+            
+        } else {
+            other_summary = {
+                clients: {score: oldData.reduce((a,b) => Number(a) + Number(b.clients), 0) / oldData.length},
+                team: {score: oldData.reduce((a,b) => Number(a) + Number(b.team), 0) / oldData.length},
+                strategy: {score: oldData.reduce((a,b) => Number(a) + Number(b.strategy), 0) / oldData.length},
+                finance: {score: oldData.reduce((a,b) => Number(a) + Number(b.finance), 0) / oldData.length},
+            }
         }
 
         let results = {
