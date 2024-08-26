@@ -13,6 +13,7 @@ import DialogConfirm from './confirm-dialog';
 import AppDialog from './dialog';
 import { ProgressBar } from 'primereact/progressbar';
 import { throttle } from 'lodash';
+import { useMediaQuery } from 'react-responsive';
 
 type Tparams = {
     clinicId: string
@@ -27,6 +28,7 @@ const GenerateReport = () => {
     const [pdfFileName, setPdfFileName] = useState('');
     const [pdfProgress, setPdfProgress] = useState(0);
     const [loadingText, setLoadingText] = useState('Generating pdf');
+    const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
     const throttledSetProgress = throttle((value) => setPdfProgress(value), 500);
     const [loading, setLoading] = useState<boolean>(false);
@@ -57,6 +59,12 @@ const GenerateReport = () => {
 
 
     const handleGeneratePDF = async () => {
+        if(isMobile){
+            setShowDialog(true)
+            return 
+        }
+
+
         setLoading(true)
         if (captureRef.current) {
             try {
@@ -149,43 +157,43 @@ const GenerateReport = () => {
                     // Create a URL for the Blob
                     const pdfUrl = URL.createObjectURL(pdfBlob);
                     
-                    const formData = new FormData();
-                    formData.append('file', pdfBlob,`RMC Report - ${clinicName}`)
+                    // const formData = new FormData();
+                    // formData.append('file', pdfBlob,`RMC Report - ${clinicName}`)
             
-                      // Save PDF to public folder
-                      try {
-                        setLoadingText('Creating download link')
+                    //   // Save PDF to public folder
+                    //   try {
+                    //     setLoadingText('Creating download link')
                         
-                        const response = await fetch('/api/save-pdf', {
-                            method: 'POST',
-                            body: formData,
-                        });
+                    //     const response = await fetch('/api/save-pdf', {
+                    //         method: 'POST',
+                    //         body: formData,
+                    //     });
                 
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
+                    //     if (!response.ok) {
+                    //         throw new Error('Network response was not ok');
+                    //     }
                 
-                        const result = await response.json();
-                        const pdfUrl = result.url;
-                        setPdfUrl(pdfUrl);
-                        setPdfFileName(`RMC Report - ${clinicName}.pdf`);
-                        setShowDialog(true);
-                    } catch (error) {
-                        console.error('Error saving PDF:', error);
-                    } finally {
-                        setLoading(false);
-                        document.body.classList.remove('print');
-                    }
-                    
-            
+                    //     const result = await response.json();
+                    //     const pdfUrl = result.url;
+                    //     setPdfUrl(pdfUrl);
+                    //     setPdfFileName(`RMC Report - ${clinicName}.pdf`);
+                    //     setShowDialog(true);
+                    // } catch (error) {
+                    //     console.error('Error saving PDF:', error);
+                    // } finally {
+                    //     setLoading(false);
+                    //     document.body.classList.remove('print');
+                    // }
 
-                    // setPdfUrl(pdfUrl)
-                    // setPdfFileName(`RMC Report - ${clinicName}.pdf`)
+                    setPdfUrl(pdfUrl)
+                    setPdfFileName(`RMC Report - ${clinicName}.pdf`)
                     // setShowDialog(true)
                     
                     // Optional: Clean up the URL object after use
-                    // pdf.save(`RMC Report - ${clinicName}.pdf`);
-                    
+                    pdf.save(`RMC Report - ${clinicName}.pdf`);
+                    setLoading(false);
+                    document.body.classList.remove('print');
+                    throttledSetProgress(0);
                     // saveAs(pdfBlob, `RMC Report - ${clinicName}.pdf`);
 
                 // setLoading(false)
@@ -342,14 +350,29 @@ const GenerateReport = () => {
         setShowDialog(false);
       };
 
+
+
+      
+    if(isMobile){
+        <>
+            <AppDialog position='top' setIsVisible={handleCloseDialog} header={'Download Report'}>
+                <div className='!select-none'>
+                    <p>Unable to generate the report as the file size exceeds the limits for mobile devices. Please use a desktop computer to generate the report.</p>
+                    {/* <a className='select-none block mx-auto text-center mt-10 text-white btn bg-red-400 hover:bg-red-500' href={pdfUrl} download={`${pdfFileName}`} target='_blank'>{`${pdfFileName}`}</a> */}
+                </div>
+            </AppDialog>
+        </>
+    }
+
     return (
         <div className={`h-full md:h-[80vh]  bg-gray-200 p-2 md:p-10 rounded-lg ${loading ? 'overflow-hidden' : 'overflow-scroll'}`}>
-             <AppDialog isVisible={showDialog} header={'Download Report'}>
-                    <div className='!select-none'>
-                        <p>You can download the PDF using the link below.</p>
-                        <a className='select-none block mx-auto text-center mt-10 text-white btn bg-red-400 hover:bg-red-500' href={pdfUrl} download={`${pdfFileName}`} target='_blank'>{`${pdfFileName}`}</a>
-                    </div>
-             </AppDialog>
+            {isMobile && <AppDialog isVisible={showDialog} setIsVisible={handleCloseDialog} header={'Download Report'}>
+                <div className='!select-none'>
+                    <p>Unable to generate the report as the file size exceeds the limits for mobile devices. Please use a desktop computer to generate the report.</p>
+                    {/* <a className='select-none block mx-auto text-center mt-10 text-white btn bg-red-400 hover:bg-red-500' href={pdfUrl} download={`${pdfFileName}`} target='_blank'>{`${pdfFileName}`}</a> */}
+                </div>
+            </AppDialog>
+             }
             <Button className="btn sticky left-full top-0 z-10 right-2 bg-red-500 text-white" label="Download pdf" icon="" loading={loading} onClick={handleGeneratePDF} />
             {loading && <div className='absolute z-10 h-full w-full inset-0 bg-gray-100 pt-40'>
                 <div className='flex justify-center gap-5'>
