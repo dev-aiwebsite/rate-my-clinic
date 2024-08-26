@@ -57,7 +57,6 @@ export default async function RootLayout({children}: Readonly<{children: React.R
   console.log(Users)
   
   const surveyData = await getSurveyData(current_user_id)
-
   return (
     <PrimeReactProvider>
     <html lang="en">
