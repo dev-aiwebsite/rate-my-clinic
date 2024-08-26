@@ -72,10 +72,12 @@
 
   body:not(.print) .pdf_page {
     scale: 0.4;
-    translate: -30% -30%;
+    translate: -50% -30%;
     margin-bottom: -53rem;
     height: fit-content !important;
     min-height: 70rem;
+    margin-left: 50%;
+    transform-origin: center;
   }
 
 }
