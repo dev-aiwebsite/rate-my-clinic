@@ -3,20 +3,24 @@ import PaymentModalButton from "./paymentModal";
 import Stripe from "stripe";
 import { Product } from "lib/products";
 import Link from "next/link";
-
-
+import { useSessionContext } from "@/context/sessionContext";
+import { usePathname } from 'next/navigation'
 interface TproductWithPrices extends Stripe.Product {
     prices: {[key:number]:any}
 }
 
-const pricingCard = ({product, durations,metadata}:{product:TproductWithPrices | Product, durations:"monthly" | "annually",metadata?:{[key:string]:any}}) => {
+const pricingCard = ({isSignup = false,product, durations,metadata}:{isSignup:boolean,product:TproductWithPrices | Product, durations:"monthly" | "annually",metadata?:{[key:string]:any}}) => {
     
     let mode:Stripe.Checkout.SessionCreateParams.Mode = product?.prices[0].type == 'one_time' ? 'payment' : 'subscription'
     let price = Math.round(product.prices[0].unit_amount / 100)
     let price_name = product.name
     let isMonthly = Number(product?.metadata.subscription_level) > 1
-    const oldMember = metadata?.user_id || false
+    const {currentUser} = useSessionContext()
+    const pathname = usePathname()
     
+    if(pathname == '/signup'){
+        isSignup = true
+    }
     return (
         <div className="col-span-2 hover:ring-10 hover:ring-appblue-350 flex flex-col gap-6 rounded-3xl ring-1 ring-gray-300 p-6 text-sm font-[300]">
             <div>
@@ -38,10 +42,10 @@ const pricingCard = ({product, durations,metadata}:{product:TproductWithPrices |
                 }
             </ul>
             <div className="mt-auto w-full *:w-full">
-                {oldMember && <PaymentModalButton priceId={product.prices[0].id} meta={metadata} mode={mode}/>}
-                {!oldMember && <>
-                    <Link className="block text-center w-full btn-secondary" href="/signup">Subscribe</Link>
-                </>}
+                {currentUser || isSignup ? (<PaymentModalButton priceId={product.prices[0].id} meta={metadata} mode={mode}/>) :
+                
+                    (<Link className="block text-center w-full btn-secondary" href="/signup">Subscribe</Link>)
+                }
             </div>
         </div>
     );
