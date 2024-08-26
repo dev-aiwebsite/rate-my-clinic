@@ -9,7 +9,7 @@ interface TproductWithPrices extends Stripe.Product {
     prices: {[key:number]:any}
 }
 
-const pricingCard = ({isSignup = false,product, durations,metadata}:{isSignup:boolean,product:TproductWithPrices | Product, durations:"monthly" | "annually",metadata?:{[key:string]:any}}) => {
+const PricingCard = ({product, durations,metadata}:{product:TproductWithPrices | Product, durations:"monthly" | "annually",metadata?:{[key:string]:any}}) => {
     
     let mode:Stripe.Checkout.SessionCreateParams.Mode = product?.prices[0].type == 'one_time' ? 'payment' : 'subscription'
     let price = Math.round(product.prices[0].unit_amount / 100)
@@ -17,6 +17,8 @@ const pricingCard = ({isSignup = false,product, durations,metadata}:{isSignup:bo
     let isMonthly = Number(product?.metadata.subscription_level) > 1
     const {currentUser} = useSessionContext()
     const pathname = usePathname()
+
+    let isSignup = false
     
     if(pathname == '/signup'){
         isSignup = true
@@ -51,6 +53,6 @@ const pricingCard = ({isSignup = false,product, durations,metadata}:{isSignup:bo
     );
 }
 
-export default pricingCard;
+export default PricingCard;
 // how to use
 {/* <PricingCard product={products[key]} durations={enabled ? "annually" : "monthly"} key={index}/>  */}
