@@ -60,6 +60,10 @@ export default function Page({searchParams}:{searchParams:any}) {
     // Calculate the average
     let npsAverage = (sum / npsValues.length).toFixed(1)
 
+    if(npsCategory != 'team'){
+        npsAverage = (Number(npsAverage) * 10).toFixed(1)
+    }
+
     if(isNaN(sum / npsValues.length)){
         npsAverage = "0.0"
     }
