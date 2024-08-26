@@ -38,6 +38,7 @@ export default function Page(){
     const {currentUser,setCurrentUser} = useSessionContext()
     const pathname = usePathname()
     
+    console.log(data)
     if(!currentUser) return
     let tocheck = isProfileCompleteCheckList
     const isProfileComplete = tocheck.every(i => currentUser[i])
