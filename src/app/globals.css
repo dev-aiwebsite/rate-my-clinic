@@ -21,6 +21,7 @@
   --appblue-200: #94BEE5;
   --appgreen-600: #004261;
   --appgreen-300: #97CB64;
+  --m-header-h:8rem;
 }
 
 /* @media (prefers-color-scheme: dark) {
@@ -78,6 +79,10 @@
     min-height: 70rem;
     margin-left: 50%;
     transform-origin: center;
+  }
+
+  .mobile-container-height {
+    max-height: calc(100svh - var(--m-navbar-h) ) !important;
   }
 
 }
