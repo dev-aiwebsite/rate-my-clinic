@@ -79,7 +79,7 @@ export default function ForgotPasswordForm({isPasswordResetValid,userEmail}:{isP
 
                     <Button loading={loading} className="border-none w-full block bg-appblue-300 text-white rounded-md px-4 py-2 hover:shadow-lg cursor-pointer transition-all duration-300 hover:bg-appblue-350" label="Submit" type="submit"/>
                     </div>
-                    <div className="flex flex-col max-md:items-center md:flex-row justify-between gap-2">
+                    <div className="flex flex-col max-md:items-center md:flex-row justify-between gap-4">
                         <Link className="underline text-xs text-blue-600"
                             href="/login">Login here
                         </Link>
