@@ -29,7 +29,7 @@ export default async function LoginPage({children, search, searchParams}:any) {
                                         alt="rate my clinic signup image"
                                     />
 
-            <div className="relative grid grid-cols-1 sm:grid-cols-2 max-w-screen-lg md:mx-auto rounded-lg shadow-2xl p-20 gap-20 ring-1 ring-gray-200">
+            <div className="relative grid grid-cols-1 sm:grid-cols-2 max-w-screen-lg md:mx-auto rounded-lg shadow-2xl max-md:w-full p-10 md:p-20 gap-20 ring-1 ring-gray-200">
                 <div className="flex flex-col h-full justify-center relative sm:mt-auto z-10">
                   <h1 className="text-lg font-bold text-center font-medium mb-10">{FormTitle}</h1>
                   <ForgotPasswordForm isPasswordResetValid={isPasswordResetValid} userEmail={userEmail}/>

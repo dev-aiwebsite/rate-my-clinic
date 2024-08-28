@@ -75,9 +75,9 @@ export default function SignupPage({children}:any) {
                                         alt="rate my clinic signup image"
                                     />
           
-            <div className="bg-white rounded-lg shadow-2xl gap-20 ring-1 ring-gray-200 md:w-full max-w-screen-lg md:m-auto">
-                {page == 1 &&<div className="overflow-hidden flex flex-col-reverse md:grid md:grid-cols-2 mx-auto p-10 md:p-20 items-center gap-10">
-                                <div className="relative z-10">
+            <div className="bg-white rounded-lg shadow-2xl gap-20 ring-1 ring-gray-200 w-full max-w-screen-lg md:m-auto">
+                {page == 1 &&<div className="overflow-hidden flex flex-col-reverse md:grid md:grid-cols-2 mx-auto max-md:w-full p-10 md:p-20 items-center gap-10">
+                                <div className="relative z-10 max-md:w-full">
                                     <h1 className="text-lg font-bold text-center mb-10">Enter User Details</h1>
                                     <form id="signup-form" onSubmit={(e) => {handleSubmit(e)}} className="flex flex-col gap-6">
                                         <div className="grid md:grid-cols-2 gap-5">
@@ -97,7 +97,7 @@ export default function SignupPage({children}:any) {
                                         <div>
                                             <label className="text-xs text-neutral-400"
                                                 htmlFor="useremail">Email Address</label>
-                                                {emailExist && <p className="rounded bg-red-200 bg-opacity-50 ring-red-400 px-4 py-2 text-red-500 text-xs">* Email already exist</p>}
+                                                {emailExist && <p className="rounded bg-red-200 bg-opacity-50 ring-red-400 px-4 py-2 text-red-500 text-xs">* Email already exists</p>}
                                             <input className="block w-full bg-transparent ring-1 ring-gray-400 border-none rounded-md px-4 py-2 hover:ring-appblue-350 focus:ring-appblue-350 active:ring-appblue-350"
                                             type="email" name="useremail" id="useremail" defaultValue={userInfo?.useremail || ""}  required/>
                                         </div>
@@ -163,7 +163,7 @@ export default function SignupPage({children}:any) {
                             }
                             
                 {page == 2 && <>
-                    <div className="relative h-[90vh] p-10">
+                    <div className="relative h-[90vh] p-10 max-md:w-full">
                         <div className="h-full overflow-y-scroll">
                             <div>
                                 <button type="button" className="absolute top-5 left-5 rounded-lg bg-transparent hover:bg-gray-100 p-2" onClick={handlePrev}>

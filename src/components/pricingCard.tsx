@@ -23,10 +23,31 @@ const PricingCard = ({product, durations,metadata}:{product:TproductWithPrices |
     if(pathname == '/signup'){
         isSignup = true
     }
+
+    let isUpgrade = false 
+
+    // Post-assessment options will only be displayed if the user has an initial assessment plan.
+    if(currentUser && Number(currentUser.subscription_level) > 0){
+        isUpgrade = true
+    }
+
+    if(isUpgrade && Number(product?.metadata.subscription_level) < 2){
+        return (<>
+        </>)
+
+    } else if(!isUpgrade && Number(product?.metadata.subscription_level) > 1){
+        return (<>
+        </>)
+    }
+
+    if(Number(product?.metadata.subscription_level) > 1){
+        price_name = product.metadata.level || price_name
+    }
+
     return (
         <div className="col-span-2 hover:ring-10 hover:ring-appblue-350 flex flex-col gap-6 rounded-3xl ring-1 ring-gray-300 p-6 text-sm font-[300]">
             <div>
-                <span className="font-medium text-lg">{price_name}</span>
+                <span className="font-medium text-lg capitalize">{price_name}</span>
             </div>
             <div>
                 {price != 0 && <span className="text-4xl font-medium">${price}</span>}

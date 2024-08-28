@@ -297,6 +297,13 @@ const ownerSurveyDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  clinic_location_address1: {
+    type: String,
+  },
+  clinic_location_address2: {
+    type: String,
+    default: "",
+  },
   clinic_location_state: {
     type: String,
     required: true,
@@ -435,7 +442,32 @@ const ownerSurveyDataSchema = new mongoose.Schema({
   client_source: {
     type: String,
     required: true,
-  }, written_treatment_plans: { type: String, required: true, }, employee_satisfaction_survey: { type: String, required: true, }, last_employee_survey: { type: Number }, number_of_clinicians: { type: Number, required: true, }, number_of_non_clinicians: { type: Number, required: true, }, work_life_balance: { type: Number, required: true, },
+  },
+  written_treatment_plans: {
+    type: String,
+    required: true,
+  },
+  employee_satisfaction_survey: {
+    type: String,
+    required: true
+  },
+  last_employee_survey: {
+    type: Number
+  },
+  number_of_clinicians: {
+    type: Number,
+    required: true,
+  },
+
+  number_of_non_clinicians: {
+    type: Number,
+    required: true,
+  },
+
+  work_life_balance: {
+    type: Number,
+    required: true,
+  },
 }, { timestamps: true });
 
 
