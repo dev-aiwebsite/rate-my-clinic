@@ -13,8 +13,12 @@ import Image from "next/image";
 import {useRouter} from "next/navigation";
 import { isProfileCompleteCheckList,mobileNavbarHeight } from "lib/Const";
 import { Button } from "primereact/button";
+import { useMediaQuery } from "react-responsive";
 
 type page = number
+interface CustomStyles extends React.CSSProperties {
+    '--m-navbar-h'?: string;
+}
 
 export default function Page({searchParams}:{searchParams:any}) {
     
@@ -48,7 +52,7 @@ export default function Page({searchParams}:{searchParams:any}) {
         }
     }
 
-    const FormComponent = ({additionalClass}:{additionalClass?:string}) => { 
+    const FormComponent = ({additionalClass,afterSubmit}:{additionalClass?:string,afterSubmit?: () =>void}) => { 
     const [isLoading, setIsLoading] = useState(false)
     const [checked, setChecked] = useState(false);
     const [submitBtnType, setSubmitBtnType] = useState("button")
@@ -166,15 +170,16 @@ export default function Page({searchParams}:{searchParams:any}) {
         
         if (res.success) {
             
-            setSubmitBtnText("Next");
-            setSubmitBtnType('button')
-            Alert({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully' });
+     
             
             
             getSurveyData().then(d => {
                 setPage(1);
                 setIsLoading(false);
                 setData(d)
+                setSubmitBtnText("Next");
+                setSubmitBtnType('button')
+                Alert({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully' });
 
                 if(afterSubmit){
                    afterSubmit()
@@ -959,17 +964,19 @@ export default function Page({searchParams}:{searchParams:any}) {
             </form>
         </>
     }
-
+    const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
     
-
+    
+    
+console.log(isMobile)
     return (<>
           <Toast className="text-sm" ref={toast} />
           <div className="flex-1 p-6 gap-x-10 gap-y-10 flex flex-col gap-10 h-full">
             <div className="card col-span-3 row-span-1 flex flex-row items-center justify-between text-xl font-medium">
                 Owner survey
             </div>
-            {!formValues || isJourney ? (<div style={{maxHeight:`calc(100svh - ${mobileNavbarHeight})`}} className={`max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-full md:h-screen setupWrapper w-screen z-10 p-5 md:p-10 flex gap-4`}>
+            {!formValues || isJourney ? (<div style={{'--m-navbar-h': mobileNavbarHeight} as CustomStyles} className={`max-md:!z-[999] mobile-container-height max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-full md:h-screen setupWrapper w-screen z-10 p-5 md:p-10 flex gap-4`}>
                 
                 
                 <div className="md:w-96 flex flex-col flex-nowrap -mb-10">
@@ -989,7 +996,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                 />
                 </div>
                 <div className="flex-1 max-md:overflow-auto rounded-xl bg-white">
-                  <FormComponent additionalClass="w-full flex-1"/>
+                  <FormComponent additionalClass="w-full flex-1" afterSubmit={afterSubmit}/>
                 </div>
                 </div>)
                 : (
