@@ -25,7 +25,7 @@ export default function PaymentModalButton({priceId,meta,mode}:{priceId:string, 
     });
 
     const data = await res.json();
-    console.log(data)
+  
 
     return data.client_secret;
   }, []);
