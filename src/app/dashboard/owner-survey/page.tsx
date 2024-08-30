@@ -75,43 +75,43 @@ export default function Page({searchParams}:{searchParams:any}) {
         "clinic_location_postcode": currentUser?.clinic_location_postcode,
         "clinic_established": currentUser?.clinic_established,
         "clinic_logo": currentUser?.clinic_logo,
-        "services_provided": formValues?.services_provided || "",
-        "ndis_clients": formValues?.ndis_clients || "",
-        "own_building": formValues?.own_building || "",
-        "pay_market_rent": formValues?.pay_market_rent || 0,
-        "market_rate_difference": formValues?.market_rate_difference || 0,
-        "group_classes": formValues?.group_classes || "",
-        "classes_per_week": formValues?.classes_per_week || 0,
-        "practice_management_software": formValues?.practice_management_software || "",
-        "initial_consult_charge": formValues?.initial_consult_charge || 0,
-        "initial_consult_duration": formValues?.initial_consult_duration || 0,
-        "followup_consult_charge": formValues?.followup_consult_charge || 0,
-        "followup_consult_duration": formValues?.followup_consult_duration || 0,
-        "current_business_plan": formValues?.current_business_plan || "",
-        "plan_execution": formValues?.plan_execution || 0,
-        "plan_review_timeline": formValues?.plan_review_timeline || 0,
-        "exit_plan": formValues?.exit_plan || "",
-        "leave_comfort_level": formValues?.leave_comfort_level || 0,
-        "treating_hours": formValues?.treating_hours || 0,
-        "managing_hours": formValues?.managing_hours || 0,
-        "pay_treating_clients": formValues?.pay_treating_clients || 0,
-        "pay_managing_business": formValues?.pay_managing_business || 0,
-        "turnover": formValues?.turnover || 0,
-        "profit": formValues?.profit || 0,
-        "total_wages": formValues?.total_wages || 0,
-        "non_clinician_wages": formValues?.non_clinician_wages || 0,
-        "rent": formValues?.rent || 0,
-        "cash_reserves": formValues?.cash_reserves || 0,
-        "client_survey": formValues?.client_survey || "",
-        "last_client_survey": formValues?.last_client_survey || 0,
-        "email_software": formValues?.email_software || "",
-        "client_source": formValues?.client_source || "",
-        "written_treatment_plans": formValues?.written_treatment_plans || "",
-        "employee_satisfaction_survey": formValues?.employee_satisfaction_survey || "",
-        "last_employee_survey": formValues?.last_employee_survey || 0,
-        "number_of_clinicians": formValues?.number_of_clinicians || 0,
-        "number_of_non_clinicians": formValues?.number_of_non_clinicians || 0,
-        "work_life_balance": formValues?.work_life_balance || 0
+        "services_provided": formValues?.services_provided,
+        "ndis_clients": formValues?.ndis_clients,
+        "own_building": formValues?.own_building,
+        "pay_market_rent": formValues?.pay_market_rent,
+        "market_rate_difference": formValues?.market_rate_difference,
+        "group_classes": formValues?.group_classes,
+        "classes_per_week": formValues?.classes_per_week,
+        "practice_management_software": formValues?.practice_management_software,
+        "initial_consult_charge": formValues?.initial_consult_charge,
+        "initial_consult_duration": formValues?.initial_consult_duration,
+        "followup_consult_charge": formValues?.followup_consult_charge,
+        "followup_consult_duration": formValues?.followup_consult_duration,
+        "current_business_plan": formValues?.current_business_plan,
+        "plan_execution": formValues?.plan_execution,
+        "plan_review_timeline": formValues?.plan_review_timeline,
+        "exit_plan": formValues?.exit_plan,
+        "leave_comfort_level": formValues?.leave_comfort_level,
+        "treating_hours": formValues?.treating_hours,
+        "managing_hours": formValues?.managing_hours,
+        "pay_treating_clients": formValues?.pay_treating_clients,
+        "pay_managing_business": formValues?.pay_managing_business,
+        "turnover": formValues?.turnover,
+        "profit": formValues?.profit,
+        "total_wages": formValues?.total_wages,
+        "non_clinician_wages": formValues?.non_clinician_wages,
+        "rent": formValues?.rent,
+        "cash_reserves": formValues?.cash_reserves,
+        "client_survey": formValues?.client_survey,
+        "last_client_survey": formValues?.last_client_survey,
+        "email_software": formValues?.email_software,
+        "client_source": formValues?.client_source,
+        "written_treatment_plans": formValues?.written_treatment_plans,
+        "employee_satisfaction_survey": formValues?.employee_satisfaction_survey,
+        "last_employee_survey": formValues?.last_employee_survey,
+        "number_of_clinicians": formValues?.number_of_clinicians,
+        "number_of_non_clinicians": formValues?.number_of_non_clinicians,
+        "work_life_balance": formValues?.work_life_balance0
     });
     
     const handlePrev = useCallback((index: page) => {
@@ -205,6 +205,17 @@ export default function Page({searchParams}:{searchParams:any}) {
         const { name, value } = e.target;
         handleSetFormData(name,value)
       };
+
+    //   toggle required states
+    const required = {
+        market_rate_difference: formData.own_building == 'no',
+        classes_per_week:formData.group_classes == "yes",
+        plan_execution:formData.current_business_plan == 'yes',
+        plan_review_timeline:formData.current_business_plan == 'yes',
+        last_client_survey: formData.client_survey == 'yes',
+        last_employee_survey: formData.employee_satisfaction_survey == 'yes',
+    }
+
         
         return <>
             <form className={`h-full card max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col z-[20] ${additionalClass}`} id="owner-survey-form" onSubmit={(e) => handleDefaultSubmit(e, page)}>
@@ -348,7 +359,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                         <h3 className="formSectionHeader">Clinic Building Ownership</h3>
                         <div className="formSectionContent">
 
-                            <div className="sm:col-span-1">
+                            <div className="child sm:col-span-1">
                                 <label htmlFor="own_building" className="formLabel">Do you own the building at 1 or more of your clinic locations?</label>
                                 <div className="mt-2">
                                     <div className="formField">
@@ -359,24 +370,24 @@ export default function Page({searchParams}:{searchParams:any}) {
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="sm:col-span-1 group-has-[[value=no]:checked]:hidden">
+            
+                            <div className="sm:col-span-1 group-has-[.child_[value='no']:checked]:hidden">
                                 <label htmlFor="pay_market_rent" className="formLabel">If yes to above. Do you pay a market rent?</label>
                                 <div className="mt-2">
                                     <div className="formField">
                                         <select onChange={handleChange} name="pay_market_rent" value={formData.pay_market_rent} id="pay_market_rent" className="">
-                                            <option value="yes">Yes</option>
                                             <option value="no">No</option>
+                                            <option value="yes">Yes</option>
                                         </select>
                                     </div>
                                 </div>
                             </div>
 
-                            <div className="sm:col-span-1 group-has-[[value=yes]:checked]:hidden">
+                            <div className="sm:col-span-1 group-has-[.child_[value='yes']:checked]:hidden">
                                 <label htmlFor="market_rate_difference" className="formLabel">If no, how much over/under the market rate are you? (in thousands)</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="number" onChange={handleChange} name="market_rate_difference" value={formData.market_rate_difference} id="market_rate_difference" className="" placeholder="Amount in thousands" />
+                                        <input type="number" onChange={handleChange} name="market_rate_difference" min="1000" value={formData.market_rate_difference} id="market_rate_difference" className="" placeholder="Amount in thousands" required={required.market_rate_difference}/>
                                     </div>
                                 </div>
                             </div>
@@ -393,8 +404,8 @@ export default function Page({searchParams}:{searchParams:any}) {
                                 <div className="mt-2">
                                     <div className="formField">
                                         <select onChange={handleChange} name="group_classes" value={formData.group_classes} id="group_classes" className="" required>
-                                            <option value="yes">Yes</option>
                                             <option value="no">No</option>
+                                            <option value="yes">Yes</option>
                                             <option value="not_applicable">Not applicable</option>
                                         </select>
                                     </div>
@@ -405,7 +416,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                                 <label htmlFor="classes_per_week" className="formLabel">If yes, how many classes do you run per week approximately?</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="number" onChange={handleChange} name="classes_per_week" value={formData.classes_per_week} id="classes_per_week" className="" placeholder="Number of classes" />
+                                        <input type="number" onChange={handleChange} name="classes_per_week" value={formData.classes_per_week} id="classes_per_week" className="" placeholder="Number of classes" required={required.classes_per_week}/>
                                     </div>
                                 </div>
                             </div>
@@ -492,8 +503,8 @@ export default function Page({searchParams}:{searchParams:any}) {
                                 <div className="mt-2">
                                     <div className="formField">
                                         <select onChange={handleChange} name="current_business_plan" value={formData.current_business_plan} id="current_business_plan" className="" required>
-                                            <option value="yes">Yes</option>
                                             <option value="no">No</option>
+                                            <option value="yes">Yes</option>
                                         </select>
                                     </div>
                                 </div>
@@ -503,7 +514,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                                 <label htmlFor="plan_execution" className="formLabel">How do you feel you have executed your plan in the last 12 months? (1-100)</label>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="number" onChange={handleChange} name="plan_execution" value={formData.plan_execution} id="plan_execution" className="" min="1" max="100" placeholder="1-100" />
+                                        <input type="number" onChange={handleChange} name="plan_execution" value={formData.plan_execution} id="plan_execution" className="" min="1" max="100" placeholder="1-100" required={required.plan_execution}/>
                                     </div>
                                 </div>
                             </div>
@@ -513,7 +524,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                                 <p className="field_instruction">*In years, to 1 decimal point.</p>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="number" step="0.1" onChange={handleChange} name="plan_review_timeline" value={formData.plan_review_timeline} id="plan_review_timeline" className="" min="1" max="" placeholder="In months" />
+                                        <input type="number" step="0.1" onChange={handleChange} name="plan_review_timeline" value={formData.plan_review_timeline} id="plan_review_timeline" className="" min="1" max="" placeholder="In months" required={required.plan_review_timeline}/>
                                     </div>
                                 </div>
                             </div>
@@ -682,8 +693,8 @@ export default function Page({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                         <div className="formField">
                                             <select onChange={handleChange} name="client_survey" value={formData.client_survey} id="client_survey" className="" required>
-                                                <option value="yes">Yes</option>
                                                 <option value="no">No</option>
+                                                <option value="yes">Yes</option>
                                             </select>
                                         </div>
                                     </div>
@@ -694,7 +705,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                                     <p className="field_instruction">*In years, to 1 decimal point. (For example, 2 years and 6 months should be entered as 2.5)</p>
                                     <div className="mt-2">
                                         <div className="formField">
-                                            <input type="number" step="0.1" onChange={handleChange} name="last_client_survey" value={formData.last_client_survey} id="last_client_survey" className="" placeholder="2.5" />
+                                            <input type="number" step="0.1" onChange={handleChange} name="last_client_survey" value={formData.last_client_survey} id="last_client_survey" className="" placeholder="2.5" required={required.last_client_survey}/>
                                         </div>
                                     </div>
                                 </div>
@@ -758,8 +769,8 @@ export default function Page({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                         <div className="formField">
                                             <select onChange={handleChange} name="employee_satisfaction_survey" value={formData.employee_satisfaction_survey} id="employee_satisfaction_survey" className="">
-                                                <option value="yes">Yes</option>
                                                 <option value="no">No</option>
+                                                <option value="yes">Yes</option>
                                             </select>
                                         </div>
                                     </div>
@@ -770,7 +781,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                                     <p className="field_instruction">*In years, to 1 decimal point. (For example, 2 years and 6 months should be entered as 2.5)</p>
                                     <div className="mt-2">
                                         <div className="formField">
-                                            <input type="number" step="0.1" onChange={handleChange} name="last_employee_survey" value={formData.last_employee_survey} id="last_employee_survey" className="" placeholder="2.5" />
+                                            <input type="number" step="0.1" onChange={handleChange} name="last_employee_survey" value={formData.last_employee_survey} id="last_employee_survey" className="" placeholder="2.5" required={required.last_employee_survey}/>
                                         </div>
                                     </div>
                                 </div>
