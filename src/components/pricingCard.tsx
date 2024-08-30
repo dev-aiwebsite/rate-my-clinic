@@ -26,10 +26,18 @@ const PricingCard = ({product, durations,metadata}:{product:TproductWithPrices |
     }
 
     let isUpgrade = false 
+    let isCurrentPlan = false
 
     // Post-assessment options will only be displayed if the user has an initial assessment plan.
-    if(currentUser && Number(currentUser.subscription_level) > 0){
-        isUpgrade = true
+    if(currentUser){
+
+        if(Number(currentUser.subscription_level) > 0){
+            isUpgrade = true
+        }
+        if(Number(currentUser.subscription_level) == Number(product?.metadata.subscription_level)){
+            isCurrentPlan = true
+        }
+
     }
 
     if(isUpgrade && Number(product?.metadata.subscription_level) < 2){
@@ -66,7 +74,11 @@ const PricingCard = ({product, durations,metadata}:{product:TproductWithPrices |
                 }
             </ul>
             <div className="mt-auto w-full *:w-full">
-                {currentUser || isSignup ? (<PaymentModalButton priceId={product.prices[0].id} meta={metadata} mode={mode}/>) :
+                {currentUser || isSignup ? 
+                    <>
+                        {isCurrentPlan ? <button className="block text-center w-full btn-primary disabled" disabled={true}>Active Plan</button>: (<PaymentModalButton priceId={product.prices[0].id} meta={metadata} mode={mode}/>)}
+                    </>
+                 :
                 
                     (<Link className="block text-center w-full btn-secondary" href="/signup">Subscribe</Link>)
                 }
