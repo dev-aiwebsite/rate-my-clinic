@@ -52,7 +52,7 @@ export default function PaymentModalButton({priceId,meta,mode}:{priceId:string, 
         <button
           type="button"
           onClick={openModal}
-          className="btn-secondary"
+          className="btn-primary"
         >
           Subscribe
         </button>
