@@ -17,6 +17,4 @@ export const connectToDb = async () => {
     }
 }
 
-
-
 connectToDb()

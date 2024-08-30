@@ -62,7 +62,7 @@ const createStripeCheckoutSession = async (request: { mode:Stripe.Checkout.Sessi
         customer_email: meta.useremail || "",
         allow_promotion_codes: true,
         // redirect_on_completion: "never",
-        return_url: `${domain}/confirmation?session_id={CHECKOUT_SESSION_ID${oldMember}}`,
+        return_url: `${domain}/confirmation?session_id={CHECKOUT_SESSION_ID}`,
    })
 }
 

@@ -13,7 +13,6 @@ import { redirect } from 'next/navigation';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
-    console.log(formData)
     let result = {
         success: false,
         data: null || "",
@@ -25,11 +24,11 @@ export const RegisterUser = async (formData:FormData) =>{
         const fd = Object.fromEntries(formData)
         const {useremail} = fd
         let emailExists = await Users.findOne({useremail})
-        console.log(fd, 'register serveractions')
+      
 
     if(emailExists){
        result.data = emailExists
-       result.message = 'User email already exist'
+       result.message = 'User email already exists'
        result.success = false
        return result;
     }
@@ -53,13 +52,20 @@ export const RegisterUser = async (formData:FormData) =>{
 
 export const UpdateUser = async (query = {"useremail":"string"}, data = {}) =>{
     try {        
-        connectToDb()
         let user = await Users.findOneAndUpdate(query, data, {new:true})
 
-        return JSON.parse(JSON.stringify(user))
+        let response = {
+            user:JSON.parse(JSON.stringify(user)),
+            success: true
+        }
+        return response
         
     } catch (error:any) {
-        throw new Error(error.toString())
+        let response = {
+            success: false,
+            error:error.toString()
+        }
+        return response
     }
 }
 
@@ -128,17 +134,13 @@ export const OwnerSurveyAction = async (formData: FormData) => {
         return result
 
     } catch (error) {
-        console.log(error)
         return {"success": false, 'message': error?.toString()}
         
     }
 }
 
 
-export const ClientSurveyAction = async (formData: FormData) => {
-    console.log('Client survey form submitted')
-    console.log(formData)
-    
+export const ClientSurveyAction = async (formData: FormData) => {  
     try {
         connectToDb()
         const newClientSurvey = new DB_ClientSurveyData(Object.fromEntries(formData))
@@ -146,14 +148,11 @@ export const ClientSurveyAction = async (formData: FormData) => {
 
         return {"success": true, 'message':'data save in database'}
     } catch (error) {
-        console.log(error)
         return {"success": false, 'message': error?.toString()}
         
     }
 }
 export const TeamSurveyAction = async (formData: FormData) => {
-    console.log('Team survey form submitted')
-    console.log(formData)
     
     try {
         connectToDb()
@@ -162,14 +161,12 @@ export const TeamSurveyAction = async (formData: FormData) => {
 
         return {"success": true, 'message':'data save in database'}
     } catch (error) {
-        console.log(error)
         return {"success": false, 'message': error?.toString()}
         
     }
 }
 
 export const AppSendMail = async(mailOptions:MailOptions) => {
-    console.log(mailOptions)
     try {
         const emailStatus = await SendMailViaElastic(mailOptions)
         return emailStatus
@@ -187,8 +184,6 @@ export const handleLogout = async () => {
   };
 
 export const resetPassword = async (formData: FormData) => {
-console.log('owner survey form submitted')
-console.log(formData)
 
 try {
     connectToDb()
@@ -196,7 +191,6 @@ try {
 
     return {"success": true, 'message':'data save in database'}
 } catch (error) {
-    console.log(error)
     return {"success": false, 'message': error?.toString()}
     
 }
@@ -295,7 +289,6 @@ export const getSurveyData = async (currentUser_id?:string) => {
         overalls['mine'] = Object.values(mySurveys.summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
 
         if(otherSummary.length){
-            console.log(otherSummary,'other summary')
             let overall = otherSummary.map(summary => {
                 return Object.values(summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
             })
@@ -995,7 +988,6 @@ export const handleScheduleEmail = async () => {
     };
 
     // const result = await SendMailViaElastic(mailOptions);
-    // console.log(result);
     // return JSON.parse(JSON.stringify(result))
     return 
 };

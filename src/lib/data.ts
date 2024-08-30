@@ -1,9 +1,10 @@
 import { Users } from "./models"
 import { connectToDb } from "./utils"
 
-export const fetchData = async () => {
+export const fetchData = async (query?:{[key:string]:any}) => {
     connectToDb()
     try {
+  
         const users = await Users.find()
 
         return JSON.parse(JSON.stringify(users)) as typeof users

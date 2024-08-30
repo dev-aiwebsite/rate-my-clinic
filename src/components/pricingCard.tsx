@@ -18,6 +18,7 @@ const PricingCard = ({product, durations,metadata}:{product:TproductWithPrices |
     const {currentUser} = useSessionContext()
     const pathname = usePathname()
 
+    
     let isSignup = false
     
     if(pathname == '/signup'){
