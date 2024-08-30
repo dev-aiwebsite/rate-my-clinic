@@ -12,8 +12,14 @@ export default async function Page({searchParams}:any) {
     const session_id = searchParams.session_id as string;
     if(session_id){
         const sessionInfo = await stripe.checkout.sessions.retrieve(session_id);
-        
-        let content = <> <h1 className="text-3xl text-bold">Thank you for subscribing</h1>
+        const emailImage = <> <Image
+        className="w-16 mx-auto"
+        width={60}
+        height={60}
+        src="/icons/emailDelivery.svg"
+        alt="email delivery icon"
+    /></>
+        let content = <>{emailImage} <h1 className="text-3xl text-bold">Thank you for subscribing</h1>
         <p className="mt-10">{`Your subscription is now confirmed and active. We have sent you an email with more details. If you don't see it, please check your spam folder.`}</p></>
 
         if(sessionInfo.status == "complete"){
@@ -104,8 +110,9 @@ export default async function Page({searchParams}:any) {
                 console.log(updateUserResult, 'updateUserResult')
 
                 content = <>
-                <h1 className="text-3xl text-bold">Your plan has updated successfully.</h1>
-                    <Link className="block btn-primary uppercase w-fit mx-auto mt-10" href="/dashboard">Go to dashboard</Link>
+                <h1 className="text-3xl text-bold">Thank you!</h1>
+                <p className="mt-4">Your plan has been successfully updated.</p>
+                    <a className="block btn-primary uppercase w-fit mx-auto mt-10" href="/dashboard">Go to dashboard</a>
                 </>
     
             } else {
@@ -143,13 +150,6 @@ export default async function Page({searchParams}:any) {
                 </div>
                 <div className="py-10 px-20 text-center">
                     
-                <Image
-                            className="w-16 mx-auto"
-                            width={60}
-                            height={60}
-                            src="/icons/emailDelivery.svg"
-                            alt="email delivery icon"
-                        />
                        {content}
                 </div>
 
