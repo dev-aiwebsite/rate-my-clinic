@@ -122,11 +122,11 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
 
                 </div>
             </div>}
-            {!formSubmitted && <div className="flex-1 p-6 gap-x-6 gap-y-10 flex flex-col *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6 max-w-screen-lg mx-auto">
+            {!formSubmitted && <div className="flex-1 p-2 md:p-6 gap-x-6 gap-y-10 flex flex-col *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6 max-w-screen-lg mx-auto">
                 {/* <div className="col-span-3 row-span-1 flex flex-row items-center justify-between text-xl font-medium">
                     Client survey
                 </div> */}
-                <form className="max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col !p-10" id="client_survey_form" onSubmit={(e) => handleDefaultSubmit(e, page)}>
+                <form className="max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col md:!p-10" id="client_survey_form" onSubmit={(e) => handleDefaultSubmit(e, page)}>
                     <div className="flex-1">
                         <div className="flex flex-col items-center mb-10">
                             <Image className="" width="150" height="70" src={clinic_logo} alt={clinic_name} />
@@ -206,7 +206,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="recommendation" className="formLabel">On a scale of 0-10, how likely are you to recommend <strong>{clinic_name}</strong> to your friends and family?</label>
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none">
-                                            <InputRange min={0} max={10} name="recommendation" defaultValue={0} required/>                                         
+                                            <InputRange min={0} max={10} name="recommendation" defaultValue={5} required/>                                         
                                         </div>
                                     </div>
                                 </div>
@@ -227,11 +227,11 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none flex flex-row gap-5 text-base">
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input className="!w-4" type="radio" name="recommendedPreviously" value="no" defaultChecked/>
+                                                <input className="!w-6" type="radio" name="recommendedPreviously" value="no" defaultChecked/>
                                                 <span>No</span>
                                              </label>
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input className="!w-4" type="radio" name="recommendedPreviously" value="yes"required/>
+                                                <input className="!w-6" type="radio" name="recommendedPreviously" value="yes"required/>
                                                 <span>Yes</span>
                                              </label>
                                         </div>
@@ -243,11 +243,11 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                 <div className="sm:col-span-1">
                                     <label htmlFor="servicesUsed" className="formLabel">Which of our services have you used?</label>
                                     <div className="mt-2">
-                                        <div className="formField ring-0 flex flex-col items-start">
+                                        <div className="formField gap-4 ring-0 flex flex-col items-start">
                                         {surveyData?.ownerSurveyData.services_provided?.split(",").map((item:any,index:number)=> {
                                             return (
-                                            <label key={index} className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input className="!w-4" type="checkbox" name="servicesUsed" value={item} />
+                                            <label key={index} className="flex flex-row items-center gap-1 cursor-pointer">
+                                                <input className="!w-6" type="checkbox" name="servicesUsed" value={item} />
                                                 <span>{item}</span>
                                             </label>
                                             )
@@ -262,7 +262,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="practitioner" className="formLabel">Overall, how satisfied are you with your practitioner?</label>
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none">
-                                            <InputRange min={0} max={10} name="practitioner" defaultValue={0} required/>                                         
+                                            <InputRange min={0} max={10} name="practitioner" defaultValue={5} required/>                                         
                                         </div>
                                     </div>
                                 </div>
@@ -272,7 +272,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="receptionTeam" className="formLabel">Overall, how satisfied are you with our admin team?</label>
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none">
-                                            <InputRange min={0} max={10} name="receptionTeam" defaultValue={0} required/>                                         
+                                            <InputRange min={0} max={10} name="receptionTeam" defaultValue={5} required/>                                         
                                         </div>
                                     </div>
                                 </div>
@@ -286,7 +286,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     </label>
                                     <div className="mt-2">
                                         <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="lookAndFeel" defaultValue={0} required/>
+                                            <InputRange min={0} max={10} name="lookAndFeel" defaultValue={5} required/>
                                         </div>
                                     </div>
                                 </div>
@@ -298,7 +298,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="communication" className="formLabel">How satisfied are your with our communication?</label>
                                     <div className="mt-2">
                                          <div className="formField !ring-0 !shadow-none">
-                                            <InputRange min={0} max={10} name="communication" defaultValue={0} required/>                                         
+                                            <InputRange min={0} max={10} name="communication" defaultValue={5} required/>                                         
                                         </div>
                                     </div>
                                 </div>
@@ -312,7 +312,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     </label>
                                     <div className="mt-2">
                                         <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="bookingProcess" defaultValue={0} required/>
+                                            <InputRange min={0} max={10} name="bookingProcess" defaultValue={5} required/>
                                         </div>
                                     </div>
                                 </div>
@@ -325,7 +325,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     </label>
                                     <div className="mt-2">
                                         <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="valueForMoney" defaultValue={0} required/>
+                                            <InputRange min={0} max={10} name="valueForMoney" defaultValue={5} required/>
                                         </div>
                                     </div>
                                 </div>
@@ -338,7 +338,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     </label>
                                     <div className="mt-2">
                                         <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="website" defaultValue={0} required/>
+                                            <InputRange min={0} max={10} name="website" defaultValue={5} required/>
                                         </div>
                                     </div>
                                 </div>
@@ -361,37 +361,37 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                 <div className="sm:col-span-1">
                                     <label htmlFor="socialMediaUsed" className="formLabel">Which social media do you use?</label>
                                     <div className="mt-2">
-                                    <div className="formField ring-0 flex flex-col items-start">
+                                    <div className="formField gap-1 ring-0 flex flex-col items-start">
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
                                             <span>Facebook</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
                                             <span>Instagram</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
                                             <span>X</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
                                             <span>Twitter</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
                                             <span>Tik Tok</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
                                             <span>Snapchat</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
                                             <span>YouTube</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-4" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
                                             <span>I don’t use social media</span>
                                         </label>
 
@@ -407,11 +407,11 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none flex flex-row gap-5 text-base">
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input className="!w-4" type="radio" name="followUpBookingConfirmation" value="no" defaultChecked/>
+                                                <input className="!w-6" type="radio" name="followUpBookingConfirmation" value="no" defaultChecked/>
                                                 <span>No</span>
                                              </label>
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input className="!w-4" type="radio" name="followUpBookingConfirmation" value="yes"required/>
+                                                <input className="!w-6" type="radio" name="followUpBookingConfirmation" value="yes"required/>
                                                 <span>Yes</span>
                                              </label>
                                         </div>

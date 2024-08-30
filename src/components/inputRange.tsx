@@ -32,7 +32,7 @@ function InputRange({ required,min = 0,max = 10,firstInputClassName,className,se
     }
 
     return (
-      <div className={`${className} w-full flex flex-row`}>
+      <div className={`${className} items-center w-full flex flex-row`}>
             <input
             className={`${firstInputClassName} w-full`}
             type="range"
