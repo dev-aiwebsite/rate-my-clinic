@@ -208,7 +208,7 @@ export default function Page({searchParams}:{searchParams:any}) {
 
     //   toggle required states
     const required = {
-        market_rate_difference: formData.own_building == 'no',
+        market_rate_difference: formData.pay_market_rent == 'no',
         classes_per_week:formData.group_classes == "yes",
         plan_execution:formData.current_business_plan == 'yes',
         plan_review_timeline:formData.current_business_plan == 'yes',
@@ -359,7 +359,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                         <h3 className="formSectionHeader">Clinic Building Ownership</h3>
                         <div className="formSectionContent">
 
-                            <div className="child sm:col-span-1">
+                            <div className="mainquestion sm:col-span-1">
                                 <label htmlFor="own_building" className="formLabel">Do you own the building at 1 or more of your clinic locations?</label>
                                 <div className="mt-2">
                                     <div className="formField">
@@ -370,27 +370,31 @@ export default function Page({searchParams}:{searchParams:any}) {
                                     </div>
                                 </div>
                             </div>
-            
-                            <div className="sm:col-span-1 group-has-[.child_[value='no']:checked]:hidden">
-                                <label htmlFor="pay_market_rent" className="formLabel">If yes to above. Do you pay a market rent?</label>
-                                <div className="mt-2">
-                                    <div className="formField">
-                                        <select onChange={handleChange} name="pay_market_rent" value={formData.pay_market_rent} id="pay_market_rent" className="">
-                                            <option value="no">No</option>
-                                            <option value="yes">Yes</option>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <div className="sm:col-span-1 group-has-[.child_[value='yes']:checked]:hidden">
-                                <label htmlFor="market_rate_difference" className="formLabel">If no, how much over/under the market rate are you? (in thousands)</label>
-                                <div className="mt-2">
-                                    <div className="formField">
-                                        <input type="number" onChange={handleChange} name="market_rate_difference" min="1000" value={formData.market_rate_difference} id="market_rate_difference" className="" placeholder="Amount in thousands" required={required.market_rate_difference}/>
+                            <div className="secondquestion group-has-[.mainquestion_[value='no']:checked]:hidden">
+                                <div className="sm:col-span-1">
+                                    <label htmlFor="pay_market_rent" className="formLabel">If yes to above. Do you pay a market rent?</label>
+                                    <div className="mt-2">
+                                        <div className="formField">
+                                            <select onChange={handleChange} name="pay_market_rent" value={formData.pay_market_rent} id="pay_market_rent" className="">
+                                                <option value="no">No</option>
+                                                <option value="yes">Yes</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div className="sm:col-span-1 mt-10 group-has-[.secondquestion_[value='yes']:checked]:hidden">
+                                    <label htmlFor="market_rate_difference" className="formLabel">If no, how much over/under the market rate are you? (in thousands)</label>
+                                    <div className="mt-2">
+                                        <div className="formField">
+                                            <input type="number" onChange={handleChange} name="market_rate_difference" min="1000" value={formData.market_rate_difference} id="market_rate_difference" className="" placeholder="Amount in thousands" required={required.market_rate_difference}/>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
+            
+                           
 
                         </div>
                     </div>
@@ -521,10 +525,10 @@ export default function Page({searchParams}:{searchParams:any}) {
 
                             <div className="sm:col-span-1 group-has-[[value=no]:checked]:hidden">
                                 <label htmlFor="plan_review_timeline" className="formLabel">How long has it been since you reviewed your business plan?</label>
-                                <p className="field_instruction">*In years, to 1 decimal point.</p>
+                                <p className="field_instruction">*In years, to 1 decimal point. (For example, 2 years and 6 months should be entered as 2.5)</p>
                                 <div className="mt-2">
                                     <div className="formField">
-                                        <input type="number" step="0.1" onChange={handleChange} name="plan_review_timeline" value={formData.plan_review_timeline} id="plan_review_timeline" className="" min="1" max="" placeholder="In months" required={required.plan_review_timeline}/>
+                                        <input type="number" step="0.1" onChange={handleChange} name="plan_review_timeline" value={formData.plan_review_timeline} id="plan_review_timeline" className="" min="1" max="" placeholder="2.5" required={required.plan_review_timeline}/>
                                     </div>
                                 </div>
                             </div>

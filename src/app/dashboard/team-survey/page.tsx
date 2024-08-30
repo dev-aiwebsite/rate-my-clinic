@@ -92,7 +92,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                             <button className="absolute right-4 group" onClick={exitJourney}><span className="pi pi-times flex items-center justify-center text-lg text-gray-600 transform transition-transform duration-300 hover:scale-110 hover:text-red-400"></span></button>
                                 <h1 className="inline-block text-lg font-bold">Next, Invite your team to answer the survey</h1>
                                 
-                                <p className="text-md text-gray-700">{`Select Client Survey from the option panel: have your team scan the QR code or copy the link and distribute it via your preferred communication channel (email, messenger, etc)`}</p>
+                                <p className="text-md text-gray-700">{`Select Team Survey from the option panel: have your team scan the QR code or copy the link and distribute it via your preferred communication channel (email, messenger, etc)`}</p>
                                 <div className="w-full flex items-end">
                                     <button onClick={redirectTo} className="ml-auto btn btn-primary">Next</button>
                                 </div>

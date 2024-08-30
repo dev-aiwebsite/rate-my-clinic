@@ -93,15 +93,15 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
 
                 </div>
             </div>}
-            {!formSubmitted && <div className="flex-1 p-6 gap-x-6 gap-y-10 flex flex-col *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6 max-w-screen-lg mx-auto">
+            {!formSubmitted && <div className="flex-1 p-1 md:p-6 gap-x-6 gap-y-10 flex flex-col *:bg-white *:shadow-lg *:rounded-lg *:py-6 *:px-6 max-w-screen-lg mx-auto">
                 {/* <div className="col-span-3 row-span-1 flex flex-row items-center justify-between text-2xl font-medium text-appblue-400">
                     Team survey
                 </div> */}
-                <form className="max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col !p-10" id="client_survey_form" onSubmit={(e) => handleDefaultSubmit(e, page)}>
+                <form className="max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col md:!p-10" id="client_survey_form" onSubmit={(e) => handleDefaultSubmit(e, page)}>
                     <div className="flex-1">
                         <input type="hidden" name="clinicId" value={`${clinic_id}`}/>
                         <div className="flex flex-col items-center mb-10">
-                            <Image className="" width="150" height="600" src={clinic_logo} alt={clinic_name} />
+                            <Image className="" width="150" height="70" src={clinic_logo} alt={clinic_name} />
                             <h1 className="text-4xl font-medium text-appblue-400 mt-5">Team survey</h1>
                         </div>
 
@@ -169,7 +169,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     </label>
                                     <div className="mt-2">
                                         <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="recommendation" defaultValue={0} required/>                                            
+                                            <InputRange min={0} max={10} name="recommendation" defaultValue={5} required/>                                            
                                         </div>
                                     </div>
                                 </div>
@@ -182,7 +182,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     </label>
                                     <div className="mt-2">
                                          <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="socialActivities" defaultValue={0} required/>                                            
+                                            <InputRange min={0} max={10} name="socialActivities" defaultValue={5} required/>                                            
                                         </div>
                                         
                                     </div>
@@ -197,7 +197,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
 
                                          <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="communication" defaultValue={0} required/>                                            
+                                            <InputRange min={0} max={10} name="communication" defaultValue={5} required/>                                            
                                         </div>
 
                                        
@@ -213,7 +213,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
 
                                          <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="professionalDevelopment" defaultValue={0} required/>                                            
+                                            <InputRange min={0} max={10} name="professionalDevelopment" defaultValue={5} required/>                                            
                                         </div>
 
                                       
@@ -229,7 +229,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
 
                                          <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="mentoring" defaultValue={0} required/>                                            
+                                            <InputRange min={0} max={10} name="mentoring" defaultValue={5} required/>                                            
                                         </div>
 
                                       
@@ -245,7 +245,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
 
                                          <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={100} name="teamWork" defaultValue={0} required/>                                            
+                                            <InputRange min={0} max={100} name="teamWork" defaultValue={5} required/>                                            
                                         </div>
 
                                     </div>
@@ -286,7 +286,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
 
                                          <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={100} name="communicationRating" defaultValue={0} required/>                                            
+                                            <InputRange min={0} max={100} name="communicationRating" defaultValue={5} required/>                                            
                                         </div>
 
                                     </div>
@@ -333,7 +333,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
 
                                          <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={100} name="serviceKnowledge" defaultValue={0} required/>                                            
+                                            <InputRange min={0} max={100} name="serviceKnowledge" defaultValue={5} required/>                                            
                                         </div>
                                     </div>
                                 </div>
