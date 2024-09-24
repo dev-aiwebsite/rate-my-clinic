@@ -13,7 +13,16 @@ import { useRouter } from "next/navigation";
 
 export default function Page({searchParams}:{searchParams:any}) {
     const {currentUser,users} = useSessionContext()
+    let isAdmin = false
+    if(currentUser.role == 'admin'){
+        isAdmin = true
+    }
     const router = useRouter();
+    if (!isAdmin) {
+        router.push("/dashboard"); // Redirect to /dashboard
+        return null; // Return null to prevent further rendering
+    }
+
     let users_datatable_all:any[] = []
     if(users.length){
         users_datatable_all = users.map((i: { _id: any; username: any; fname: any; lname: any; useremail: any; role: any; clinic_name: any; clinic_type: any; subscription_level: any; subscription_id: any; last_checkout_session_id: any; profile_pic: any; isActive: any; isVerified: any; isDeleted: any; isBlocked: any; createdAt: any; updatedAt: any; clinic_established: any; clinic_location_country: any; clinic_location_postcode: any; clinic_location_state: any; usermobile: any; }) => {
@@ -68,13 +77,13 @@ export default function Page({searchParams}:{searchParams:any}) {
     }   
 
     const userAvatarBodyTemplate = (rowData: { [x: string]: string | undefined; }) => {
-        console.log(rowData, 'userAvatarBodyTemplate')
+        // console.log(rowData, 'userAvatarBodyTemplate')
 
-        return (
-            <div className="flex align-items-center gap-2">
-                <img alt={rowData['First Name']} src={`${rowData['Profile Picture']}`} width="32" />
-            </div>
-        );
+        // return (
+        //     <div className="flex align-items-center gap-2">
+        //         <img alt={rowData['First Name']} src={`${rowData['Profile Picture']}`} width="32" />
+        //     </div>
+        // );
     };
     return <>
          <div className="card m-5">
@@ -85,7 +94,7 @@ export default function Page({searchParams}:{searchParams:any}) {
             <DataTable value={users_datatable_all} selectionMode="single" onSelectionChange={(e) => tableRowOnClick(e)} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort stripedRows>
             {Object.keys(users_datatable_all[0]).map((key,indx) => {
                     if(key == 'Profile Picture'){
-                        return <Column key={`${key}_${indx}`} body={userAvatarBodyTemplate} field={key} header={key} />
+                        return <Column key={`${key}_${indx}`} field={key} header={key} />
                     } else {
                        return <Column key={`${key}_${indx}`} body={""} field={key} header={key} />
                     }

@@ -26,7 +26,7 @@ const GenerateReport = () => {
     const [showDialog, setShowDialog] = useState(false);
     let pdfLink = ""
     if('pdf_link' in currentUser?.reports[0]){
-        currentUser.reports[0].pdf_link
+        pdfLink = currentUser.reports[0].pdf_link
     }
     const [pdfUrl, setPdfUrl] = useState(pdfLink);
     const [pdfFileName, setPdfFileName] = useState(`rmc_${pdfUrl.split('/')[2]}`);
