@@ -68,25 +68,25 @@ const GenerateReport = () => {
     },[])
 
     
-    if(isMobile){
-        <>
-            <AppDialog position='top' setIsVisible={handleCloseDialog} header={'Download Report'}>
-                <div className='!select-none'>
-                    <p>Unable to generate the report as the file size exceeds the limits for mobile devices. Please use a desktop computer to generate the report.</p>
-                    {/* <a className='select-none block mx-auto text-center mt-10 text-white btn bg-red-400 hover:bg-red-500' href={pdfUrl} download={`${pdfFileName}`} target='_blank'>{`${pdfFileName}`}</a> */}
-                </div>
-            </AppDialog>
-        </>
-    }
+    // if(isMobile){
+    //     <>
+    //         <AppDialog position='top' setIsVisible={handleCloseDialog} header={'Download Report'}>
+    //             <div className='!select-none'>
+    //                 <p>Unable to generate the report as the file size exceeds the limits for mobile devices. Please use a desktop computer to generate the report.</p>
+    //                 {/* <a className='select-none block mx-auto text-center mt-10 text-white btn bg-red-400 hover:bg-red-500' href={pdfUrl} download={`${pdfFileName}`} target='_blank'>{`${pdfFileName}`}</a> */}
+    //             </div>
+    //         </AppDialog>
+    //     </>
+    // }
 
     return (
         <div className={`h-full md:h-[80vh]  bg-gray-200 p-2 md:p-10 rounded-lg ${loading ? 'overflow-hidden' : 'overflow-scroll'}`}>
-            {isMobile && <AppDialog isVisible={showDialog} setIsVisible={handleCloseDialog} header={'Download Report'}>
+            {/* {isMobile && <AppDialog isVisible={showDialog} setIsVisible={handleCloseDialog} header={'Download Report'}>
                 <div className='!select-none'>
                     <p>Unable to generate the report as the file size exceeds the limits for mobile devices. Please use a desktop computer to generate the report.</p>
                 </div>
             </AppDialog>
-             }
+             } */}
             
            {pdfUrl && <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="btn sticky left-full top-0 z-10 right-2 bg-red-500 text-white font-bold" onClick={handleGeneratePDF} download={pdfFileName}>Download</a>}
             <div className="report_wrapper" dangerouslySetInnerHTML={{ __html: reportHtml || '' }}>
