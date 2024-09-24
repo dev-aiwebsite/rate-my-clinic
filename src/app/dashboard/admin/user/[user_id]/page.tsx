@@ -6,6 +6,7 @@ import { useEffect, useState } from "react"
 import { useSessionContext } from "@/context/sessionContext"
 import { getSurveyData } from "lib/server-actions"
 import { ProgressSpinner } from "primereact/progressspinner"
+import { useRouter } from "next/navigation"
 
 type TsurveyData = {
     other: {
@@ -24,7 +25,12 @@ type TsurveyData = {
     teamSurveyData?: any;
 } | null
 export default function Page({params}:{params:any}){
-        const {users} = useSessionContext()
+        const {currentUser, users} = useSessionContext()
+        const router = useRouter();
+        if (currentUser.role != 'admin') {
+            router.push("/dashboard"); // Redirect to /dashboard
+            return null; // Return null to prevent further rendering
+        }
         const [surveyData, setSurveyData] = useState<TsurveyData>(null)
 
             useEffect(()=> {

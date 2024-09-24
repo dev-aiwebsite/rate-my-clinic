@@ -48,6 +48,10 @@ const second_list_item:list_item = [
 ]
 
 const SidebarDesktop = ({userData}:{userData:any}) => {
+    let isAdmin = false
+    if(userData.role == 'admin'){
+        isAdmin = true
+    }
     return <aside className="w-64 h-[calc(100vh_-_4rem)] bg-white px-5 flex flex-col pb-10 border-solid border-0 border-r border-gray-200">
         <div className="text-center">
             <Image
@@ -76,6 +80,11 @@ const SidebarDesktop = ({userData}:{userData:any}) => {
                         {item.name}</Link>
                 </li>
             ))}
+            {isAdmin && <li className="hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400">
+                <Link href='/dashboard/admin' className="flex flex-row items-center gap-3 text-sm py-3 px-6 text-[#388db6]">
+                    <span className="w-4 h-4 pi pi-hashtag"></span><span>Admin</span>
+                </Link>
+            </li>}
         </ul>
         <ul className="text-gray-600">
             {second_list_item.map((item, index) => (

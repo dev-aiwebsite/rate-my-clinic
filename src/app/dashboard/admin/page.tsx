@@ -13,7 +13,16 @@ import { useRouter } from "next/navigation";
 
 export default function Page({searchParams}:{searchParams:any}) {
     const {currentUser,users} = useSessionContext()
+    let isAdmin = false
+    if(currentUser.role == 'admin'){
+        isAdmin = true
+    }
     const router = useRouter();
+    if (!isAdmin) {
+        router.push("/dashboard"); // Redirect to /dashboard
+        return null; // Return null to prevent further rendering
+    }
+    
     let users_datatable_all:any[] = []
     if(users.length){
         users_datatable_all = users.map((i: { _id: any; username: any; fname: any; lname: any; useremail: any; role: any; clinic_name: any; clinic_type: any; subscription_level: any; subscription_id: any; last_checkout_session_id: any; profile_pic: any; isActive: any; isVerified: any; isDeleted: any; isBlocked: any; createdAt: any; updatedAt: any; clinic_established: any; clinic_location_country: any; clinic_location_postcode: any; clinic_location_state: any; usermobile: any; }) => {
