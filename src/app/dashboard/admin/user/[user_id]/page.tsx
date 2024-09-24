@@ -12,7 +12,7 @@ type TsurveyData = {
         [key: string]: any;
     }[];
     other_summary: {};
-    oldData: summary[];
+    oldData: any[];
     overalls: {
         [key: string]: any;
     };
