@@ -106,8 +106,6 @@ export default async function Page({searchParams}:any) {
                 }
                 
                 const updateUserResult = await UpdateUser({"useremail":useremail},updateFormData)
-                console.log(updateFormData, 'updateFormData')
-                console.log(updateUserResult, 'updateUserResult')
 
                 content = <>
                 <h1 className="text-3xl text-bold">Thank you!</h1>

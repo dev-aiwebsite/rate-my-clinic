@@ -14,7 +14,7 @@ export default function AccountPage({searchParams}:{searchParams?:any}) {
     const [isProfileComplete, setIsprofileComplete] = useState(true)
     let defaultisJourney = searchParams.journey == "" ? true : false
     const [isJourney,setIsJourney] = useState(defaultisJourney);
-
+console.log(currentUser)
     useEffect(()=>{
         const isComplete = tocheck.every(i => currentUser[i])
         setIsprofileComplete(isComplete)

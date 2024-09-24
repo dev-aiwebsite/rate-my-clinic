@@ -14,7 +14,6 @@ interface CustomSession extends Session {
   }
 
 const login = async (credentials:any) => {
-    console.log(credentials,'from login')
     try {
         connectToDb()
         const user = await Users.findOne({useremail:credentials.useremail})

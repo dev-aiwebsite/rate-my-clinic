@@ -10,11 +10,16 @@ import { DataTable, DataTableSelectionSingleChangeEvent } from "primereact/datat
 import { useState } from "react";
 import { Dialog } from "primereact/dialog";
 import TableData from "../../../components/table-data";
-import { formatDateTime } from "@/helperFunctions";
+import { formatDateTime, saveAsExcelFile } from "lib/helperFunctions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { mobileNavbarHeight } from "lib/Const";
 import UpgradePlanBlock from "components/upgrade-plan-block";
+import { Tooltip } from "primereact/tooltip";
+import { Button } from "primereact/button";
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
+import ExcelJS from 'exceljs';
 
 export default function Page({searchParams}:{searchParams:any}) {
     const router = useRouter()
@@ -36,9 +41,34 @@ export default function Page({searchParams}:{searchParams:any}) {
     let ownerSurveyDone = data?.ownerSurveyData ? Object.keys(data.ownerSurveyData).length > 0 : false
 
     let clientSurvey = data?.clientSurveyData
+    let client_datatable_all: any[] | undefined = []
     if(clientSurvey){
-        clientSurvey.forEach(i => i.createdAt = formatDateTime(i.createdAt))
+        client_datatable_all =  clientSurvey.map((i,indx) => {
+            return {
+                'First Name': i.fname,
+                'Last Name': i.lname,
+                'Email': i.email,
+                'Recommendation': i.recommendation,
+                'Recommendation Feedback': i.recommendation_feedback,
+                'Recommended Previously': i.recommendedPreviously,
+                'Service Used': i.servicesUsed,
+                'Satisfaction With Your practioner': i.practitioner,
+                'Satisfaction With Our Admin Team': i.receptionTeam,
+                'Look And Feel Of Our Practice': i.lookAndFeel,
+                'Satisfaction With Our Communication': i.communication,
+                'Satisfaction With Our Booking Process': i.bookingProcess,
+                'Value For Money Of Your Treatment': i.valueForMoney,
+                'Satisfaction With Our website': i.website,
+                'Improvement Suggestion': i.improvementSuggestion,
+                'Social Media used': i.socialMediaUsed,
+                'Follow-up Appointment Booking Timeline': i.followUpBookingConfirmation,
+                'Group Age': i.group_age,
+                'Comments or Question':i.comments_questions,
+                'Date': formatDateTime(i.createdAt)
+            }
+        })
     }
+
 
     function redirectTo(){
         router.push('/dashboard/client-survey')
@@ -59,6 +89,22 @@ export default function Page({searchParams}:{searchParams:any}) {
     if(currentUser.subscription_level == 0){
         isRestricted = true
     }
+
+    const exportExcel = async () => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('data');
+      
+        // Assuming tableData is an array of objects
+        worksheet.columns = Object.keys(client_datatable_all[0]).map(key => ({ header: key, key }));
+      
+        client_datatable_all.forEach(data => {
+          worksheet.addRow(data);
+        });
+      
+        const buffer = await workbook.xlsx.writeBuffer();
+      
+        saveAsExcelFile(buffer, 'RMC_CLIENTS_REPORT_DATA.xlsx');
+    };
 
     function exitJourney(){
         router.replace('/dashboard/client-survey')
@@ -170,11 +216,16 @@ export default function Page({searchParams}:{searchParams:any}) {
                 
               {!isRestricted && !shareSurveyView && clientSurvey && <>
                 <div>
-                    <DataTable value={clientSurvey} selectionMode="single" onSelectionChange={(e) => tableRowOnClick(e)} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort>
-                        <Column field="fname" header="First Name" sortable></Column>
-                        <Column field="lname" header="Last Name" sortable></Column>
-                        <Column field="email" header="Email Add" sortable></Column>
-                        <Column field="createdAt" header="Date" sortable></Column>
+                    <Tooltip target=".export-buttons>button" position="bottom" />
+                    <div className="flex align-items-center justify-end gap-2 w-full sticky top-0 z-10 bg-white p-2">
+                        <Button type="button" icon="pi pi-file-excel" className='bg-green-600 text-white p-2 w-fit aspect-square' onClick={exportExcel} data-pr-tooltip="XLS" />
+                    </div>
+
+                    <DataTable value={client_datatable_all} selectionMode="single" onSelectionChange={(e) => tableRowOnClick(e)} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort>
+                        <Column field="First Name" header="First Name" sortable></Column>
+                        <Column field="Last Name" header="Last Name" sortable></Column>
+                        <Column field="Email" header="Email Add" sortable></Column>
+                        <Column field="Date" header="Date" sortable></Column>
                     </DataTable>
                 </div>
                 <Dialog header={dialogHeaderText} visible={dialogVisible} style={{ width: 'min(90vw, 70rem)' }} onHide={() => {if (!dialogVisible) return; setDialogVisible(false); }}>

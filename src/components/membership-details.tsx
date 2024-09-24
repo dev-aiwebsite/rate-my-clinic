@@ -15,7 +15,6 @@ const MembershipDetails = ({sessionId}:params) => {
         retrieveCheckoutSession(sessionId)
         .then((cs:Stripe.Response<Stripe.Checkout.Session>) => {
             setCs(cs)
-            console.log(cs)
         })
     },[])
 

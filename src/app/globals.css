@@ -70,15 +70,20 @@
   html {
     font-size: 14px;
   }
-
-  body:not(.print) .pdf_page {
+  body:not(.print) .report_wrapper {
+    display: flex;
+    justify-content: center;
+  }
+  body:not(.print) #rmc_report {
     scale: 0.4;
-    translate: -50% -30%;
-    margin-bottom: -53rem;
-    height: fit-content !important;
-    min-height: 70rem;
-    margin-left: 50%;
+    max-width: 210mm;
+    max-height: 650mm;
+    position: relative;
+    translate: 0 -30%;
     transform-origin: center;
+  }
+  body:not(.print) #rmc_report .page {
+    margin-top: 10px !important;
   }
 
   .mobile-container-height {

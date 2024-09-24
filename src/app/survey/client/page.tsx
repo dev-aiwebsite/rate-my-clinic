@@ -47,7 +47,6 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
 
     },[])
 
-    console.log(surveyData)
 
     const Alert = ({ severity = 'info', summary = 'Info', detail = 'Message Content' }: ToastMessage) => {
         toast.current?.show({ severity, summary, detail });
@@ -74,7 +73,6 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
     async function handleDefaultSubmit(e: FormEvent, index: page) {
         e.preventDefault()
         if (index >= max_pages) {
-            console.log('submitting')
             setIsLoading(true)
             let form = e.target as HTMLFormElement
             let formData = new FormData(form)
@@ -363,35 +361,35 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                     <div className="formField gap-1 ring-0 flex flex-col items-start">
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="Facebook"/>
                                             <span>Facebook</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="Instagram"/>
                                             <span>Instagram</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="X"/>
                                             <span>X</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="Twitter"/>
                                             <span>Twitter</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="Tik Tok"/>
                                             <span>Tik Tok</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="Snapchat"/>
                                             <span>Snapchat</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="YouTube"/>
                                             <span>YouTube</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" />
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="I don’t use social media"/>
                                             <span>I don’t use social media</span>
                                         </label>
 
