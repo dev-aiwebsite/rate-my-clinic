@@ -11,12 +11,17 @@ import TableData from "../../../components/table-data";
 import { Column } from "primereact/column";
 import { DataTable, DataTableSelectionSingleChangeEvent } from "primereact/datatable";
 import { Dialog } from "primereact/dialog";
-import { formatDateTime } from "@/helperFunctions";
+import { formatDateTime, saveAsExcelFile } from "lib/helperFunctions";
 import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { mobileNavbarHeight } from "lib/Const";
 import UpgradePlanBlock from "components/upgrade-plan-block";
 import NavbarMobile from "@/ui/navbar/navbar-mobile";
+import { Tooltip } from "primereact/tooltip";
+import { Button } from "primereact/button";
+import jsPDF from 'jspdf'
+import 'jspdf-autotable'
+import ExcelJS from 'exceljs';
 
 export default function Page({searchParams}:{searchParams:any}) {
     const router = useRouter()
@@ -44,8 +49,29 @@ export default function Page({searchParams}:{searchParams:any}) {
     }
 
     let teamSurvey = data?.teamSurveyData
+    let team_datatable_all: any[] | undefined = []
     if(teamSurvey){
-        teamSurvey.forEach(i => i.createdAt = formatDateTime(i.createdAt))
+        team_datatable_all = teamSurvey.map((i,indx) => {
+            return {
+                'First Name': i.fname,
+                'Last Name': i.lname,
+                'Email': i.email,
+                'Recommendation': i.recommendation,
+                'Social Activities': i.socialActivities,
+                'Communication': i.communication,
+                'Professional Development': i.professionalDevelopment,
+                'Mentoring': i.mentoring,
+                'Team Work': i.teamWork,
+                'Improvements': i.improvements,
+                'Strengths': i.strengths,
+                'Communication Rating': i.communicationRating,
+                'Needs Improvement': i.needsImprovement,
+                'Reward Comparison': i.rewardComparison,
+                'Service Knowledge': i.serviceKnowledge,
+                'Additional Comments': i.additionalComments,
+                'Date': formatDateTime(i.createdAt)
+            }
+        })
     }
 
     function tableRowOnClick(e: DataTableSelectionSingleChangeEvent<any[]>){
@@ -68,6 +94,23 @@ export default function Page({searchParams}:{searchParams:any}) {
         router.replace('/dashboard/team-survey')
         setIsJourney(false)
     }
+
+    const exportExcel = async () => {
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('data');
+      
+        // Assuming tableData is an array of objects
+        worksheet.columns = Object.keys(team_datatable_all[0]).map(key => ({ header: key, key }));
+      
+        team_datatable_all.forEach(data => {
+          worksheet.addRow(data);
+        });
+      
+        const buffer = await workbook.xlsx.writeBuffer();
+      
+        saveAsExcelFile(buffer, 'RMC_TEAM_REPORT_DATA.xlsx');
+    };
+
     return (
         <div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 flex flex-col h-full">
              <div className="card col-span-3 row-span-1 flex flex-row gap-5 items-center justify-between">
@@ -177,11 +220,15 @@ export default function Page({searchParams}:{searchParams:any}) {
                 }
                  {!shareSurveyView && teamSurvey && <>
                     <div>
-                        <DataTable value={teamSurvey} selectionMode="single" onSelectionChange={(e) => tableRowOnClick(e)} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort>
-                            <Column field="fname" header="First Name" sortable></Column>
-                            <Column field="lname" header="Last Name" sortable></Column>
-                            <Column field="email" header="Email Add" sortable></Column>
-                            <Column field="createdAt" header="Date" sortable></Column>
+                        <Tooltip target=".export-buttons>button" position="bottom" />
+                        <div className="flex align-items-center justify-end gap-2 w-full sticky top-0 z-10 bg-white p-2">
+                            <Button type="button" icon="pi pi-file-excel" className='bg-green-600 text-white p-2 w-fit aspect-square' onClick={exportExcel} data-pr-tooltip="XLS" />
+                        </div>
+                        <DataTable value={team_datatable_all} selectionMode="single" onSelectionChange={(e) => tableRowOnClick(e)} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort>
+                            <Column field="First Name" header="First Name" sortable></Column>
+                            <Column field="Last Name" header="Last Name" sortable></Column>
+                            <Column field="Email" header="Email Add" sortable></Column>
+                            <Column field="Date" header="Date" sortable></Column>
                         </DataTable>
                     </div>
                     <Dialog header={dialogHeaderText} visible={dialogVisible} style={{ width: 'min(90vw, 70rem)' }} onHide={() => {if (!dialogVisible) return; setDialogVisible(false); }}>

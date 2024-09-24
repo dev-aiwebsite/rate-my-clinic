@@ -99,6 +99,24 @@ const user_schema = new mongoose.Schema({
   passwordResetExpires: {
     type: Date,
   },
+  reports: {
+    type: [
+      {
+        date: {
+          type: Date,
+          required: true,
+        },
+        pdf_link:{
+          type: String
+        },
+        data: {
+          type: String, 
+          required: true, 
+        },
+      },
+    ],
+    default: [], 
+  },
 
 }, { timestamps: true });
 

@@ -9,21 +9,7 @@ import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { redirect, usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import { isProfileCompleteCheckList } from "lib/Const";
-import DialogConfirm from "components/confirm-dialog";
-import AppDialog from "components/dialog";
-
-type npsData = {
-    date: string;
-    value: number;
-    comment:string;
-}[] | null;
-
-
-type npsItem = {
-    date: string;
-    value: number;
-    comment:string;
-};
+import { hasPassedMaxDays } from "lib/helperFunctions";
 
 const defaultNps = [
     {
@@ -34,12 +20,12 @@ const defaultNps = [
 ]
 
 export default function Page(){ 
+ 
     const {data,setData} = useSurveyDataContext()
     const {currentUser,setCurrentUser} = useSessionContext()
     const pathname = usePathname()
-    
-    console.log(data)
-    if(!currentUser) return
+    const maxDays = 14;
+    if(!currentUser) return null
     let tocheck = isProfileCompleteCheckList
     const isProfileComplete = tocheck.every(i => currentUser[i])
     
@@ -48,33 +34,19 @@ export default function Page(){
             redirect('/dashboard/settings/account')
         }
     }
+
+    console.log(currentUser)
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
     let charts = userAccess?.charts
     let userName = currentUser?.username || "Guest"
     
     let is_ownerSurveyData_complete = data?.ownerSurveyData ? true : false
-    let daysRemaining
     let showReport = false
 
     let clientNps = defaultNps, teamNps = defaultNps, clientNpsAvg = 0,teamNpsAvg = 0
+    const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(currentUser.createdAt,maxDays)
 
     if(is_ownerSurveyData_complete){
-        if(data.ownerSurveyData){
-            const maxDays = 14;
-            let createdAt = new Date(data.ownerSurveyData.createdAt); // Assuming data.ownerSurveyData.createdAt is a valid date string
-            let today = new Date();
-            
-            // Calculate the date that is 10 days after createdAt
-            let maxDate = new Date(createdAt);
-            maxDate.setDate(maxDate.getDate() + maxDays);
-            
-            // Calculate the difference in time (in milliseconds)
-            let timeDifference = maxDate.getTime() - today.getTime();
-            
-            // Calculate the difference in days
-            daysRemaining = Math.ceil(timeDifference / (1000 * 3600 * 24));
-            
-        }
         
         if(currentUser.subscription_level > 0){
             if(data){
@@ -101,7 +73,7 @@ export default function Page(){
                 
                 const sum2 = npsValues_team.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
                 teamNpsAvg = sum2 / npsValues_team.length || 0
-        
+
             }
 
         }
@@ -125,14 +97,31 @@ export default function Page(){
 
     let headerInfoText = ''
 
-
+    let hasReport = false
     if(is_ownerSurveyData_complete){
-        if(daysRemaining && daysRemaining > 0){
-            headerInfoText = `You have ${daysRemaining} days till your final report is generated`
+        if(currentUser.subscription_level < 1){
+            let report = currentUser.reports
+            if(report.length){
+                headerInfoText = `Your final report is generated`
+                showReport = true
+                hasReport = true
+            } else {
+                hasReport = false
+            }
+
+        } else if(!hasPassed){
+            headerInfoText = `You have ${remainingDays} days till your final report is generated`
         } else {
-            headerInfoText = `Your final report is generated`
-            showReport = true
+            let report = currentUser.reports
+            if(report.length){
+                headerInfoText = `Your final report is generated`
+                showReport = true
+                hasReport = true
+            } else {
+                hasReport = false
+            }
         }
+
     } else {
          headerInfoText = 'To access app functionality, please complete the Owner survey.'
     }

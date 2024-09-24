@@ -110,7 +110,9 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
         .then(res => {
             Alert({ severity: 'success', summary: 'Success', detail: 'Profile updated' });
             setIsLoading(false);
-            setCurrentUser(res)
+            if('user' in res){
+                setCurrentUser(res.user)
+            }
             if(redirectTo){
                 router.push(redirectTo)
             } 

@@ -8,8 +8,6 @@ import { MailOptions, elasticTransporter, transporter } from "../../config/nodem
 import { ExtendedSession } from '../../typings';
 import ElasticEmail, { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
 import Stripe from "stripe"
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -56,14 +54,15 @@ export const UpdateUser = async (query = {"useremail":"string"}, data = {}) =>{
 
         let response = {
             user:JSON.parse(JSON.stringify(user)),
-            success: true
+            success: true,
+            message: 'User updated successfully'
         }
         return response
         
     } catch (error:any) {
         let response = {
             success: false,
-            error:error.toString()
+            message:error.toString()
         }
         return response
     }
@@ -198,21 +197,27 @@ try {
 
 
 
-export const getSurveyData = async (currentUser_id?:string) => {
+export const getSurveyData = async (currentUser_id?:string,date?:string) => {
             
     if(!currentUser_id){
         const user = await auth() as ExtendedSession;
         currentUser_id = user?.user_id
     }
 
-    
     if(!currentUser_id) return null
         
     try{
-        
-        let ownerSurveyData = await DB_OwnerSurveyData.find()
-        let clientSurveyData = await DB_ClientSurveyData.find()
-        let teamSurveyData = await DB_TeamSurveyData.find()
+        const dateFilter = date ? new Date(date) : null;
+
+        let ownerSurveyData = await DB_OwnerSurveyData.find({
+            ...(dateFilter && { createdAt: { $lte: dateFilter } }),
+        })
+        let clientSurveyData = await DB_ClientSurveyData.find({
+            ...(dateFilter && { createdAt: { $lte: dateFilter } }),
+        })
+        let teamSurveyData = await DB_TeamSurveyData.find({
+            ...(dateFilter && { createdAt: { $lte: dateFilter } }),
+        })
 
         if(!ownerSurveyData){
             return null
@@ -230,7 +235,10 @@ export const getSurveyData = async (currentUser_id?:string) => {
         let clinicIds = convertedSurveys.ownerSurveyData.map((i: { clinic_id: any }) => i.clinic_id)
         type mySurveys = {
             [key:string]:any,
-            summary:{[key:string]:any}
+            summary:{[key:string]:any},
+            ownerSurveyData?:any,
+            clientSurveyData?:any,
+            teamSurveyData?:any
         }
         let mySurveys:mySurveys = {
             summary: {}

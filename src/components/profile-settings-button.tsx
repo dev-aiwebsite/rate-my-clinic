@@ -1,7 +1,6 @@
 "use client"
 export default function ProfileButton() {
     const handleClick = () => {
-        console.log('Button clicked!');
     }
 
     return (

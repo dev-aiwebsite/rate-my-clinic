@@ -24,7 +24,6 @@ export default function ClientSurveyForm() {
 
     function handleDefaultSubmit(e:FormEvent,index:page){   
         if(index >= max_pages){
-            console.log('submitting')
             return
         } else {
             e.preventDefault()

@@ -18,7 +18,6 @@ export default function ForgotPasswordForm({isPasswordResetValid,userEmail}:{isP
             if(!formRef.current) return
             const formdata = new FormData(formRef.current);
             const formdataObject = Object.fromEntries(formdata.entries());
-            console.log(formdataObject);
 
             const response = await fetch('api/forgotpassword', {
                 method: 'POST',
@@ -28,14 +27,12 @@ export default function ForgotPasswordForm({isPasswordResetValid,userEmail}:{isP
                 body: JSON.stringify(formdataObject)
             });
             const res = await response.json();
-            console.log(res);
             setEmailSent(res.success);
             if(res.success){
                 formRef.current?.reset();
             }
             setLoading(false)
         } catch (err) {
-            console.log(err);
         }
     };
 

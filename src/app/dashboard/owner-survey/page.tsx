@@ -137,11 +137,9 @@ export default function Page({searchParams}:{searchParams:any}) {
     }, [])
 
     const handleNext = useCallback((index: page) => {
-        console.log(index,max_pages)
         if (index < max_pages) {
             const form = document.getElementById('owner-survey-form') as HTMLFormElement;
             const currentPageItems = Array.from(form.querySelectorAll(`[data-formpage="${page}"] input[name], [data-formpage="${page}"] select[name], [data-formpage="${page}"] textarea[name]`)) as HTMLFormElement[];
-            console.log(currentPageItems)
             if (form && !currentPageItems.every(i => i.reportValidity()) ) {
                 return;
 
@@ -158,7 +156,6 @@ export default function Page({searchParams}:{searchParams:any}) {
 
     const handleDefaultSubmit = async (e: FormEvent, index: page) => {
         e.preventDefault();
-        console.log('submitting')
         const Alert = ({ severity = 'info', summary = 'Info', detail = 'Message Content' }: ToastMessage) => {
             toast.current?.show({ severity, summary, detail });
         };
@@ -169,9 +166,6 @@ export default function Page({searchParams}:{searchParams:any}) {
         const res = await OwnerSurveyAction(new FormData(form));
         
         if (res.success) {
-            
-     
-            
             
             getSurveyData().then(d => {
                 setPage(1);
@@ -981,10 +975,6 @@ export default function Page({searchParams}:{searchParams:any}) {
     }
     const isMobile = useMediaQuery({ query: "(max-width: 768px)" });
 
-    
-    
-    
-console.log(isMobile)
     return (<>
           <Toast className="text-sm" ref={toast} />
           <div className="flex-1 p-6 gap-x-10 gap-y-10 flex flex-col gap-10 h-full">

@@ -23,7 +23,6 @@ export async function POST(req:NextRequest, res: NextResponse){
 
     if(sig){
         let event = stripe.webhooks.constructEvent(payload,sig as string,process.env.STRIPE_WEBHOOK_SECRET as string)
-        console.log(event)
     }
 
     try {

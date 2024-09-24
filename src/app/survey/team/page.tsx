@@ -29,7 +29,6 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
     const user_data = users?.find((i: { _id: string; }) => i._id == `${clinic_id}`)
     const clinic_name = user_data?.clinic_name || ""
     const clinic_logo = user_data?.clinic_logo || ""
-    console.log(user_data)
 
     const Alert = ({ severity = 'info', summary = 'Info', detail = 'Message Content' }: ToastMessage) => {
         toast.current?.show({ severity, summary, detail });
@@ -56,7 +55,6 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
     async function handleDefaultSubmit(e: FormEvent, index: page) {
         e.preventDefault()
         if (index >= max_pages) {
-            console.log('submitting')
             setIsLoading(true)
             let form = e.target as HTMLFormElement
             const res = await TeamSurveyAction(new FormData(form))

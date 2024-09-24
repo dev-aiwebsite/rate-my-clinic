@@ -15,3 +15,25 @@ export const clinicFields = [
 
   export const mobileNavbarHeight = '3.5rem'
   export const desktopNavbarHeight = '4rem'
+  export const subscriptionLevels = [
+    {
+      level:0,
+      name:'Free',
+    },
+    {
+      level:1,
+      name:'Initial',
+    },
+    {
+      level:2,
+      name:'Bronze',
+    },
+    {
+      level:3,
+      name:'Silver',
+    },
+    {
+      level:4,
+      name:'Gold',
+    },
+  ]
