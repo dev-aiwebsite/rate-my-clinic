@@ -35,7 +35,6 @@ export default function Page(){
         }
     }
 
-    console.log(currentUser)
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
     let charts = userAccess?.charts
     let userName = currentUser?.username || "Guest"
@@ -102,6 +101,7 @@ export default function Page(){
         if(currentUser.subscription_level < 1){
             let report = currentUser.reports
             if(report.length){
+                
                 headerInfoText = `Your final report is generated`
                 showReport = true
                 hasReport = true
