@@ -30,18 +30,17 @@ export default function Page({params}:{params:any}){
         if (currentUser.role != 'admin') {
             redirect('/dashboard') // Redirect to /dashboard
         }
-      
-        console.log(surveyData)
             useEffect(()=> {
                 if(surveyData) return
                 let user = users.find((i: { _id: string }) => i._id == params.user_id)
                 if(!user) return
                 const getSD = async() => {
                     let SD = await getSurveyData(params.user_id)
-                    console.log(SD, 'SD')
                     if(SD){
                         setSurveyData(SD)
                     }
+
+                    console.log(SD, 'SD')
                 }   
                 getSD()
             },[])
@@ -49,8 +48,6 @@ export default function Page({params}:{params:any}){
         return <>
          <Link className="m-2 block w-fit rounded-lg bg-transparent hover:bg-gray-100 p-2"
                  href={"/dashboard/admin"}><IoIosArrowRoundBack size={32} /></Link>
-
-
 
         <div className="card m-5">
             {!surveyData ? <>

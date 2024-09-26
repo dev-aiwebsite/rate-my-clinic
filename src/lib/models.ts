@@ -215,6 +215,10 @@ const clientSurveyDataSchema = new mongoose.Schema({
   comments_questions: {
     type: String,
     required: true,
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
   }
   
 }, { timestamps: true });
@@ -288,6 +292,10 @@ const teamSurveyDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  }
 }, { timestamps: true });
 
 const ownerSurveyDataSchema = new mongoose.Schema({
@@ -489,6 +497,10 @@ const ownerSurveyDataSchema = new mongoose.Schema({
     type: Number,
     default: 0, // Default value of 0
   },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  }
 }, { timestamps: true });
 
 

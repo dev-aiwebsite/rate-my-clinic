@@ -42,7 +42,6 @@ export default function Page({searchParams}:{searchParams:any}) {
                 'Clinic Postcode': i.clinic_location_postcode,
                 'Clinic State': i.clinic_location_state,
                 'Verified': i.isVerified,
-                'Deleted': i.isDeleted,
                 'Blocked': i.isBlocked,
                 'Created At': formatDateTime(i.createdAt),
                 'Updated At': formatDateTime(i.updatedAt),
@@ -76,20 +75,11 @@ export default function Page({searchParams}:{searchParams:any}) {
             }
     }   
 
-    const userAvatarBodyTemplate = (rowData: { [x: string]: string | undefined; }) => {
-        // console.log(rowData, 'userAvatarBodyTemplate')
-
-        // return (
-        //     <div className="flex align-items-center gap-2">
-        //         <img alt={rowData['First Name']} src={`${rowData['Profile Picture']}`} width="32" />
-        //     </div>
-        // );
-    };
     return <>
          <div className="card m-5">
             <Tooltip target=".export-buttons>button" position="bottom" />
             <div className="flex align-items-center justify-end gap-2 w-full sticky top-0 z-10 bg-white p-2">
-                <Button type="button" icon="pi pi-file-excel" className='bg-green-600 text-white p-2 w-fit aspect-square' onClick={exportExcel} data-pr-tooltip="XLS" />
+                <Button type="button" icon="pi pi-file-excel" className='!bg-green-600 text-white p-2 w-fit aspect-square' onClick={exportExcel} data-pr-tooltip="XLS" />
             </div>
             <DataTable value={users_datatable_all} selectionMode="single" onSelectionChange={(e) => tableRowOnClick(e)} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort stripedRows>
             {Object.keys(users_datatable_all[0]).map((key,indx) => {
