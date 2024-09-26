@@ -39,13 +39,16 @@ const items:Titems = {
 
 export default function Page({params}:{params:any}){
     let pageName = params.page
+    
     const {data} = useSurveyDataContext()
     const {currentUser} = useSessionContext()
     const {appUserConfig,setAppUserConfig} = useAppConfigContext()
 
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
     let charts = userAccess?.charts
-
+    console.log(pageName)
+    console.log(data, 'data')
+    console.log(currentUser)
     let npsCategory = pageName
 
     if(pageName == 'team' || pageName == "teams"){

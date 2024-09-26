@@ -41,7 +41,8 @@ const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(currentUser.crea
             date: maxEndDate.toLocaleString()
         }
         let newReport = await SaveReport(params)
-        if(newReport?.data  && 'user' in newReport.data){
+        console.log(newReport, 'newreport1')
+        if(newReport?.data  && 'user' in newReport?.data){
             currentUser = newReport.data.user
             surveyData = JSON.parse(currentUser.reports[0].data).surveyData
         }
@@ -55,8 +56,8 @@ const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(currentUser.crea
                 date: maxEndDate.toLocaleString()
             }
             let newReport = await SaveReport(params)
-            console.log(newReport)
-            if(newReport?.data  && 'user' in newReport.data){
+            console.log(newReport, 'newreport2')
+            if(newReport?.data  && 'user' in newReport?.data){
                 currentUser = newReport.data.user
                 surveyData = JSON.parse(currentUser.reports[0].data).surveyData
             }

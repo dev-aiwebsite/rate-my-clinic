@@ -9,7 +9,7 @@ import { Tooltip } from "primereact/tooltip";
 import 'jspdf-autotable'
 import ExcelJS from 'exceljs';
 import { subscriptionLevels } from "lib/Const";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 
 export default function Page({searchParams}:{searchParams:any}) {
     const {currentUser,users} = useSessionContext()
@@ -17,10 +17,10 @@ export default function Page({searchParams}:{searchParams:any}) {
     if(currentUser.role == 'admin'){
         isAdmin = true
     }
+    
     const router = useRouter();
     if (!isAdmin) {
-        router.push("/dashboard"); // Redirect to /dashboard
-        return null; // Return null to prevent further rendering
+        redirect('/dashboard'); // Redirect to /dashboard
     }
 
     let users_datatable_all:any[] = []

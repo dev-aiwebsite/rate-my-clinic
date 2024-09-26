@@ -70,7 +70,7 @@ export async function SaveReport({currentUserId,currentUserEmail,date}:{currentU
       // Catch errors and return failure response
       return {
         success: false,
-        message: 'An error occurred',
+        message: `An error occurred ${err}`,
       };
     }
   }

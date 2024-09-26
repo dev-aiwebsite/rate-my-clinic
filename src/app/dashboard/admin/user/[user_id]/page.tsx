@@ -6,7 +6,7 @@ import { useEffect, useState } from "react"
 import { useSessionContext } from "@/context/sessionContext"
 import { getSurveyData } from "lib/server-actions"
 import { ProgressSpinner } from "primereact/progressspinner"
-import { useRouter } from "next/navigation"
+import { redirect, useRouter } from "next/navigation"
 
 type TsurveyData = {
     other: {
@@ -27,12 +27,14 @@ type TsurveyData = {
 export default function Page({params}:{params:any}){
         const {currentUser, users} = useSessionContext()
         const [surveyData, setSurveyData] = useState<TsurveyData>(null)
-        const router = useRouter();
+        if (currentUser.role != 'admin') {
+            redirect('/dashboard') // Redirect to /dashboard
+        }
       
-        
+        console.log(surveyData)
             useEffect(()=> {
                 if(surveyData) return
-                let user = users.find((i: { _id: string }) => i._id == '66b48dd97f01ae86ade504cb')
+                let user = users.find((i: { _id: string }) => i._id == params.user_id)
                 if(!user) return
                 const getSD = async() => {
                     let SD = await getSurveyData(params.user_id)
@@ -43,11 +45,7 @@ export default function Page({params}:{params:any}){
                 }   
                 getSD()
             },[])
-        
-            if (currentUser.role != 'admin') {
-                router.push("/dashboard"); // Redirect to /dashboard
-                return null; // Return null to prevent further rendering
-            }
+
         return <>
          <Link className="m-2 block w-fit rounded-lg bg-transparent hover:bg-gray-100 p-2"
                  href={"/dashboard/admin"}><IoIosArrowRoundBack size={32} /></Link>
