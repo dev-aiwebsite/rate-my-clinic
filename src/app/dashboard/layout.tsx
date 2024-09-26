@@ -12,7 +12,7 @@ import { getSurveyData } from "lib/server-actions";
 import AppConfigContextProvider from "@/context/appSettingsContext";
 import { hasPassedMaxDays } from "lib/helperFunctions";
 import { SaveReport } from "lib/generateReportData";
-
+import 'primereact/resources/themes/lara-light-blue/theme.css'; 
 
 
 const Layout = async ({

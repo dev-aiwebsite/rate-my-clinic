@@ -101,7 +101,9 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                         <div className="flex flex-col items-center mb-10">
                             <Image className="" width="150" height="70" src={clinic_logo} alt={clinic_name} />
                             <h1 className="text-4xl font-medium text-appblue-400 mt-5">Team survey</h1>
+                            <p className="max-w-[38rem] pt-6 text-center text-red-400 text-sm">*Your personal information will be stored securely and will not be displayed in the survey results. The data shared publicly will be anonymous.</p>
                         </div>
+                        
 
                         <div className={`formSectionContainer ${page == 1 ? "" : "!hidden"}`}>
                             {/* <h3 className="text-xl  leading-6 mb-4">Clinic information</h3> */}

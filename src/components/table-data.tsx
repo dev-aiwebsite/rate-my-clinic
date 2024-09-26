@@ -4,7 +4,6 @@ import { DataTable } from 'primereact/datatable';
 import { Column } from 'primereact/column';
 import { Button } from 'primereact/button';
 import { Tooltip } from 'primereact/tooltip';
-import jsPDF from 'jspdf'
 import 'jspdf-autotable'
 import ExcelJS from 'exceljs';
 import { saveAsExcelFile } from 'lib/helperFunctions';
@@ -14,9 +13,8 @@ interface ColumnMeta {
 }
 
 export default function TableData({data}:{data:any}) {
-    let fileName = `${data.fname} ${data.lname}`
-
     const dt = useRef<DataTable<any[]>>(null);
+    if(!data) return 
     let tableData = Object.keys(data).map(question => {
         let template = {
             "question":question,
@@ -30,21 +28,6 @@ export default function TableData({data}:{data:any}) {
         { field: 'answer', header: '' },
     ];
 
-   
-    const exportColumns = cols.map((col) => ({ title: col.header, dataKey: col.field }));
-
-   
-    const exportCSV = (selectionOnly: boolean) => {
-        if(!dt.current) return
-        dt.current.exportCSV({ selectionOnly });
-    };
-
-    const exportPdf = () => {
-        const doc = new jsPDF() as any
-        doc.autoTable(exportColumns, tableData);
-        doc.save(`${fileName}.pdf`);
-    };
-    
     const exportExcel = async () => {
         const workbook = new ExcelJS.Workbook();
         const worksheet = workbook.addWorksheet('data');
@@ -64,7 +47,6 @@ export default function TableData({data}:{data:any}) {
 
     const header = (
         <div className="flex align-items-center justify-end gap-2 w-full sticky top-0 z-10 bg-white p-2">
-            <Button type="button" icon="pi pi-file" className='bg-blue-500 text-white p-2 w-fit aspect-square' onClick={() => exportCSV(false)} data-pr-tooltip="CSV" />
             <Button type="button" icon="pi pi-file-excel" className='bg-green-600 text-white p-2 w-fit aspect-square' onClick={exportExcel} data-pr-tooltip="XLS" />
         </div>
     );

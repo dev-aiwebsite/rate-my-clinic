@@ -210,12 +210,15 @@ export const getSurveyData = async (currentUser_id?:string,date?:string) => {
         const dateFilter = date ? new Date(date) : null;
 
         let ownerSurveyData = await DB_OwnerSurveyData.find({
+            // isDeleted: false,
             ...(dateFilter && { createdAt: { $lte: dateFilter } }),
         })
         let clientSurveyData = await DB_ClientSurveyData.find({
+            isDeleted: false,
             ...(dateFilter && { createdAt: { $lte: dateFilter } }),
         })
         let teamSurveyData = await DB_TeamSurveyData.find({
+            isDeleted: false,
             ...(dateFilter && { createdAt: { $lte: dateFilter } }),
         })
 
@@ -228,9 +231,6 @@ export const getSurveyData = async (currentUser_id?:string,date?:string) => {
             clientSurveyData: JSON.parse(JSON.stringify(clientSurveyData)),
             teamSurveyData: JSON.parse(JSON.stringify(teamSurveyData)),
         }
-
-
-        
 
         let clinicIds = convertedSurveys.ownerSurveyData.map((i: { clinic_id: any }) => i.clinic_id)
         type mySurveys = {
