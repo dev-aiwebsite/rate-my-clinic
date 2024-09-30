@@ -92,8 +92,9 @@ export const OwnerSurveyAction = async (formData: FormData) => {
     const userEmail = user?.user_email
     const userFirstname = user?.user_name?.split(" ")[0]
     const link = `${process.env.NEXTAUTH_URL}/login?email=${userEmail}`
-
+    const userData = await Users.findOne({useremail:userEmail})
     const ownerSurveyData = await DB_OwnerSurveyData.findOne({clinic_id: currentUser_id })
+
     
     
     try {
@@ -110,11 +111,16 @@ export const OwnerSurveyAction = async (formData: FormData) => {
             result['success'] = true
 
             // set 14 days report email
-            const sendTime = new Date();
+            let sendTime:Date | undefined = new Date();
             sendTime.setDate(sendTime.getDate() + 14);
             sendTime.setHours(8, 0, 0, 0);
+            
+            // send instant when free user 
+            if(Number(userData.subscription_level) < 1){
+                sendTime = undefined
+            }
 
-            const mailOptions = {
+            const  mailOptions = {
                 to: userEmail,
                 subject: "Your report is ready for download",
                 templateName: 'Report ready',
@@ -124,9 +130,10 @@ export const OwnerSurveyAction = async (formData: FormData) => {
                     useremail: userEmail
                 },
                 sendTime: sendTime,
-
-                
             }
+
+           
+            
             const emailed = await AppSendMail(mailOptions)
         }
         

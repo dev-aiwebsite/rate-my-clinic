@@ -85,7 +85,7 @@ const SidebarMobile = ({userData,isVisible = false,position = "right",onHide}:{o
 
     return (<>
        
-         <Sidebar maskClassName="!bg-opacity-5 !bottom-0 !top-auto" className="bottom-16 w-fit h-fit rounded-lg overflow-hidden mr-2 mt-auto shadow-lg" onHide={handleHide} visible={isVisible} position={position} content={customContent}>
+         <Sidebar maskClassName="!bg-opacity-5 !bottom-0 !top-auto" className="bottom-16 !w-fit !h-fit rounded-lg overflow-hidden mr-2 mt-auto shadow-lg" onHide={handleHide} visible={isVisible} position={position} content={customContent}>
         
         </Sidebar>
         </>

@@ -245,7 +245,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
 
                                          <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={100} name="teamWork" defaultValue={5} required/>                                            
+                                            <InputRange min={0} max={100} name="teamWork" defaultValue={50} required/>                                            
                                         </div>
 
                                     </div>
@@ -286,7 +286,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
 
                                          <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={100} name="communicationRating" defaultValue={5} required/>                                            
+                                            <InputRange min={0} max={100} name="communicationRating" defaultValue={50} required/>                                            
                                         </div>
 
                                     </div>
@@ -316,7 +316,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                             <select id="rewardComparison" name="rewardComparison" required>
                                                 <option value="considerably_worse">Considerably worse</option>
                                                 <option value="somewhat_worse">Somewhat worse</option>
-                                                <option value="about_the_same">About the same</option>
+                                                <option selected value="about_the_same">About the same</option>
                                                 <option value="somewhat_better">Somewhat better</option>
                                                 <option value="considerably_better">Considerably better</option>
                                             </select>
@@ -333,7 +333,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
 
                                          <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={100} name="serviceKnowledge" defaultValue={5} required/>                                            
+                                            <InputRange min={0} max={100} name="serviceKnowledge" defaultValue={50} required/>                                            
                                         </div>
                                     </div>
                                 </div>

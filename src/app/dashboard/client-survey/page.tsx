@@ -43,7 +43,7 @@ export default function Page({ searchParams }: { searchParams: any }) {
         setIsJourney(false)
     }
     return (
-        <div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 flex flex-col">
+        <div className="max-md:!max-w-[100vw] bg-transparent flex-1 p-6 gap-x-6 gap-y-10 flex flex-col">
             <div className="card flex flex-row items-center justify-between">
                 <h1 className="text-xl font-medium mr-4">Client Survey</h1>
                 {!isRestricted && <ul className="flex-1 max-w-lg grid gap-[1px] grid-cols-2 divide-x *:cursor-pointer *:border-none rounded-xl overflow-hidden ring-1 ring-gray-300 *:py-2 *:px-1 *:block text-sm text-neutral-500 *:text-center *:bg-white bg-gray-300">
@@ -60,12 +60,12 @@ export default function Page({ searchParams }: { searchParams: any }) {
 
             {!isRestricted && shareSurveyView && <>
                 {isJourney ? (<div style={{ maxHeight: `calc(100svh - ${mobileNavbarHeight})` }} className={`md:!max-h-full max-md:!z-[999] max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed max-md:h-full md:h-screen setupWrapper w-screen z-10 p-5 md:p-10 flex gap-4`}>
-                    <div className="md:w-96 flex flex-col flex-nowrap -mb-10">
+                    <div className="max-md:text-sm md:w-96 flex flex-col flex-nowrap -mb-10">
                         <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                             <button className="absolute right-4 group" onClick={exitJourney}><span className="pi pi-times flex items-center justify-center text-lg text-gray-600 transform transition-transform duration-300 hover:scale-110 hover:text-red-400"></span></button>
-                            <h1 className="inline-block text-lg font-bold">Finally, invite your clients to answer the survey.</h1>
+                            <h1 className="inline-block md:text-lg font-bold">Finally, invite your clients to answer the survey.</h1>
 
-                            <p className="text-md text-gray-700">{`Select Client Survey from the option panel: Copy the Client Survey link. Create an email campaign using your email marketing software (e.g. Mailchimp, Active Campaign etc.). Add the link to a button in your email to help it stand out. Please send this to all clients that have visited your clinic in the last 12 months.`}</p>
+                            <p className="md:text-md text-gray-700">{`Select Client Survey from the option panel: Copy the Client Survey link. Create an email campaign using your email marketing software (e.g. Mailchimp, Active Campaign etc.). Add the link to a button in your email to help it stand out. Please send this to all clients that have visited your clinic in the last 12 months.`}</p>
                             <div className="w-full flex items-end">
                                 <button onClick={redirectTo} className="ml-auto btn btn-primary">Done</button>
                             </div>
