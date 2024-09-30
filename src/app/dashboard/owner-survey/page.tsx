@@ -111,7 +111,7 @@ export default function Page({searchParams}:{searchParams:any}) {
         "last_employee_survey": formValues?.last_employee_survey,
         "number_of_clinicians": formValues?.number_of_clinicians,
         "number_of_non_clinicians": formValues?.number_of_non_clinicians,
-        "work_life_balance": formValues?.work_life_balance0
+        "work_life_balance": formValues?.work_life_balance
     });
     
     const handlePrev = useCallback((index: page) => {
@@ -382,7 +382,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                                     <label htmlFor="market_rate_difference" className="formLabel">If no, how much over/under the market rate are you? (in thousands)</label>
                                     <div className="mt-2">
                                         <div className="formField">
-                                            <input type="number" onChange={handleChange} name="market_rate_difference" min="1000" value={formData.market_rate_difference} id="market_rate_difference" className="" placeholder="Amount in thousands" required={required.market_rate_difference}/>
+                                        <input type="number" onChange={handleChange} name="market_rate_difference"  min={required.market_rate_difference ? 1000 : undefined}  value={formData.market_rate_difference} id="market_rate_difference" className="" placeholder="Amount in thousands" required={required.market_rate_difference}/>
                                         </div>
                                     </div>
                                 </div>
@@ -984,13 +984,13 @@ export default function Page({searchParams}:{searchParams:any}) {
             {!formValues || isJourney ? (<div style={{'--m-navbar-h': mobileNavbarHeight} as CustomStyles} className={`max-md:!z-[999] mobile-container-height max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed h-full md:h-screen setupWrapper w-screen z-10 p-5 md:p-10 flex gap-4`}>
                 
                 
-                <div className="md:w-96 flex flex-col flex-nowrap -mb-10">
+                <div className="max-md:!text-sm md:w-96 flex flex-col flex-nowrap -mb-10">
                     <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                     {formValues && <button className="absolute right-4 group" onClick={exitJourney}><span className="pi pi-times flex items-center justify-center text-lg text-gray-600 transform transition-transform duration-300 hover:scale-110 hover:text-red-400"></span></button>}
-                        <h1 className="inline-block text-lg font-bold">2. Take the owner survey.</h1>
+                        <h1 className="inline-block md:text-lg font-bold">2. Take the owner survey.</h1>
                         
-                        <p className="text-md text-gray-700">{`You need to answer all the questions as accurately as you can. Once submitted your response is recorded in our database.`}</p>
-                        <p className="text-md text-gray-700">{`You must complete this step before you can share the Team and Client surveys.`}</p>
+                        <p className="md:text-md text-gray-700">{`You need to answer all the questions as accurately as you can. Once submitted your response is recorded in our database.`}</p>
+                        <p className="md:text-md text-gray-700">{`You must complete this step before you can share the Team and Client surveys.`}</p>
                     </div>
                     <Image
                     className="w-32 md:w-36 aspect-square" 

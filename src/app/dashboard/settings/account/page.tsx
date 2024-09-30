@@ -73,12 +73,12 @@ console.log(currentUser)
             </div> */}
            
                 {!isProfileComplete || isJourney ? (<div style={{maxHeight:`calc(100svh - ${mobileNavbarHeight})`}} className={`md:!max-h-full max-md:!z-[999] max-md:flex-col-reverse setupWrapper bg-black/50 left-0 top-0 fixed max-md:h-full md:h-screen setupWrapper w-screen z-10 p-5 md:p-10 flex gap-4`}>
-                        <div className="w-96 flex flex-col flex-nowrap -mb-10">
+                        <div className="max-md:!text-sm w-96 flex flex-col flex-nowrap -mb-10">
                             <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                             {isProfileComplete && <button className="absolute right-4 group" onClick={exitJourney}><span className="pi pi-times flex items-center justify-center text-lg text-gray-600 transform transition-transform duration-300 hover:scale-110 hover:text-red-400"></span></button>}
-                                <h1 className="inline-block text-lg font-bold">Welcome {currentUser.fname},</h1>
+                                <h1 className="inline-block text-md font-bold">Welcome {currentUser.fname},</h1>
                                 
-                                <p className="text-md text-gray-700">{`To make the App work, let's continue setting up your details.`}</p>
+                                <p className="text-gray-700">{`To make the App work, let's continue setting up your details.`}</p>
                             </div>
                             <Image
                                 className="w-32 md:w-36 aspect-square" 

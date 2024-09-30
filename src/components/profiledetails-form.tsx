@@ -173,8 +173,8 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
     return (
         <>
           <Toast className="text-sm" ref={toast} />
-            <form ref={profileFormRef} className="h-full [&_label]:!text-sm max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col" id="profile-details-form">
-               <div className="flex flex-row items-center justify-center">
+            <form ref={profileFormRef} className="md:overflow-auto h-full [&_label]:!text-sm max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col" id="profile-details-form">
+               <div className="md:bg-white z-10 md:sticky top-0 flex flex-row items-center justify-center">
                      <Switcher
                     enabled={switchEnabled}
                     setEnabled={handleSwitcherClick}
@@ -290,7 +290,7 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
                     </div>
                
                 </div>
-                <div className="w-full flex flex-row justify-end md:items-end md:mt-10">
+                <div className="md:sticky bottom-0 w-full flex flex-row justify-end md:items-end md:mt-10">
                     <Button className="btn-primary md:min-w-32 justify-center" onClick={(e: MouseEvent<HTMLButtonElement, globalThis.MouseEvent>) => handleFormValidation(e)} type="button" loading={isLoading}><span>Save</span></Button>
                 </div>
             </form>
