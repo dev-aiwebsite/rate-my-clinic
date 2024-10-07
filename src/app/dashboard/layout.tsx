@@ -77,12 +77,13 @@ const value = {
                     <Navbar/>
                     <div className="!bg-slate-100 md:hidden fixed top-0 h-full w-full max-h-32 my-0 mx-auto p-5 md:hidden !shadow-none !z-[99]">
                     <Image
-                        className="max-h-32 mx-auto w-auto"
-                        src="/images/logos/wrh-logo.png"
+                    className="!h-full !object-contain"
+                        src={currentUser?.clinic_logo || "/images/logos/rmc-logo.png"}
                         width={600}
                         height={600}
-                        alt="Wrh logo"  
+                        alt="ratemyclinic"
                     />
+                
                     </div>
                 
                     <div className="h-full max-md:mt-32 max-h-[calc(100vh_-_3.5rem)] md:max-h-[calc(100vh_-_4rem)] overflow-y-hidden flex-1 flex flex-row">
