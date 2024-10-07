@@ -5,7 +5,7 @@ import { ClientSurveyAction, getSurveyData } from "lib/server-actions";
 import Image from "next/image";
 import { Button } from "primereact/button";
 import { Toast, ToastMessage } from 'primereact/toast';
-import { FormEvent, useEffect, useRef, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from "react";
 
 type page = number
 type surveyData =  {
@@ -16,12 +16,63 @@ type surveyData =  {
     clientSurveyData: any;
     teamSurveyData: any;
 } | null
+
+type clientSurveyFormData = {
+    [key:string]:any
+    fname: string;
+    lname: string;
+    email: string;
+    recommendation: number;
+    recommendation_feedback: string;
+    recommendedPreviously: string;
+    practitioner: number;
+    receptionTeam: number;
+    lookAndFeel: number;
+    "communication": number;
+    "bookingProcess": number;
+    "valueForMoney": number;
+    "website": number;
+    "improvementSuggestion": string,
+    "followUpBookingConfirmation": string,
+    "group_age": string,
+    comments_questions: string;
+}
+
+const defaultFormData = {
+    "fname": "",
+    "lname": "",
+    "email": "",
+    "recommendation": 5,
+    "recommendation_feedback": "",
+    "recommendedPreviously": "no",
+    "practitioner": 5,
+    "receptionTeam": 5,
+    "lookAndFeel": 5,
+    "communication": 5,
+    "bookingProcess": 5,
+    "valueForMoney": 5,
+    "website": 5,
+    "improvementSuggestion": "",
+    "followUpBookingConfirmation": "no",
+    "group_age": "preferNotToSay",
+    "comments_questions": ""
+}
 export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
     const {users} = useSessionContext()
     
     const toast = useRef<Toast>(null);
     const max_pages = 1
     const [page, setPage] = useState(1)
+    const [formData,setFormData] = useState<clientSurveyFormData>(defaultFormData)
+    useEffect(()=>{
+        const localData = window.localStorage['clientSurveyFormData']
+        if(localData){
+            setFormData(JSON.parse(localData))
+        }
+
+    },[])
+
+
     let default_submitBtnText = "Next"
     if(max_pages <= 1){
         default_submitBtnText = 'Submit'
@@ -94,6 +145,11 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                 // Alert({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully' });
                 setFormSubmitted(true)
                 setIsLoading(false)
+                const localData = window.localStorage['clientSurveyFormData']
+                if(localData){
+                    window.localStorage.removeItem('clientSurveyFormData')
+                }
+
             } else {
                 Alert({ severity: 'error', summary: 'Error', detail: res.message });
             }
@@ -104,6 +160,54 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                 setSubmitBtnText("Submit")
             }
         }
+    }
+
+    function handleChange(e:ChangeEvent<HTMLInputElement> | ChangeEvent<HTMLTextAreaElement> | ChangeEvent<HTMLSelectElement>){
+        const formControl = e.target
+        const newValue = formControl.value
+        const formControlName = formControl.getAttribute('name') as string
+        setFormData((prevData) => {
+            const newFormData = {
+                ...prevData,
+                [formControlName]: newValue, // Dynamically update the field in formData
+            }
+            window.localStorage["clientSurveyFormData"] = JSON.stringify(newFormData)
+            return newFormData
+        })
+    }
+
+    function handleInputRangeChange(v:number,name:string){
+        const newValue = v
+        const formControlName = name
+        setFormData((prevData) => {
+            const newFormData = {
+                ...prevData,
+                [formControlName]: newValue, // Dynamically update the field in formData
+            }
+
+            window.localStorage["clientSurveyFormData"] = JSON.stringify(newFormData)
+            return newFormData
+        })
+
+        console.log('input ranged changed')
+    }
+
+    function handleCheckboxChange(e:ChangeEvent<HTMLInputElement>){
+        const formControl = e.target
+        const form = formControl.closest('form')
+        let formData = form ? new FormData(form) : null
+        const formControlName = formControl.getAttribute('name') as string
+        
+        const newValue = formData ? formData.getAll(formControlName).join(",") : ""
+
+        setFormData((prevData) => {
+            const newFormData = {
+                ...prevData,
+                [formControlName]: newValue, // Dynamically update the field in formData
+            }
+            window.localStorage["clientSurveyFormData"] = JSON.stringify(newFormData)
+            return newFormData
+        })
     }
 
     return (
@@ -163,6 +267,8 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                                 id="fname"
                                                 autoComplete="fname"
                                                 className=""
+                                                value={formData.fname}
+                                                onChange={(e)=>handleChange(e)}
                                             />
                                         </div>
                                     </div>
@@ -178,6 +284,8 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                                 id="lname"
                                                 autoComplete="lname"
                                                 className=""
+                                                value={formData.lname}
+                                                onChange={(e)=>handleChange(e)}
                                             />
                                         </div>
                                     </div>
@@ -192,6 +300,8 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                                 name="email"
                                                 id="email"
                                                 autoComplete="email"
+                                                value={formData.email}
+                                                onChange={(e)=>handleChange(e)}
                                             />
                                         </div>
                                     </div>
@@ -204,7 +314,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="recommendation" className="formLabel">On a scale of 0-10, how likely are you to recommend <strong>{clinic_name}</strong> to your friends and family?</label>
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none">
-                                            <InputRange min={0} max={10} name="recommendation" defaultValue={5} required/>                                         
+                                            <InputRange min={0} max={10} name="recommendation" defaultValue={formData.recommendation} onChange={(e)=>handleInputRangeChange(e,'recommendation')}required/>                                         
                                         </div>
                                     </div>
                                 </div>
@@ -214,7 +324,8 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="recommendation_feedback" className="formLabel">Please tell us why you gave that score?</label>
                                     <div className="mt-2">
                                         <div className="formField">
-                                             <textarea rows={5} name="recommendation_feedback" id="recommendation_feedback" className="" placeholder="" required></textarea>
+                                             <textarea rows={5} name="recommendation_feedback" id="recommendation_feedback" className="" placeholder="" value={formData.recommendation_feedback}
+                                                onChange={(e)=>handleChange(e)} required></textarea>
                                         </div>
                                     </div>
                                 </div>
@@ -225,11 +336,11 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none flex flex-row gap-5 text-base">
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input className="!w-6" type="radio" name="recommendedPreviously" value="no" defaultChecked/>
+                                                <input className="!w-6" type="radio" name="recommendedPreviously" value="no" checked={formData.recommendedPreviously == 'no'} onChange={(e)=>handleChange(e)} />
                                                 <span>No</span>
                                              </label>
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input className="!w-6" type="radio" name="recommendedPreviously" value="yes"required/>
+                                                <input className="!w-6" type="radio" name="recommendedPreviously" value="yes" checked={formData.recommendedPreviously == 'yes'} onChange={(e)=>handleChange(e)} required/>
                                                 <span>Yes</span>
                                              </label>
                                         </div>
@@ -245,7 +356,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                         {surveyData?.ownerSurveyData.services_provided?.split(",").map((item:any,index:number)=> {
                                             return (
                                             <label key={index} className="flex flex-row items-center gap-1 cursor-pointer">
-                                                <input className="!w-6" type="checkbox" name="servicesUsed" value={item} />
+                                                <input className="!w-6" type="checkbox" name="servicesUsed" value={item} checked={formData.servicesUsed?.split(',').includes(item) || false} onChange={(e)=>handleCheckboxChange(e)} />
                                                 <span>{item}</span>
                                             </label>
                                             )
@@ -260,7 +371,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="practitioner" className="formLabel">Overall, how satisfied are you with your practitioner?</label>
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none">
-                                            <InputRange min={0} max={10} name="practitioner" defaultValue={5} required/>                                         
+                                            <InputRange min={0} max={10} name="practitioner" defaultValue={formData.practitioner} onChange={(e)=>handleInputRangeChange(e,'practitioner')} required/>                                         
                                         </div>
                                     </div>
                                 </div>
@@ -270,7 +381,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="receptionTeam" className="formLabel">Overall, how satisfied are you with our admin team?</label>
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none">
-                                            <InputRange min={0} max={10} name="receptionTeam" defaultValue={5} required/>                                         
+                                            <InputRange min={0} max={10} name="receptionTeam" defaultValue={formData.receptionTeam} onChange={(e)=>handleInputRangeChange(e,'receptionTeam')} required/>                                         
                                         </div>
                                     </div>
                                 </div>
@@ -284,7 +395,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     </label>
                                     <div className="mt-2">
                                         <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="lookAndFeel" defaultValue={5} required/>
+                                            <InputRange min={0} max={10} name="lookAndFeel" defaultValue={formData.lookAndFeel} onChange={(e)=>handleInputRangeChange(e,'lookAndFeel')} required/>
                                         </div>
                                     </div>
                                 </div>
@@ -296,7 +407,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="communication" className="formLabel">How satisfied are your with our communication?</label>
                                     <div className="mt-2">
                                          <div className="formField !ring-0 !shadow-none">
-                                            <InputRange min={0} max={10} name="communication" defaultValue={5} required/>                                         
+                                            <InputRange min={0} max={10} name="communication" defaultValue={formData.communication} onChange={(e)=>handleInputRangeChange(e,'communication')} required/>                                         
                                         </div>
                                     </div>
                                 </div>
@@ -310,7 +421,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     </label>
                                     <div className="mt-2">
                                         <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="bookingProcess" defaultValue={5} required/>
+                                            <InputRange min={0} max={10} name="bookingProcess" defaultValue={formData.bookingProcess} onChange={(e)=>handleInputRangeChange(e,'bokingProcess')} required/>
                                         </div>
                                     </div>
                                 </div>
@@ -323,7 +434,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     </label>
                                     <div className="mt-2">
                                         <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="valueForMoney" defaultValue={5} required/>
+                                            <InputRange min={0} max={10} name="valueForMoney" defaultValue={formData.valueForMoney} onChange={(e)=>handleInputRangeChange(e,'valueForMoney')} required/>
                                         </div>
                                     </div>
                                 </div>
@@ -336,7 +447,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     </label>
                                     <div className="mt-2">
                                         <div className="formField ring-0 flex flex-row">
-                                            <InputRange min={0} max={10} name="website" defaultValue={5} required/>
+                                            <InputRange min={0} max={10} name="website" defaultValue={formData.website} onChange={(e)=>handleInputRangeChange(e,'website')} required/>
                                         </div>
                                     </div>
                                 </div>
@@ -348,12 +459,12 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="improvementSuggestion" className="formLabel">Can you suggest anything we can do to improve our service to you?</label>
                                     <div className="mt-2">
                                         <div className="formField">
-                                             <textarea rows={5} name="improvementSuggestion" id="improvementSuggestion" className="" placeholder=""></textarea>
+                                             <textarea rows={5} name="improvementSuggestion" id="improvementSuggestion" className="" placeholder="" value={formData.improvementSuggestion}
+                                                onChange={(e)=>handleChange(e)}></textarea>
                                         </div>
                                     </div>
                                 </div>
                             </div>
-
 
                             <div className="formSectionContent">
                                 <div className="sm:col-span-1">
@@ -361,35 +472,43 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                     <div className="formField gap-1 ring-0 flex flex-col items-start">
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="Facebook"/>
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed"
+                                            checked={formData.socialMediaUsed?.split(',').includes("Facebook") || false} onChange={(e)=>handleCheckboxChange(e)} value="Facebook"/>
                                             <span>Facebook</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="Instagram"/>
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed"
+                                            checked={formData.socialMediaUsed?.split(',').includes("Instagram") || false} onChange={(e)=>handleCheckboxChange(e)} value="Instagram"/>
                                             <span>Instagram</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="X"/>
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed"
+                                            checked={formData.socialMediaUsed?.split(',').includes("X") || false} onChange={(e)=>handleCheckboxChange(e)} value="X"/>
                                             <span>X</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="Twitter"/>
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed"
+                                            checked={formData.socialMediaUsed?.split(',').includes("Twitter") || false} onChange={(e)=>handleCheckboxChange(e)} value="Twitter"/>
                                             <span>Twitter</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="Tik Tok"/>
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed"
+                                            checked={formData.socialMediaUsed?.split(',').includes("Tik Tok") || false} onChange={(e)=>handleCheckboxChange(e)} value="Tik Tok"/>
                                             <span>Tik Tok</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="Snapchat"/>
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed"
+                                            checked={formData.socialMediaUsed?.split(',').includes("Snapchat") || false} onChange={(e)=>handleCheckboxChange(e)} value="Snapchat"/>
                                             <span>Snapchat</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="YouTube"/>
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed"
+                                            checked={formData.socialMediaUsed?.split(',').includes("YouTube") || false} onChange={(e)=>handleCheckboxChange(e)} value="YouTube"/>
                                             <span>YouTube</span>
                                         </label>
                                         <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                            <input className="!w-6" type="checkbox" name="socialMediaUsed" value="I don’t use social media"/>
+                                            <input className="!w-6" type="checkbox" name="socialMediaUsed"
+                                            checked={formData.socialMediaUsed?.split(',').includes("I don’t use social media") || false} onChange={(e)=>handleCheckboxChange(e)} value="I don’t use social media"/>
                                             <span>I don’t use social media</span>
                                         </label>
 
@@ -405,11 +524,11 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                         <div className="formField !ring-0 !shadow-none flex flex-row gap-5 text-base">
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input className="!w-6" type="radio" name="followUpBookingConfirmation" value="no" defaultChecked/>
+                                                <input className="!w-6" type="radio" name="followUpBookingConfirmation" value="no" checked={formData.followUpBookingConfirmation == 'no'} onChange={(e)=>handleChange(e)}/>
                                                 <span>No</span>
                                              </label>
                                              <label className="flex flex-row items-center gap-2 cursor-pointer">
-                                                <input className="!w-6" type="radio" name="followUpBookingConfirmation" value="yes"required/>
+                                                <input className="!w-6" type="radio" name="followUpBookingConfirmation" value="yes" checked={formData.followUpBookingConfirmation == 'yes'} onChange={(e)=>handleChange(e)} required/>
                                                 <span>Yes</span>
                                              </label>
                                         </div>
@@ -422,7 +541,8 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="group_age" className="formLabel">What age group are you in?</label>
                                     <div className="mt-2">
                                         <div className="formField">
-                                            <select name="group_age" id="" required>
+                                            <select name="group_age" id="" required value={formData.group_age}
+                                                onChange={(e)=>handleChange(e)}>
                                                 <option value="under18">Under 18</option>
                                                 <option value="1824">18-24</option>
                                                 <option value="2539">25-39</option>
@@ -441,7 +561,8 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <label htmlFor="comments_questions" className="formLabel">Do you have any other comments or questions?</label>
                                     <div className="mt-2">
                                         <div className="formField">
-                                             <textarea rows={5} name="comments_questions" id="comments_questions" className="" placeholder=""></textarea>
+                                             <textarea rows={5} name="comments_questions" id="comments_questions" className="" placeholder="" value={formData.comments_questions}
+                                                onChange={(e)=>handleChange(e)}></textarea>
                                         </div>
                                     </div>
                                 </div>
