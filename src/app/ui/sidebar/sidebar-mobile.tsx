@@ -28,6 +28,10 @@ const second_list_item = [
 const SidebarMobile = ({userData,isVisible = false,position = "right",onHide}:{onHide?:React.Dispatch<React.SetStateAction<boolean>>,userData:any,isVisible?:boolean,position?: "right" | "top" | "bottom" | "left"}) => {
     let userAvatar = userData?.profile_pic ? `${userData?.profile_pic}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
     let userName = userData?.username || "Guest"
+    let isAdmin = false
+    if(userData.role == 'admin'){
+        isAdmin = true
+    }
 
     function handleHide(){
         if(onHide){
@@ -73,6 +77,11 @@ const SidebarMobile = ({userData,isVisible = false,position = "right",onHide}:{o
                         {item.name}</Link>
                 </li>
             ))}
+            {isAdmin && <li className="hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400">
+                    <Link href='/dashboard/admin' className="flex flex-row items-center gap-3 text-sm py-3 px-6 text-[#388db6]">
+                        <span className="w-4 h-4 pi pi-hashtag"></span><span>Admin</span>
+                    </Link>
+                </li>}
         </ul>
         <div className="mt-auto p-2">
             <LogoutBtn className="text-gray-500 rounded-md text-xs"/>
