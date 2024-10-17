@@ -113,6 +113,13 @@ export default function Page({searchParams}:{searchParams:any}) {
         "number_of_non_clinicians": formValues?.number_of_non_clinicians,
         "work_life_balance": formValues?.work_life_balance
     });
+
+    useEffect(()=>{
+        const localData = window.localStorage['ownerSurveyFormData']
+        if(localData){
+            setFormData(JSON.parse(localData))
+        }
+    },[])
     
     const handlePrev = useCallback((index: page) => {
         if(index <= 1){
@@ -174,7 +181,10 @@ export default function Page({searchParams}:{searchParams:any}) {
                 setSubmitBtnText("Next");
                 setSubmitBtnType('button')
                 Alert({ severity: 'success', summary: 'Success', detail: 'Form submitted successfully' });
-
+                const localData = window.localStorage['ownerSurveyFormData']
+                if(localData){
+                    window.localStorage.removeItem('ownerSurveyFormData')
+                }
                 if(afterSubmit){
                    afterSubmit()
                 } 
@@ -197,7 +207,17 @@ export default function Page({searchParams}:{searchParams:any}) {
     
       const handleChange = (e:any) => {
         const { name, value } = e.target;
-        handleSetFormData(name,value)
+        setFormData((prevData) => {
+            const newFormData = {
+                ...prevData,
+                [name]: value, // Dynamically update the field in formData
+            }
+            window.localStorage["ownerSurveyFormData"] = JSON.stringify(newFormData)
+            return newFormData
+        })
+
+
+
       };
 
     //   toggle required states
