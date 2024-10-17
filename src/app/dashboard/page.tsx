@@ -10,6 +10,9 @@ import { redirect, usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import { isProfileCompleteCheckList } from "lib/Const";
 import { hasPassedMaxDays } from "lib/helperFunctions";
+import { useEffect, useState } from "react";
+import Stripe from "stripe";
+import { retrieveCheckoutSession } from "@/api/stripe/actions";
 
 const defaultNps = [
     {
@@ -23,8 +26,18 @@ export default function Page(){
  
     const {data,setData} = useSurveyDataContext()
     const {currentUser,setCurrentUser} = useSessionContext()
+    const [lastCheckoutSession, setLastCheckoutSession] = useState<undefined | Stripe.Response<Stripe.Checkout.Session>>()
     const pathname = usePathname()
     const maxDays = 14;
+    useEffect(()=> {
+        const getLastSession = async () => {
+            let lastCheckoutSession =  await retrieveCheckoutSession(currentUser.last_checkout_session_id)
+            setLastCheckoutSession(lastCheckoutSession)
+            return lastCheckoutSession
+        }
+        getLastSession()
+    
+    },[])
     if(!currentUser) return null
     let tocheck = isProfileCompleteCheckList
     const isProfileComplete = tocheck.every(i => currentUser[i])
@@ -43,7 +56,16 @@ export default function Page(){
     let showReport = false
 
     let clientNps = defaultNps, teamNps = defaultNps, clientNpsAvg = 0,teamNpsAvg = 0
-    const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(currentUser.createdAt,maxDays)
+    let startDate = currentUser.createdAt
+
+
+
+    if(lastCheckoutSession){
+        const subscriptionStartDate = new Date(lastCheckoutSession.created * 1000);
+        startDate = subscriptionStartDate
+    }
+
+    const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(startDate,maxDays)
 
     if(is_ownerSurveyData_complete){
         

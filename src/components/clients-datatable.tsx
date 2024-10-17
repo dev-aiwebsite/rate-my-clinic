@@ -6,9 +6,9 @@ export default function ClientsDataTable({clientSurveyData,options}:{clientSurve
     if(clientSurveyData){
         client_datatable_all =  clientSurveyData.map((i: {_id:string; fname: any; lname: any; email: any; recommendation: any; recommendation_feedback: any; recommendedPreviously: any; servicesUsed: any; practitioner: any; receptionTeam: any; lookAndFeel: any; communication: any; bookingProcess: any; valueForMoney: any; website: any; improvementSuggestion: any; socialMediaUsed: any; followUpBookingConfirmation: any; group_age: any; comments_questions: any; createdAt: Date; },indx: any) => {
             return {
-                // 'First Name': i.fname,
-                // 'Last Name': i.lname,
-                // 'Email': i.email,
+                'First Name': i.fname,
+                'Last Name': i.lname,
+                'Email': i.email,
                 'id':i._id,
                 'Recommendation': i.recommendation,
                 'Recommendation Feedback': i.recommendation_feedback,

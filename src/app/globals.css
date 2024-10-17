@@ -210,3 +210,10 @@ background: #0075ff; /* Thumb color */
 cursor: pointer;
 border-radius: 50%; /* Round thumb */
 }
+
+.limitArea {
+  min-width: 300px !important;
+  max-width: 500px !important;
+  overflow: auto !important;
+  max-height: 5rem !important;
+}
