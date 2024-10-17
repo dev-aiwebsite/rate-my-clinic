@@ -36,13 +36,14 @@ const second_list_item:list_item = [
     {
         name: "Nps chart",
         icon: "/icons/nps.svg",
-        link: "/dashboard/nps"
+        link: "/dashboard/nps",
+        attr: {}
     },
     {
         name: "Book a call",
         icon: "/icons/sched.svg",
-        link: "#",
-        attr: 'disabled' || undefined
+        link: "https://outlook.office.com/bookwithme/user/0841ad432ac1402f80962c82e69c1da6@ratemyclinic.com.au/meetingtype/t62Ix816wEOeGrY2V3gTEg2?anonymous&ep=mcard",
+        attr: {"target": '_blank'}
 
     }
 ]
@@ -89,7 +90,7 @@ const SidebarDesktop = ({userData}:{userData:any}) => {
         <ul className="text-gray-600">
             {second_list_item.map((item, index) => (
                 <li key={index} className="hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400" >
-                    <Link href={item.link} className="flex flex-row items-center gap-3 text-sm py-3 px-6" >
+                    <Link href={item.link} className="flex flex-row items-center gap-3 text-sm py-3 px-6" {...(item.attr ? item.attr : {})}>
                         <Image
                             className="w-4 h-4" 
                             src={item.icon}

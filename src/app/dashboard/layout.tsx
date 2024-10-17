@@ -13,6 +13,8 @@ import AppConfigContextProvider from "@/context/appSettingsContext";
 import { hasPassedMaxDays } from "lib/helperFunctions";
 import { SaveReport } from "lib/generateReportData";
 import 'primereact/resources/themes/lara-light-blue/theme.css'; 
+import { appReportAsSurveyData } from "lib/appReportAsSurveyData";
+import { retrieveCheckoutSession } from "@/api/stripe/actions";
 
 
 const Layout = async ({
@@ -29,10 +31,26 @@ let  currentUser = JSON.parse(c_user)
 let allUsers = JSON.parse(JSON.stringify(Users))
 let surveyData = await getSurveyData(currentUser._id)
 let is_ownerSurveyData_complete = surveyData?.ownerSurveyData ? true : false
-const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(currentUser.createdAt,maxDays)
+let lastCheckoutSession =  await retrieveCheckoutSession(currentUser.last_checkout_session_id)
+const subscriptionStartDate = new Date(lastCheckoutSession.created * 1000);
+
+const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(subscriptionStartDate.toISOString(),maxDays)
 
     if(currentUser.reports.length){
-        surveyData = JSON.parse(currentUser.reports[0].data).surveyData
+        // check if user is from free
+        // let createdAt = new Date(currentUser.createdAt)
+        // let firstReportDate = new Date(currentUser.reports[0].date)
+
+        // if(createdAt.toLocaleDateString() != firstReportDate.toLocaleDateString()){
+        //     surveyData = JSON.parse(currentUser.reports[0].data).surveyData
+        // } else if(currentUser.reports.length > 1){
+        //     surveyData = JSON.parse(currentUser.reports[1].data).surveyData
+        // }
+        let reportAsSurveyData = appReportAsSurveyData(currentUser,subscriptionStartDate)
+        if(reportAsSurveyData){
+            surveyData = reportAsSurveyData
+        }
+        
     
     } else if(hasPassed){
         let params = {

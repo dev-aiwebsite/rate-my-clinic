@@ -66,7 +66,6 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
                     options?.updateData(updateSurveyData)
                 }
 
-
                 setSelectedItems([])
                 toast.current?.show({ severity: 'success', summary: 'Success', detail: res.message, life: 3000 });   
             } else {
@@ -110,11 +109,22 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
                             </div>
                         </div>
 
-                        <DataTable value={tableData} selectionMode="single" onSelectionChange={(e) => setSelectedItems(e.value)} selection={selectedItems!} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort>
-                        <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-                            {tableData?.length ? (Object.keys(tableData[0]).filter((key) => key !== "id").map((key,indx) => (
-                                <Column sortable key={`${key}_${indx}`} body={""} field={key} header={key} />
-                            ))): "" }
+                        <DataTable className="text-sm" value={tableData} selectionMode="single" onSelectionChange={(e) => setSelectedItems(e.value)} selection={selectedItems!} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort>
+                            <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
+
+                            {tableData?.length ? (Object.keys(tableData[0]).filter((key) => key !== "id").map((key,indx) => {
+                                
+                                let limitArea = ""
+                                const limitAreaFieldsFilter = ['Recommendation Feedback', 'Comments or Question', 'Additional Comments'] as string[]
+                                if(limitAreaFieldsFilter.includes(key)){
+                                    limitArea = "limitArea"
+                                }
+                                return <Column style={{minWidth:'10rem'}} className={limitArea} sortable key={`${key}_${indx}`} body={(rowData) => (
+                                    <div className={limitArea}>
+                                      {rowData[key]}
+                                    </div>
+                                  )} field={key} header={key} />
+                            })): "" }
                         </DataTable>
                     </div>
         </>

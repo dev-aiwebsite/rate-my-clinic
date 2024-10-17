@@ -16,7 +16,8 @@ const second_list_item = [
     {
         name: "Book a call",
         icon: "/icons/sched.svg",
-        link: "/dashboard/contact"
+        link: "https://outlook.office.com/bookwithme/user/0841ad432ac1402f80962c82e69c1da6@ratemyclinic.com.au/meetingtype/t62Ix816wEOeGrY2V3gTEg2?anonymous&ep=mcard",
+        attr: {'target': "_blank"}
     },
     {
         name: "Settings",
@@ -64,7 +65,7 @@ const SidebarMobile = ({userData,isVisible = false,position = "right",onHide}:{o
                 </li>
             {second_list_item.map((item, index) => (
                 <li key={index} className="mb-1 bg-white hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400" >
-                    <Link href={item.link} className="flex flex-row items-center gap-3 text-xs py-3 px-6">
+                    <Link href={item.link} className="flex flex-row items-center gap-3 text-xs py-3 px-6" {...(item.attr ? item.attr : {})}>
                         {typeof(item.icon) === "string" && <Image
                             className="w-5 h-5" 
                             src={item.icon}

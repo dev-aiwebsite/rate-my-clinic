@@ -6,21 +6,47 @@ import 'primeicons/primeicons.css';
 import { getSurveyData } from "lib/server-actions";
 import { formatDistanceToNow } from "date-fns";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
+import { useSessionContext } from "@/context/sessionContext";
+import { appReportAsSurveyData } from "lib/appReportAsSurveyData";
+import { retrieveCheckoutSession } from "@/api/stripe/actions";
+import Stripe from "stripe";
 
 export default function SyncButton({buttonClass,textClass}:{buttonClass?:string,textClass?:string}) {
     const [isLoading, setIsLoading] = useState(false);
     const [lastSync, setLastSync] = useState(new Date());
     const { data, setData } = useSurveyDataContext();
     const [textTime, setTextTime] = useState(formatDistanceToNow(lastSync, { addSuffix: true }));
-
-    const handleClick = () => {
+    const {currentUser} = useSessionContext()
+    const [lastCheckoutSession, setLastCheckoutSession] = useState<undefined | Stripe.Response<Stripe.Checkout.Session>>()
+    
+    const handleClick = async () => {
         setIsLoading(true);
-        getSurveyData().then(d => {
-            setData(d);
-            setIsLoading(false);
-            setLastSync(new Date());
-            setTextTime(formatDistanceToNow(lastSync, { addSuffix: true }))
-        });
+        let startDate = new Date()
+        if(!lastCheckoutSession){
+            let lastCheckoutSession =  await retrieveCheckoutSession(currentUser.last_checkout_session_id)
+            const subscriptionStartDate = new Date(lastCheckoutSession.created * 1000);
+            startDate = subscriptionStartDate
+            setLastCheckoutSession(lastCheckoutSession)
+
+        } else {
+            const subscriptionStartDate = new Date(lastCheckoutSession.created * 1000);
+            startDate = subscriptionStartDate
+        }
+
+        if(currentUser.reports.length){
+            let reportAsSurveyData = appReportAsSurveyData(currentUser,startDate)
+            if(reportAsSurveyData){
+                setData(reportAsSurveyData)
+            }
+        } else {
+            getSurveyData(currentUser._id).then(d => {
+                setData(d);
+                setIsLoading(false);
+                setLastSync(new Date());
+                setTextTime(formatDistanceToNow(lastSync, { addSuffix: true }))
+            });
+        }
+      
     };
 
     useEffect(() => {
