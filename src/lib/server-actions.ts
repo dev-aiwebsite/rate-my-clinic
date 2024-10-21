@@ -539,7 +539,7 @@ function surveyCalculation(data:any) {
                     } else if(nps >= 95){
                         score = 100
                     } else {
-                        score = 100 - ((nps - 20) / (95 - 20) * 100)
+                        score = ((nps - 20) / (95 - 20) * 100)
                     }
 
                     return score * this.weight
@@ -566,7 +566,7 @@ function surveyCalculation(data:any) {
                             score = 20;
                         } else {
                             // Linear interpolation for values between 1 and 4
-                            score = 100 - ((value - 1) * (100 - 20) / (4 - 1));
+                            score = ((value - 1) * (100 - 20) / (4 - 1));
                         }
                     }
 
@@ -588,7 +588,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
 
                     return score * this.weight
@@ -611,7 +611,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
 
                     return score * this.weight
@@ -633,7 +633,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
                     return score * this.weight
                 }
@@ -648,15 +648,15 @@ function surveyCalculation(data:any) {
                     // Calculate the average
                     const total = value.reduce((sum: any, value: any) => sum + value, 0);
                     const average = value.length > 0 ? total / value.length : 0;
-
+                    let score
                     if (average < 8) {
-                        return 0
+                        score = 0
                     } else if (average > 9.5) {
-                        return 100
+                        score = 100
                     } else {
-                        return 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
                     }
-
+                    return score * this.weight
                 }
             },
             website: {
@@ -675,7 +675,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
                     return score * this.weight
                 }
@@ -696,7 +696,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 80) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 50) / (80 - 50) * 100)
+                        score = ((average - 50) / (80 - 50) * 100)
                     }
                     
                     return score * this.weight 
@@ -719,7 +719,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
 
                     return score * this.weight

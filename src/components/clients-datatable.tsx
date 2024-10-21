@@ -28,6 +28,7 @@ export default function ClientsDataTable({clientSurveyData,options}:{clientSurve
                 'Comments or Question':i.comments_questions,
                 'Date': formatDateTime(i.createdAt)
             }
+            
         })
     }
 
