@@ -44,7 +44,8 @@ export default async function Page({searchParams}:any) {
             formData.append('subscription_id', sessionInfo?.subscription as string)
             formData.append('subscription_product_id', sessionInfo?.metadata?.product_id || "" as string)
             formData.append('last_checkout_session_id', sessionInfo?.id as string)
-
+            
+            
             //todo handle upgrade plan
 
             const res = await RegisterUser(formData)
@@ -98,12 +99,21 @@ export default async function Page({searchParams}:any) {
     
             } else if(res.message == "User email already exists"){
                 console.log('already exist if block')
+
                 let updateFormData = {
                     "subscription_level": subscription_level,
-                    "subscription_id": sessionInfo?.subscription ,
+                    "subscription_id": sessionInfo?.subscription,
                     "subscription_product_id": sessionInfo?.metadata?.product_id,
-                    "last_checkout_session_id": sessionInfo?.id
-                }
+                    "last_checkout_session_id": sessionInfo?.id,
+                    $push: {
+                        "checkout_sessions": {
+                            date: new Date(),
+                            checkout_id: sessionInfo?.id,
+                            subscription_level: subscription_level
+                        }
+                    }
+                };
+              
                 
                 const updateUserResult = await UpdateUser({"useremail":useremail},updateFormData)
 

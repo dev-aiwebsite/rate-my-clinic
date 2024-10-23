@@ -173,8 +173,9 @@ let subtext = {
                                         title: item.name
                                     }}
                                 />
+                                <p className="text-xs font-medium mx-auto text-center text-orange-400 underline">See recommendations</p>
                         </div>
-                        <p className="md:hidden text-xs font-medium mx-auto text-center text-orange-400 underline">Recommendations</p>
+                        
                     </Link>
                     )
                 })}

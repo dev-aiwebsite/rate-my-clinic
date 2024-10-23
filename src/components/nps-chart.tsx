@@ -8,6 +8,7 @@ import UpgradePlanBlock from "./upgrade-plan-block";
         
 
 type DataType = {
+    name?: string;
     date: string;
     value: number;
     comment:string;
@@ -54,6 +55,7 @@ export default function NpsChart({data,enabled = true}:{data?:DataType,enabled?:
                 togglerDataMap.promoters += 1;
                 dataType = "promoters"
                 iconPath = "/icons/smiley-good.svg"
+
             } else if (item.value <= 6) {
                 togglerDataMap.detractors += 1;
                 dataType = "detractors"
@@ -63,6 +65,7 @@ export default function NpsChart({data,enabled = true}:{data?:DataType,enabled?:
                 togglerDataMap.passives += 1;
                 dataType = "passives"
                 iconPath = "/icons/smiley-neutral.svg"
+                
             }
             
             let tooltipId = `tooltip_${index}`
@@ -74,6 +77,7 @@ export default function NpsChart({data,enabled = true}:{data?:DataType,enabled?:
                     <span className={`row-start-${11 - item.value} block leading-[0px] -translate-y-1/2`}>
                         <Tooltip target={`.${tooltipId}`} autoHide={false} position="bottom">
                             <div className="max-w-[250px] text-sm">
+                            {item.name && <span className="mb-2 block">{item.name}</span>}
                             {item.comment}
                             <CopyButton className="float-right !p-1 !ring-0 !text-sm"
                                 textToCopy={item.comment}/>

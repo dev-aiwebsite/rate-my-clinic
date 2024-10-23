@@ -13,12 +13,14 @@ connectToDb()
 export const RegisterUser = async (formData:FormData) =>{
     let result = {
         success: false,
-        data: null || "",
+        data: "",
         orig_pass: "",
-        message: null || ""
+        message: ""
     }
     try {
         connectToDb()
+
+
         const fd = Object.fromEntries(formData)
         const {useremail} = fd
         let emailExists = await Users.findOne({useremail})
@@ -30,10 +32,19 @@ export const RegisterUser = async (formData:FormData) =>{
        result.success = false
        return result;
     }
+    const checkout_sessions = [{
+        date: new Date(),
+        checkout_id: fd['last_checkout_session_id'],
+        subscription_level: fd['subscription_level']
+    }]
+    
+
+
+
     let salt = bcrypt.genSaltSync(10) 
     const userpass = formData.get('userpass') as string;
     let hashedPass = await bcrypt.hash(userpass,salt)
-        const newUser = new Users({...fd, password:hashedPass})
+        const newUser = new Users({...fd, checkout_sessions, password:hashedPass})
         await newUser.save()
         result.data = newUser
         result.orig_pass = userpass,

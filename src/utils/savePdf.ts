@@ -3,7 +3,7 @@ import fs from 'fs';
 import path from 'path';
 import { getUniqueFilename } from 'lib/getUniqueFileName';
 
-export const savePdf = async ({htmlString,buffer}:{htmlString?:string,buffer?:Uint8Array}) => {
+export const savePdf = async ({filename,htmlString,buffer}:{filename?:string,htmlString?:string,buffer?:Uint8Array}) => {
     let pdfBuffer
     if(htmlString){
         pdfBuffer = await generatePdf(htmlString);
@@ -13,9 +13,13 @@ export const savePdf = async ({htmlString,buffer}:{htmlString?:string,buffer?:Ui
         return false
     }
 
+    if(filename){
+        filename = `_${filename}`
+    }
+
     const today = new Date();
     const dateString = today.toLocaleDateString().replace(/\//g, '-');
-    const pdfFileName = `report_${dateString}`;
+    const pdfFileName = `report_${dateString}${filename}`;
     const fileExtension = 'pdf';
     const initialFileName = `${pdfFileName}`;
     const publicFolderPath = path.join(process.cwd(), 'public', 'reports');
