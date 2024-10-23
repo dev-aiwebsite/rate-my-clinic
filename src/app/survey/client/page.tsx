@@ -460,7 +460,11 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                         <div className="formField">
                                              <textarea rows={5} name="improvementSuggestion" id="improvementSuggestion" className="" placeholder="" value={formData.improvementSuggestion}
+<<<<<<< HEAD
+                                                onChange={(e)=>handleChange(e)}></textarea>
+=======
                                                 onChange={(e)=>handleChange(e)} ></textarea>
+>>>>>>> origin/main
                                         </div>
                                     </div>
                                 </div>
@@ -562,7 +566,11 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
                                     <div className="mt-2">
                                         <div className="formField">
                                              <textarea rows={5} name="comments_questions" id="comments_questions" className="" placeholder="" value={formData.comments_questions}
+<<<<<<< HEAD
+                                                onChange={(e)=>handleChange(e)}></textarea>
+=======
                                                 onChange={(e)=>handleChange(e)} ></textarea>
+>>>>>>> origin/main
                                         </div>
                                     </div>
                                 </div>
