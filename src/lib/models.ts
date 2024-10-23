@@ -73,6 +73,21 @@ const user_schema = new mongoose.Schema({
   last_checkout_session_id:{
     type: String
   },
+  checkout_sessions: {
+    type: [
+      {
+        date: {
+          type: Date,
+        },
+        checkout_id:{
+          type: String
+        },
+        subscription_level: {
+          type: String, 
+        },
+      }
+    ]
+  },
   profile_pic: {
     type: String,
     default: ""

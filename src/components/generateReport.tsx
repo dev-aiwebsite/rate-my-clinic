@@ -19,15 +19,37 @@ import { createReportHtml } from 'lib/createReportHtml';
 type Tparams = {
     clinicId: string
 }
-const GenerateReport = () => {
+const GenerateReport = (report:any) => {
     const captureRef = useRef<HTMLDivElement>(null);
     const {currentUser} = useSessionContext()
-    const reportData = JSON.parse(currentUser.reports[0].data)
+    const reportToUse = currentUser?.reportToUse
     const [showDialog, setShowDialog] = useState(false);
-    let pdfLink = ""
-    if('pdf_link' in currentUser?.reports[0]){
-        pdfLink = currentUser.reports[0].pdf_link
+    const reports = currentUser.reports
+    // if(!report){
+    //     if(currentUser.reports.length){
+            
+    //         if(reportToUse){
+    //             report = currentUser.reports[reportToUse]
+    //         } else {
+    //             report = currentUser.reports[0]
+    //         }
+    //     }
+       
+    // }
+
+    if(reports.length){
+        report = reports[reports.length - 1]
     }
+    console.log(currentUser)
+    console.log(report)
+    let reportData = {}
+    let pdfLink = ""
+    if(report){
+        reportData = JSON.parse(report.data)
+        pdfLink = report.pdf_link
+    }
+    
+
     const [pdfUrl, setPdfUrl] = useState(pdfLink);
     const [pdfFileName, setPdfFileName] = useState(`rmc_${pdfUrl.split('/')[2]}`);
     const [pdfProgress, setPdfProgress] = useState(0);
@@ -40,10 +62,6 @@ const GenerateReport = () => {
 
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
     let enabled = userAccess?.charts || ['strategy','finance']
-
-    
-
-
 
     const handleGeneratePDF = async () => {
 
@@ -58,7 +76,7 @@ const GenerateReport = () => {
 
       
       useEffect(()=>{
-        if(reportHtml) return
+        if(reportHtml || !reportData) return
         const renderReport = async () => {
             const pdfHtml = await createReportHtml(reportData)
             // document.querySelector('.report_wrapper').innerHTML = pdfHtml

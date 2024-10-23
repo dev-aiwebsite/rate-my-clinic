@@ -222,7 +222,7 @@ export default function Page({searchParams}:{searchParams:any}) {
 
     //   toggle required states
     const required = {
-        market_rate_difference: formData.pay_market_rent == 'no',
+        market_rate_difference: formData.own_building == 'yes' && formData.pay_market_rent == 'no',
         classes_per_week:formData.group_classes == "yes",
         plan_execution:formData.current_business_plan == 'yes',
         plan_review_timeline:formData.current_business_plan == 'yes',

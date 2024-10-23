@@ -22,14 +22,19 @@ export async function generateReportData({currentUserId,date}:{currentUserId?:st
 
 }
 
-export async function SaveReport({currentUserId,currentUserEmail,date}:{currentUserId?:string,currentUserEmail?:any,date?:string}) {
+export async function SaveReport({filename,currentUserId,currentUserEmail,date}:{filename?:string,currentUserId?:string,currentUserEmail?:any,date?:string}) {
+  if(currentUserEmail){
+    if(!filename){
+      filename = currentUserEmail.split('@')[0]
+    }
+  }
     try {
       const reportData = await generateReportData({currentUserId,date});
       let pdfUrl = "";
       if('surveyData' in reportData){
         const pdfHtml = await createReportHtml(reportData);
         if(pdfHtml){
-          let pdfLink = await savePdf({htmlString:pdfHtml})
+          let pdfLink = await savePdf({filename,htmlString:pdfHtml})
           if(pdfLink){
             pdfUrl = pdfLink
           }

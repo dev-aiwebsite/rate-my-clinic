@@ -35,53 +35,48 @@ let lastCheckoutSession =  await retrieveCheckoutSession(currentUser.last_checko
 const subscriptionStartDate = new Date(lastCheckoutSession.created * 1000);
 
 const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(subscriptionStartDate.toISOString(),maxDays)
+console.log(maxEndDate, 'maxEndDate')
+    let reportAsSurveyData = appReportAsSurveyData(currentUser,subscriptionStartDate)
 
-    if(currentUser.reports.length){
-        // check if user is from free
-        // let createdAt = new Date(currentUser.createdAt)
-        // let firstReportDate = new Date(currentUser.reports[0].date)
+    if(reportAsSurveyData){
+        surveyData = reportAsSurveyData.surveyData
+        currentUser['reportToUse'] = reportAsSurveyData.reportUse
+    }
 
-        // if(createdAt.toLocaleDateString() != firstReportDate.toLocaleDateString()){
-        //     surveyData = JSON.parse(currentUser.reports[0].data).surveyData
-        // } else if(currentUser.reports.length > 1){
-        //     surveyData = JSON.parse(currentUser.reports[1].data).surveyData
-        // }
-        let reportAsSurveyData = appReportAsSurveyData(currentUser,subscriptionStartDate)
-        if(reportAsSurveyData){
-            surveyData = reportAsSurveyData
-        }
-        
-    
-    } else if(hasPassed){
-        let params = {
-            currentUserId:currentUser._id,
-            currentUserEmail:currentUser.useremail,
-            date: maxEndDate.toLocaleString()
-        }
-        let newReport = await SaveReport(params)
-        console.log(newReport, 'newreport1')
-        if(newReport?.data  && 'user' in newReport?.data){
-            currentUser = newReport.data.user
-            surveyData = JSON.parse(currentUser.reports[0].data).surveyData
-        }
-        
-    } else {
+    console.log(reportAsSurveyData, 'reportAsSurveyData')
 
-        if(currentUser.subscription_level < 1 && is_ownerSurveyData_complete){
+    if(!reportAsSurveyData){
+        if(hasPassed){
             let params = {
                 currentUserId:currentUser._id,
                 currentUserEmail:currentUser.useremail,
                 date: maxEndDate.toLocaleString()
             }
             let newReport = await SaveReport(params)
-            console.log(newReport, 'newreport2')
+            console.log(newReport, 'newreport1')
             if(newReport?.data  && 'user' in newReport?.data){
                 currentUser = newReport.data.user
-                surveyData = JSON.parse(currentUser.reports[0].data).surveyData
+                const reports = currentUser.reports
+                surveyData = JSON.parse(reports[reports.length - 1].data).surveyData
             }
-    
+            
+        } else {
+
+            if(currentUser.subscription_level < 1 && is_ownerSurveyData_complete){
+                let params = {
+                    currentUserId:currentUser._id,
+                    currentUserEmail:currentUser.useremail,
+                    date: maxEndDate.toLocaleString()
+                }
+                let newReport = await SaveReport(params)
+                if(newReport?.data  && 'user' in newReport?.data){
+                    currentUser = newReport.data.user
+                    surveyData = JSON.parse(currentUser.reports[0].data).surveyData
+                }
+            }
         }
     }
+ 
 
 const value = {
     ripple: true,

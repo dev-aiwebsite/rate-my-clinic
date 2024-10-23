@@ -1,0 +1,71 @@
+mongosh 'mongodb://aiAdmin:Welcometoaiwebsitedev1!@127.0.0.1:27017/rmc'
+
+// Find and delete users with specified email addresses
+db.users.deleteMany(
+  { useremail: { $in: [
+    "johndoe@gmail.com",
+    "dev@aiwebsiteservices.com",
+    "ssssallaine@gmail.com",
+    "personal.johndoe23@gmail.com",
+    "paul.hedges@ratemyclinic.com.au",
+    "f84gsus@gmail.com",
+    "jm.meldrum@gmail.com",
+    "allaine@aiwebsiteservices.com",
+    "testentry@gmail.com",
+    "phedges489@gmail.com",
+    "philip.paysden@apm.net.au",
+    "info.ratemyclinic@gmail.com",
+    "rachelcombe@pilatesproactive.com.au",
+    "gemmamjohnson@yahoo.com.au",
+    "rhonarafols@gmail.com",
+    "iservvteam@gmail.com",
+    "support@growthrx.com",
+    "paulh@smallbusinesssa.com.au",
+    "freeuser@gmail.com",
+    "testlive@gmail.com",
+    "info@aiwebsiteservices.com",
+    "testlived@gmail.com",
+    "james.meldrum@kudosservices.com.au"
+  ] } }
+);
+
+
+const userIds = [
+  '66ba9b99f513d2f3730a34d3',
+  '66adb6a72f08b5bdbcbfa6ae',
+  '66b8bd29f513d2f3730a32f2',
+  '66f278ca1bff76e71a5ff54e',
+  '66cd7922201d359cc311bd52',
+  '66cd138c201d359cc311bcb8',
+  '66f5eaa5e932418b27a33fa2',
+  '66cdb8d1201d359cc311bd9b',
+  '66fa6f645b7682d954d000d0',
+  '66ba873bf513d2f3730a3453',
+  '668499a6528c83daf5245c22',
+  '66b56648f513d2f3730a317f',
+  '66ce6d6a201d359cc311be1e',
+  '66b05da91dd0b0d3f67f7701',
+  '66cd0f79aba82e925c2a240e',
+  '66cd1389201d359cc311bcb4',
+  '66cd21fb201d359cc311bcdc',
+  '66cd982a201d359cc311bd64',
+  '66b048da8358fd27e15df056',
+  '66cdb9e8201d359cc311bd9f',
+  '66cc928faba82e925c2a239e',
+  '66f5e907e932418b27a33f5e',
+  '66f604f8e932418b27a34069'
+];
+
+db.clientsurveydatas.deleteMany({ clinicId: { $in: userIds } });
+
+clientsurveydatas = clinicid
+teamsurveydatas = clinicId
+ownersurveydatas = clinic_id
+
+db.clientsurveydatas.deleteMany({ clinicid: { $in: userIds } });
+
+
+db.ownersurveydatas.deleteMany({ clinic_id: { $in: userIds } });
+db.teamsurveydatas.deleteMany({ clinicId: { $in: userIds } });
+
+Paul	Hedges	paul.hedges@ratemyclinic.com.au	+61 400 117 320	Initial	admin	Physio Test	Specialist	2002-01-02	Australia	5152	SA	08/09/2024, 10:13:52 AM	10/02/2024, 11:19:43 AM												

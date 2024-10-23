@@ -34,10 +34,11 @@ export default function SyncButton({buttonClass,textClass}:{buttonClass?:string,
         }
 
         if(currentUser.reports.length){
-            let reportAsSurveyData = appReportAsSurveyData(currentUser,startDate)
-            if(reportAsSurveyData){
-                setData(reportAsSurveyData)
+            const useReportAsSurvey = appReportAsSurveyData(currentUser,startDate)
+            if(useReportAsSurvey){    
+                setData(useReportAsSurvey.surveyData)
             }
+            
         } else {
             getSurveyData(currentUser._id).then(d => {
                 setData(d);

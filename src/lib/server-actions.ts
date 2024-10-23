@@ -13,12 +13,14 @@ connectToDb()
 export const RegisterUser = async (formData:FormData) =>{
     let result = {
         success: false,
-        data: null || "",
+        data: "",
         orig_pass: "",
-        message: null || ""
+        message: ""
     }
     try {
         connectToDb()
+
+
         const fd = Object.fromEntries(formData)
         const {useremail} = fd
         let emailExists = await Users.findOne({useremail})
@@ -30,10 +32,19 @@ export const RegisterUser = async (formData:FormData) =>{
        result.success = false
        return result;
     }
+    const checkout_sessions = [{
+        date: new Date(),
+        checkout_id: fd['last_checkout_session_id'],
+        subscription_level: fd['subscription_level']
+    }]
+    
+
+
+
     let salt = bcrypt.genSaltSync(10) 
     const userpass = formData.get('userpass') as string;
     let hashedPass = await bcrypt.hash(userpass,salt)
-        const newUser = new Users({...fd, password:hashedPass})
+        const newUser = new Users({...fd, checkout_sessions, password:hashedPass})
         await newUser.save()
         result.data = newUser
         result.orig_pass = userpass,
@@ -539,7 +550,7 @@ function surveyCalculation(data:any) {
                     } else if(nps >= 95){
                         score = 100
                     } else {
-                        score = 100 - ((nps - 20) / (95 - 20) * 100)
+                        score = ((nps - 20) / (95 - 20) * 100)
                     }
 
                     return score * this.weight
@@ -566,7 +577,7 @@ function surveyCalculation(data:any) {
                             score = 20;
                         } else {
                             // Linear interpolation for values between 1 and 4
-                            score = 100 - ((value - 1) * (100 - 20) / (4 - 1));
+                            score = ((value - 1) * (100 - 20) / (4 - 1));
                         }
                     }
 
@@ -588,7 +599,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
 
                     return score * this.weight
@@ -611,7 +622,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
 
                     return score * this.weight
@@ -633,7 +644,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
                     return score * this.weight
                 }
@@ -648,15 +659,15 @@ function surveyCalculation(data:any) {
                     // Calculate the average
                     const total = value.reduce((sum: any, value: any) => sum + value, 0);
                     const average = value.length > 0 ? total / value.length : 0;
-
+                    let score
                     if (average < 8) {
-                        return 0
+                        score = 0
                     } else if (average > 9.5) {
-                        return 100
+                        score = 100
                     } else {
-                        return 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
                     }
-
+                    return score * this.weight
                 }
             },
             website: {
@@ -675,7 +686,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
                     return score * this.weight
                 }
@@ -696,7 +707,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 80) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 50) / (80 - 50) * 100)
+                        score = ((average - 50) / (80 - 50) * 100)
                     }
                     
                     return score * this.weight 
@@ -719,7 +730,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
 
                     return score * this.weight
