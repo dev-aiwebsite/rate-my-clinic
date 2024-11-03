@@ -43,7 +43,9 @@ console.log(maxEndDate, 'maxEndDate')
         currentUser['reportToUse'] = reportAsSurveyData.reportUse
     }
 
-    console.log(reportAsSurveyData, 'reportAsSurveyData')
+    if(hasPassed){
+        currentUser['isSurveyClosed'] = true
+    }
 
     if(!reportAsSurveyData){
         if(hasPassed){
