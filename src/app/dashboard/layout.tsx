@@ -36,13 +36,12 @@ const subscriptionStartDate = new Date(lastCheckoutSession.created * 1000);
 
 const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(subscriptionStartDate.toISOString(),reportGenDays)
     let reportAsSurveyData = appReportAsSurveyData(currentUser,subscriptionStartDate)
-
+    if(reportAsSurveyData){
+        surveyData = reportAsSurveyData.surveyData
+        currentUser['reportToUse'] = reportAsSurveyData.reportUse
+    }
     if(hasPassed){
         currentUser['isSurveyClosed'] = true
-        if(reportAsSurveyData){
-            surveyData = reportAsSurveyData.surveyData
-            currentUser['reportToUse'] = reportAsSurveyData.reportUse
-        }
     }
 
     if(!reportAsSurveyData){
