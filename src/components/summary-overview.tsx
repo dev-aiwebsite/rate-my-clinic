@@ -153,7 +153,7 @@ let subtext = {
                                 className="max-md:hidden w-[60%] aspect-square" 
                                 src={item.icon}
                                 alt={item.name}
-                                width={40}
+                                width={60}
                                 height={40}
                             />
                             <p className="text-[1.5vw] font-medium">{item?.value || "-/-"}</p>

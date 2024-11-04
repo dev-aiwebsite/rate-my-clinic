@@ -15,6 +15,7 @@ import { SaveReport } from "lib/generateReportData";
 import 'primereact/resources/themes/lara-light-blue/theme.css'; 
 import { appReportAsSurveyData } from "lib/appReportAsSurveyData";
 import { retrieveCheckoutSession } from "@/api/stripe/actions";
+import { reportGenDays } from "lib/Const";
 
 
 const Layout = async ({
@@ -22,8 +23,7 @@ const Layout = async ({
  }: Readonly<{
    children: React.ReactNode;
  }>) => {
-
-const maxDays = 14
+    
 const session = await auth() as unknown as ExtendedSession
 const Users = await fetchData()
 const c_user = JSON.stringify(Users.find(i => i._id == session.user_id))
@@ -34,17 +34,15 @@ let is_ownerSurveyData_complete = surveyData?.ownerSurveyData ? true : false
 let lastCheckoutSession =  await retrieveCheckoutSession(currentUser.last_checkout_session_id)
 const subscriptionStartDate = new Date(lastCheckoutSession.created * 1000);
 
-const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(subscriptionStartDate.toISOString(),maxDays)
-console.log(maxEndDate, 'maxEndDate')
+const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(subscriptionStartDate.toISOString(),reportGenDays)
     let reportAsSurveyData = appReportAsSurveyData(currentUser,subscriptionStartDate)
-
-    if(reportAsSurveyData){
-        surveyData = reportAsSurveyData.surveyData
-        currentUser['reportToUse'] = reportAsSurveyData.reportUse
-    }
 
     if(hasPassed){
         currentUser['isSurveyClosed'] = true
+        if(reportAsSurveyData){
+            surveyData = reportAsSurveyData.surveyData
+            currentUser['reportToUse'] = reportAsSurveyData.reportUse
+        }
     }
 
     if(!reportAsSurveyData){

@@ -1,4 +1,5 @@
 "use server"
+import { reportGenDays } from './Const';
 import { oldData } from './old-survey-data';
 import { signIn, signOut, auth } from "../app/auth"
 import { DB_TeamSurveyData, DB_ClientSurveyData, DB_OwnerSurveyData, Users } from "./models"
@@ -121,9 +122,9 @@ export const OwnerSurveyAction = async (formData: FormData) => {
             result['message'] = "Data saved successfully"
             result['success'] = true
 
-            // set 14 days report email
+            // set 30 days report email
             let sendTime:Date | undefined = new Date();
-            sendTime.setDate(sendTime.getDate() + 14);
+            sendTime.setDate(sendTime.getDate() + reportGenDays);
             sendTime.setHours(8, 0, 0, 0);
             
             // send instant when free user 

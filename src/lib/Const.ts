@@ -37,3 +37,5 @@ export const clinicFields = [
       name:'Gold',
     },
   ]
+
+  export const reportGenDays = 30
