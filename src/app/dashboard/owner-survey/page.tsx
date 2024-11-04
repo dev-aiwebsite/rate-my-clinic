@@ -11,7 +11,7 @@ import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import Image from "next/image";
 import {useRouter} from "next/navigation";
-import { isProfileCompleteCheckList,mobileNavbarHeight } from "lib/Const";
+import { isProfileCompleteCheckList,mobileNavbarHeight, reportGenDays } from "lib/Const";
 import { Button } from "primereact/button";
 import { useMediaQuery } from "react-responsive";
 import SelectWithOther from "components/SelectWithOther";
@@ -965,7 +965,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                                             <ol style={{ listStyleType: 'lower-alpha' }}>
                                                 <li>We may suspend the Services for as long as any fees payable by you are overdue; you fail to provide us with assistance, information, or access required under clause 3 or if there is a dispute per clause 9.</li>
                                                 <li>
-                                                    Either party may terminate this Agreement immediately by written notification if the other materially breaches this Agreement and fails to remedy the breach within 14 days; the other becomes insolvent; or the services are suspended for greater than 21 days per clause 8(a).
+                                                    Either party may terminate this Agreement immediately by written notification if the other materially breaches this Agreement and fails to remedy the breach within {reportGenDays} days; the other becomes insolvent; or the services are suspended for greater than 21 days per clause 8(a).
                                                 </li>
                                                 <li>We may also terminate this Agreement with written notice if, in our reasonable opinion, our provision of the Services breaches any applicable laws, regulations, professional or ethical standards or codes, or has the potential to bring us into disrepute.</li>
                                                 <li>Termination does not affect any accrued rights of either party including your obligation to pay our fees and expenses for work performed up to the effective termination date.</li>
@@ -974,7 +974,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                                             <li className="font-bold">Dispute Resolution</li>
                                             <ol style={{ listStyleType: 'lower-alpha' }}>
                                                 <li>If any dispute arises in connection with this Agreement, the party raising the dispute must notify the other party with sufficient detail to enable the dispute to be considered (Dispute Notice) and the parties must engage with confidential senior-level negotiations with a view to resolving the dispute.</li>
-                                                <li>If a dispute has not been resolved in 14 days after the Dispute Notice, the parties agree to refer the dispute to mediation as soon as practical.</li>
+                                                <li>If a dispute has not been resolved in {reportGenDays} days after the Dispute Notice, the parties agree to refer the dispute to mediation as soon as practical.</li>
                                                 <li>If a dispute has not been resolved following mediation, the dispute must be referred to arbitration.</li>
                                             </ol>
         

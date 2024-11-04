@@ -1,3 +1,4 @@
+import { reportGenDays } from "lib/Const";
 import Image from "next/image";
 
 export default function HowItWorksPage({ additionalClass }:{additionalClass?:string}) {
@@ -55,7 +56,7 @@ export default function HowItWorksPage({ additionalClass }:{additionalClass?:str
                             <div className="space-y-4">
                                 <h3 className="text-xl font-medium">What happens next?</h3>
                                 <p>Team and Client survey responses will be recorded and displayed in your dashboard. Our system will then compare the values on your dashboard against the National Average. Guided by the dials, you will see if your clinic is below, in-line, or above the industry average.</p>
-                                <p>{`After 14 days, we’ll generate the final clinic rating with recommendations and send it to your email address.`}</p>
+                                <p>{`After ${reportGenDays} days, we’ll generate the final clinic rating with recommendations and send it to your email address.`}</p>
                             </div>
                         </div>
                     </ol>
