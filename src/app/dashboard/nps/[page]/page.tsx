@@ -49,12 +49,22 @@ export default function Page({params}:{params:any}){
     console.log(pageName)
     console.log(data, 'data')
     console.log(currentUser)
+    
     let npsCategory = pageName
 
     if(pageName == 'team' || pageName == "teams"){
         npsCategory = 'team'
     }
 
+    if(!data){
+        console.log(data,'no data')
+        return false
+    }
+
+    if (!items[pageName]) {
+        console.log(`Invalid pageName: ${pageName}`);
+        return <div>Invalid page</div>;
+    }
     const itemValueOne = data?.summary[npsCategory]?.score || 0
     const itemValueTwo = data?.other_summary[npsCategory]?.score || 0
     let pageEnabled = charts.includes(pageName)
