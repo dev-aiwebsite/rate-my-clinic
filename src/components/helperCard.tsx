@@ -35,7 +35,7 @@ export default function HelperCard({className,canClose,onClose,isVisible = true}
                 />
             </div>
             <div className="inline">
-                <span>Need expert advise? Book a free consultation with Paul Hedges</span>
+                <span>Need expert advice? Book a free consultation with Paul Hedges</span>
                 <br></br>
                 <br></br>
                 <a href="https://outlook.office.com/bookwithme/user/0841ad432ac1402f80962c82e69c1da6@ratemyclinic.com.au/meetingtype/t62Ix816wEOeGrY2V3gTEg2?anonymous&ep=mcard" target="_blank" className="inline-block btn-primary bg-orange-400 hover:bg-orange-500 mb-10">Book now</a>

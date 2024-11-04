@@ -51,6 +51,9 @@ export default function CircleChart({max = 100,data = [{value: 0}],subtext,class
       
     }
 
+
+    let totalValueAsText = (max === 100 && data[0].value <= 0) ? "00.0" : data[0].value.toFixed(1);
+
     return (
         <div className={`${className} container flex items-center justify-center rounded-full relative w-full h-full max-w-60 max-h-60 aspect-square`}>
        
@@ -63,7 +66,7 @@ export default function CircleChart({max = 100,data = [{value: 0}],subtext,class
         </svg>
 
         <div className="p-4 rounded-full absolute w-[calc(100%-33px)] h-[calc(100%-33px)] md:w-[calc(100%-45px)] md:h-[calc(100%-45px)] flex items-center justify-center flex-col text-center">
-            <div className="font-bold text-xl">{data[0].value.toFixed(1)}</div>
+            <div className="font-bold text-xl">{totalValueAsText}</div>
             {subtext && <div className={`${subtext.class} text-[8px] text-gray-400 leading-[1.1em]`}>{subtext.text}</div> }
         </div>
     </div>
