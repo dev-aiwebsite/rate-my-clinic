@@ -3,6 +3,7 @@ import {GetProductsWithPrices } from "lib/server-actions";
 import PricingCard from "components/pricingCard";
 import Stripe from "stripe";
 import { useEffect, useState } from "react";
+import { useSessionContext } from "@/context/sessionContext";
 
 interface TproductWithPrices extends Stripe.Product {
     prices: {[key:number]:any}
@@ -19,8 +20,6 @@ export const ProductCards = ({enabled = false,metadata}:{enabled?:boolean,metada
     
         })
     },[])
-  
-    
 
     return <>
     {!products && <><div className="flex items-center justify-center">

@@ -9,21 +9,10 @@ import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { redirect, usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import { isProfileCompleteCheckList } from "lib/Const";
-import DialogConfirm from "components/confirm-dialog";
-import AppDialog from "components/dialog";
-
-type npsData = {
-    date: string;
-    value: number;
-    comment:string;
-}[] | null;
-
-
-type npsItem = {
-    date: string;
-    value: number;
-    comment:string;
-};
+import { hasPassedMaxDays } from "lib/helperFunctions";
+import { useEffect, useState } from "react";
+import Stripe from "stripe";
+import { retrieveCheckoutSession } from "@/api/stripe/actions";
 
 const defaultNps = [
     {
@@ -34,11 +23,22 @@ const defaultNps = [
 ]
 
 export default function Page(){ 
+ 
     const {data,setData} = useSurveyDataContext()
     const {currentUser,setCurrentUser} = useSessionContext()
+    const [lastCheckoutSession, setLastCheckoutSession] = useState<undefined | Stripe.Response<Stripe.Checkout.Session>>()
     const pathname = usePathname()
+    const maxDays = 14;
+    useEffect(()=> {
+        const getLastSession = async () => {
+            let lastCheckoutSession =  await retrieveCheckoutSession(currentUser.last_checkout_session_id)
+            setLastCheckoutSession(lastCheckoutSession)
+            return lastCheckoutSession
+        }
+        getLastSession()
     
-    if(!currentUser) return
+    },[])
+    if(!currentUser) return null
     let tocheck = isProfileCompleteCheckList
     const isProfileComplete = tocheck.every(i => currentUser[i])
     
@@ -47,33 +47,27 @@ export default function Page(){
             redirect('/dashboard/settings/account')
         }
     }
+
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
     let charts = userAccess?.charts
     let userName = currentUser?.username || "Guest"
     
     let is_ownerSurveyData_complete = data?.ownerSurveyData ? true : false
-    let daysRemaining
     let showReport = false
 
     let clientNps = defaultNps, teamNps = defaultNps, clientNpsAvg = 0,teamNpsAvg = 0
+    let startDate = currentUser.createdAt
+
+
+
+    if(lastCheckoutSession){
+        const subscriptionStartDate = new Date(lastCheckoutSession.created * 1000);
+        startDate = subscriptionStartDate
+    }
+
+    const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(startDate,maxDays)
 
     if(is_ownerSurveyData_complete){
-        if(data.ownerSurveyData){
-            const maxDays = 14;
-            let createdAt = new Date(data.ownerSurveyData.createdAt); // Assuming data.ownerSurveyData.createdAt is a valid date string
-            let today = new Date();
-            
-            // Calculate the date that is 10 days after createdAt
-            let maxDate = new Date(createdAt);
-            maxDate.setDate(maxDate.getDate() + maxDays);
-            
-            // Calculate the difference in time (in milliseconds)
-            let timeDifference = maxDate.getTime() - today.getTime();
-            
-            // Calculate the difference in days
-            daysRemaining = Math.ceil(timeDifference / (1000 * 3600 * 24));
-            
-        }
         
         if(currentUser.subscription_level > 0){
             if(data){
@@ -100,7 +94,7 @@ export default function Page(){
                 
                 const sum2 = npsValues_team.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
                 teamNpsAvg = sum2 / npsValues_team.length || 0
-        
+
             }
 
         }
@@ -124,14 +118,32 @@ export default function Page(){
 
     let headerInfoText = ''
 
-
+    let hasReport = false
     if(is_ownerSurveyData_complete){
-        if(daysRemaining && daysRemaining > 0){
-            headerInfoText = `You have ${daysRemaining} days till your final report is generated`
+        if(currentUser.subscription_level < 1){
+            let report = currentUser.reports
+            if(report.length){
+                
+                headerInfoText = `Your final report is generated`
+                showReport = true
+                hasReport = true
+            } else {
+                hasReport = false
+            }
+
+        } else if(!hasPassed){
+            headerInfoText = `You have ${remainingDays} days till your final report is generated`
         } else {
-            headerInfoText = `Your final report is generated`
-            showReport = true
+            let report = currentUser.reports
+            if(report.length){
+                headerInfoText = `Your final report is generated`
+                showReport = true
+                hasReport = true
+            } else {
+                hasReport = false
+            }
         }
+
     } else {
          headerInfoText = 'To access app functionality, please complete the Owner survey.'
     }
@@ -147,7 +159,7 @@ export default function Page(){
                 <div className="m-w-42">
                     <SyncButton/>
                 </div>
-            </div>
+                </div>
            
                 <SummaryOverview enabled={charts} showReport={showReport} surveyData={data} additionalClass={`card max-md:basis-full !px-0 md:*:px-6 gap-6 ${is_ownerSurveyData_complete ? "" : 'disabled'}`}/>
                 <div className={`card md:row-span-1 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>

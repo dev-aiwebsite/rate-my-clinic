@@ -1,4 +1,4 @@
-import { AppSendMail, RegisterUser } from "lib/server-actions";
+import { AppSendMail, RegisterUser, UpdateUser } from "lib/server-actions";
 import { redirect } from "next/navigation";
 import Stripe from "stripe";
 import { defaultEmailOption } from "../../../config/nodemailer.config";
@@ -8,20 +8,27 @@ import Image from "next/image";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET!);
 export default async function Page({searchParams}:any) {
+    
     const session_id = searchParams.session_id as string;
     if(session_id){
         const sessionInfo = await stripe.checkout.sessions.retrieve(session_id);
-        
-        let content = <></>
+        const emailImage = <> <Image
+        className="w-16 mx-auto"
+        width={60}
+        height={60}
+        src="/icons/emailDelivery.svg"
+        alt="email delivery icon"
+    /></>
+        let content = <>{emailImage} <h1 className="text-3xl text-bold">Thank you for subscribing</h1>
+        <p className="mt-10">{`Your subscription is now confirmed and active. We have sent you an email with more details. If you don't see it, please check your spam folder.`}</p></>
 
         if(sessionInfo.status == "complete"){
-            console.log(sessionInfo)
             let subscription_level,subscription_id,name,fname,lname,useremail,clinic_name,clinic_type,password = 'Welcome1!'
             let formData = new FormData()
 
             fname = sessionInfo?.metadata?.fname;
             lname = sessionInfo?.metadata?.lname;
-            useremail = sessionInfo?.metadata?.useremail;
+            useremail = sessionInfo?.metadata?.useremail || ""
             clinic_name = sessionInfo?.metadata?.clinic_name || "";
             clinic_type = sessionInfo?.metadata?.clinic_type || "";
             subscription_level = sessionInfo?.metadata?.subscription_level || "0";
@@ -37,11 +44,11 @@ export default async function Page({searchParams}:any) {
             formData.append('subscription_id', sessionInfo?.subscription as string)
             formData.append('subscription_product_id', sessionInfo?.metadata?.product_id || "" as string)
             formData.append('last_checkout_session_id', sessionInfo?.id as string)
-
-            console.log(formData, 'register form values')
+            
+            
+            //todo handle upgrade plan
 
             const res = await RegisterUser(formData)
-            console.log(res, 'register result')
             if(res.success){
                 const parsedData = JSON.parse(JSON.stringify(res.data))
                 type UserInfo = {
@@ -89,14 +96,31 @@ export default async function Page({searchParams}:any) {
                 }
 
                 const emailed = await AppSendMail(mailOptions)
-                content =  <>
-               
-                </>
     
-            } else if(res.message == "User email already exist"){
+            } else if(res.message == "User email already exists"){
+                console.log('already exist if block')
+
+                let updateFormData = {
+                    "subscription_level": subscription_level,
+                    "subscription_id": sessionInfo?.subscription,
+                    "subscription_product_id": sessionInfo?.metadata?.product_id,
+                    "last_checkout_session_id": sessionInfo?.id,
+                    $push: {
+                        "checkout_sessions": {
+                            date: new Date(),
+                            checkout_id: sessionInfo?.id,
+                            subscription_level: subscription_level
+                        }
+                    }
+                };
+              
+                
+                const updateUserResult = await UpdateUser({"useremail":useremail},updateFormData)
+
                 content = <>
-                <h1 className="text-3xl text-bold">Thank you for subscribing</h1>
-                    <Link href="/login">You can login here</Link>
+                <h1 className="text-3xl text-bold">Thank you!</h1>
+                <p className="mt-4">Your plan has been successfully updated.</p>
+                    <a className="block btn-primary uppercase w-fit mx-auto mt-10" href="/dashboard">Go to dashboard</a>
                 </>
     
             } else {
@@ -110,8 +134,7 @@ export default async function Page({searchParams}:any) {
                         />
                         <h1 className="text-3xl text-bold">Thank you for subscribing</h1>
                     
-                    <br></br>
-                    <p>{`Your subscription is now confirmed and active. We have sent you an email with more details. If you don't see it, please check your spam folder.`}</p>
+                    <p className="mt-10">{`Your subscription is now confirmed and active. We have sent you an email with more details. If you don't see it, please check your spam folder.`}</p>
             </>
             }
         }
@@ -135,17 +158,7 @@ export default async function Page({searchParams}:any) {
                 </div>
                 <div className="py-10 px-20 text-center">
                     
-                <Image
-                            className="w-16 mx-auto"
-                            width={60}
-                            height={60}
-                            src="/icons/emailDelivery.svg"
-                            alt="email delivery icon"
-                        />
-                        <h1 className="text-3xl text-bold">Thank you for subscribing</h1>
-                    
-                    <br></br>
-                    <p>{`Your subscription is now confirmed and active. We have sent you an email with more details. If you don't see it, please check your spam folder.`}</p>
+                       {content}
                 </div>
 
             </div>

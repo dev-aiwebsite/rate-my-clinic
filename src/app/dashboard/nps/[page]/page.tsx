@@ -7,6 +7,8 @@ import { useSessionContext } from "@/context/sessionContext";
 import AppAcess from "lib/appAccess";
 import Link from "next/link";
 import UpgradePlanBlock from "components/upgrade-plan-block";
+import { useState } from "react";
+import { useAppConfigContext } from "@/context/appSettingsContext";
 
 
 type Titems = {
@@ -37,11 +39,16 @@ const items:Titems = {
 
 export default function Page({params}:{params:any}){
     let pageName = params.page
+    
     const {data} = useSurveyDataContext()
     const {currentUser} = useSessionContext()
+    const {appUserConfig,setAppUserConfig} = useAppConfigContext()
+
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
     let charts = userAccess?.charts
-
+    console.log(pageName)
+    console.log(data, 'data')
+    console.log(currentUser)
     let npsCategory = pageName
 
     if(pageName == 'team' || pageName == "teams"){
@@ -68,7 +75,13 @@ export default function Page({params}:{params:any}){
             icon:  items[pageName].icon,
         }
     ]
-
+    function  handleHelperOnClose(){
+        const UpdatedConfig = {
+            ...appUserConfig
+        }
+        UpdatedConfig.helper_card.display = false
+        setAppUserConfig(UpdatedConfig)
+    }
     return (<>
         <NpsNavButtonGroup className="max-md:hidden card"/>
         <div className="group h-fit min-h-full col-span-3 row-span-5 max-md:!pb-30 md:card md:p-16">
@@ -79,7 +92,7 @@ export default function Page({params}:{params:any}){
             </div>
                 }
            
-            <HelperCard canClose={true} className="max-md:mt-6 max-md:w-full max-md:ring-0 md:absolute md:bottom-0 md:right-5"/>
+            <HelperCard isVisible={appUserConfig.helper_card.display} onClose={handleHelperOnClose} canClose={true} className="max-md:mt-6 max-md:w-full max-md:ring-0 md:absolute md:bottom-0 md:right-5"/>
         </div>
     </>
         

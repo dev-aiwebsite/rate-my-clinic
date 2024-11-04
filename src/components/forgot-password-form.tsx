@@ -18,7 +18,6 @@ export default function ForgotPasswordForm({isPasswordResetValid,userEmail}:{isP
             if(!formRef.current) return
             const formdata = new FormData(formRef.current);
             const formdataObject = Object.fromEntries(formdata.entries());
-            console.log(formdataObject);
 
             const response = await fetch('api/forgotpassword', {
                 method: 'POST',
@@ -28,14 +27,12 @@ export default function ForgotPasswordForm({isPasswordResetValid,userEmail}:{isP
                 body: JSON.stringify(formdataObject)
             });
             const res = await response.json();
-            console.log(res);
             setEmailSent(res.success);
             if(res.success){
                 formRef.current?.reset();
             }
             setLoading(false)
         } catch (err) {
-            console.log(err);
         }
     };
 
@@ -79,7 +76,7 @@ export default function ForgotPasswordForm({isPasswordResetValid,userEmail}:{isP
 
                     <Button loading={loading} className="border-none w-full block bg-appblue-300 text-white rounded-md px-4 py-2 hover:shadow-lg cursor-pointer transition-all duration-300 hover:bg-appblue-350" label="Submit" type="submit"/>
                     </div>
-                    <div className="flex flex-col max-md:items-center md:flex-row justify-between gap-2">
+                    <div className="flex flex-col max-md:items-center md:flex-row justify-between gap-4">
                         <Link className="underline text-xs text-blue-600"
                             href="/login">Login here
                         </Link>

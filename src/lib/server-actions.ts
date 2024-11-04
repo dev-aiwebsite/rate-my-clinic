@@ -8,35 +8,43 @@ import { MailOptions, elasticTransporter, transporter } from "../../config/nodem
 import { ExtendedSession } from '../../typings';
 import ElasticEmail, { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
 import Stripe from "stripe"
-import { cookies } from 'next/headers';
-import { redirect } from 'next/navigation';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
-    console.log(formData)
     let result = {
         success: false,
-        data: null || "",
+        data: "",
         orig_pass: "",
-        message: null || ""
+        message: ""
     }
     try {
         connectToDb()
+
+
         const fd = Object.fromEntries(formData)
         const {useremail} = fd
         let emailExists = await Users.findOne({useremail})
-        console.log(fd, 'register serveractions')
+      
 
     if(emailExists){
        result.data = emailExists
-       result.message = 'User email already exist'
+       result.message = 'User email already exists'
        result.success = false
        return result;
     }
+    const checkout_sessions = [{
+        date: new Date(),
+        checkout_id: fd['last_checkout_session_id'],
+        subscription_level: fd['subscription_level']
+    }]
+    
+
+
+
     let salt = bcrypt.genSaltSync(10) 
     const userpass = formData.get('userpass') as string;
     let hashedPass = await bcrypt.hash(userpass,salt)
-        const newUser = new Users({...fd, password:hashedPass})
+        const newUser = new Users({...fd, checkout_sessions, password:hashedPass})
         await newUser.save()
         result.data = newUser
         result.orig_pass = userpass,
@@ -53,13 +61,21 @@ export const RegisterUser = async (formData:FormData) =>{
 
 export const UpdateUser = async (query = {"useremail":"string"}, data = {}) =>{
     try {        
-        connectToDb()
         let user = await Users.findOneAndUpdate(query, data, {new:true})
 
-        return JSON.parse(JSON.stringify(user))
+        let response = {
+            user:JSON.parse(JSON.stringify(user)),
+            success: true,
+            message: 'User updated successfully'
+        }
+        return response
         
     } catch (error:any) {
-        throw new Error(error.toString())
+        let response = {
+            success: false,
+            message:error.toString()
+        }
+        return response
     }
 }
 
@@ -87,8 +103,9 @@ export const OwnerSurveyAction = async (formData: FormData) => {
     const userEmail = user?.user_email
     const userFirstname = user?.user_name?.split(" ")[0]
     const link = `${process.env.NEXTAUTH_URL}/login?email=${userEmail}`
-
+    const userData = await Users.findOne({useremail:userEmail})
     const ownerSurveyData = await DB_OwnerSurveyData.findOne({clinic_id: currentUser_id })
+
     
     
     try {
@@ -105,11 +122,16 @@ export const OwnerSurveyAction = async (formData: FormData) => {
             result['success'] = true
 
             // set 14 days report email
-            const sendTime = new Date();
+            let sendTime:Date | undefined = new Date();
             sendTime.setDate(sendTime.getDate() + 14);
             sendTime.setHours(8, 0, 0, 0);
+            
+            // send instant when free user 
+            if(Number(userData.subscription_level) < 1){
+                sendTime = undefined
+            }
 
-            const mailOptions = {
+            const  mailOptions = {
                 to: userEmail,
                 subject: "Your report is ready for download",
                 templateName: 'Report ready',
@@ -119,26 +141,23 @@ export const OwnerSurveyAction = async (formData: FormData) => {
                     useremail: userEmail
                 },
                 sendTime: sendTime,
-
-                
             }
+
+           
+            
             const emailed = await AppSendMail(mailOptions)
         }
         
         return result
 
     } catch (error) {
-        console.log(error)
         return {"success": false, 'message': error?.toString()}
         
     }
 }
 
 
-export const ClientSurveyAction = async (formData: FormData) => {
-    console.log('Client survey form submitted')
-    console.log(formData)
-    
+export const ClientSurveyAction = async (formData: FormData) => {  
     try {
         connectToDb()
         const newClientSurvey = new DB_ClientSurveyData(Object.fromEntries(formData))
@@ -146,14 +165,11 @@ export const ClientSurveyAction = async (formData: FormData) => {
 
         return {"success": true, 'message':'data save in database'}
     } catch (error) {
-        console.log(error)
         return {"success": false, 'message': error?.toString()}
         
     }
 }
 export const TeamSurveyAction = async (formData: FormData) => {
-    console.log('Team survey form submitted')
-    console.log(formData)
     
     try {
         connectToDb()
@@ -162,14 +178,12 @@ export const TeamSurveyAction = async (formData: FormData) => {
 
         return {"success": true, 'message':'data save in database'}
     } catch (error) {
-        console.log(error)
         return {"success": false, 'message': error?.toString()}
         
     }
 }
 
 export const AppSendMail = async(mailOptions:MailOptions) => {
-    console.log(mailOptions)
     try {
         const emailStatus = await SendMailViaElastic(mailOptions)
         return emailStatus
@@ -187,8 +201,6 @@ export const handleLogout = async () => {
   };
 
 export const resetPassword = async (formData: FormData) => {
-console.log('owner survey form submitted')
-console.log(formData)
 
 try {
     connectToDb()
@@ -196,7 +208,6 @@ try {
 
     return {"success": true, 'message':'data save in database'}
 } catch (error) {
-    console.log(error)
     return {"success": false, 'message': error?.toString()}
     
 }
@@ -204,22 +215,30 @@ try {
 
 
 
-export const getSurveyData = async (currentUser_id?:string) => {
+export const getSurveyData = async (currentUser_id?:string,date?:string) => {
             
     if(!currentUser_id){
         const user = await auth() as ExtendedSession;
         currentUser_id = user?.user_id
-        
     }
 
-    
     if(!currentUser_id) return null
         
     try{
-        
-        let ownerSurveyData = await DB_OwnerSurveyData.find()
-        let clientSurveyData = await DB_ClientSurveyData.find()
-        let teamSurveyData = await DB_TeamSurveyData.find()
+        const dateFilter = date ? new Date(date) : null;
+
+        let ownerSurveyData = await DB_OwnerSurveyData.find({
+            // isDeleted: false,
+            ...(dateFilter && { createdAt: { $lte: dateFilter } }),
+        })
+        let clientSurveyData = await DB_ClientSurveyData.find({
+            isDeleted: false,
+            ...(dateFilter && { createdAt: { $lte: dateFilter } }),
+        })
+        let teamSurveyData = await DB_TeamSurveyData.find({
+            isDeleted: false,
+            ...(dateFilter && { createdAt: { $lte: dateFilter } }),
+        })
 
         if(!ownerSurveyData){
             return null
@@ -231,13 +250,13 @@ export const getSurveyData = async (currentUser_id?:string) => {
             teamSurveyData: JSON.parse(JSON.stringify(teamSurveyData)),
         }
 
-
-        
-
         let clinicIds = convertedSurveys.ownerSurveyData.map((i: { clinic_id: any }) => i.clinic_id)
         type mySurveys = {
             [key:string]:any,
-            summary:{[key:string]:any}
+            summary:{[key:string]:any},
+            ownerSurveyData?:any,
+            clientSurveyData?:any,
+            teamSurveyData?:any
         }
         let mySurveys:mySurveys = {
             summary: {}
@@ -289,29 +308,43 @@ export const getSurveyData = async (currentUser_id?:string) => {
 
         let overalls:{[key:string]:any} = {}
 
-        let other_summary = {
-            clients: {score: oldData.reduce((a,b) => Number(a) + Number(b.clients), 0) / oldData.length},
-            team: {score: oldData.reduce((a,b) => Number(a) + Number(b.team), 0) / oldData.length},
-            strategy: {score: oldData.reduce((a,b) => Number(a) + Number(b.strategy), 0) / oldData.length},
-            finance: {score: oldData.reduce((a,b) => Number(a) + Number(b.finance), 0) / oldData.length},
-        }
+        let other_summary = {}
+        
         const oldDataTotal = oldData.reduce((a,b) => Number(a) + Number(b.overall), 0)
         overalls['other'] = oldDataTotal / oldData.length
         overalls['mine'] = Object.values(mySurveys.summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
 
         if(otherSummary.length){
-            console.log(otherSummary,'other summary')
             let overall = otherSummary.map(summary => {
                 return Object.values(summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
             })
+            
             let otherTotal = overall.reduce((a,b) => Number(a) + Number(b), 0)
             overalls['other'] = (oldDataTotal + otherTotal) / (oldData.length + overall.length)
 
-            other_summary.clients.score = (other_summary.clients.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.clients.score), 0) / otherSummary.length) / 2)
-            other_summary.team.score = (other_summary.team.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.team.score), 0) / otherSummary.length) / 2)
-            other_summary.strategy.score = (other_summary.strategy.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.strategy.score), 0) / otherSummary.length) / 2)
-            other_summary.finance.score = (other_summary.finance.score + (otherSummary.reduce((a,b) => Number(a) + Number(b.finance.score), 0) / otherSummary.length) / 2)
+            const otherTotalScore = {
+                clients: otherSummary.reduce((a,b) => Number(a) + Number(b.clients.score), 0),
+                team: otherSummary.reduce((a,b) => Number(a) + Number(b.team.score), 0),
+                strategy: otherSummary.reduce((a,b) => Number(a) + Number(b.strategy.score), 0),
+                finance: otherSummary.reduce((a,b) => Number(a) + Number(b.finance.score), 0),
+            }
+        
+            let numbersOfSurveys = otherSummary.length + oldData.length
             
+            other_summary = {
+                clients: {score: (oldData.reduce((a,b) => Number(a) + Number(b.clients), 0) + otherTotalScore.clients) / numbersOfSurveys},
+                team: {score: (oldData.reduce((a,b) => Number(a) + Number(b.team), 0) + otherTotalScore.team) / numbersOfSurveys},
+                strategy: {score: (oldData.reduce((a,b) => Number(a) + Number(b.strategy), 0) + otherTotalScore.strategy) / numbersOfSurveys},
+                finance: {score: (oldData.reduce((a,b) => Number(a) + Number(b.finance), 0) + otherTotalScore.finance) / numbersOfSurveys},
+            }
+            
+        } else {
+            other_summary = {
+                clients: {score: oldData.reduce((a,b) => Number(a) + Number(b.clients), 0) / oldData.length},
+                team: {score: oldData.reduce((a,b) => Number(a) + Number(b.team), 0) / oldData.length},
+                strategy: {score: oldData.reduce((a,b) => Number(a) + Number(b.strategy), 0) / oldData.length},
+                finance: {score: oldData.reduce((a,b) => Number(a) + Number(b.finance), 0) / oldData.length},
+            }
         }
 
         let results = {
@@ -517,7 +550,7 @@ function surveyCalculation(data:any) {
                     } else if(nps >= 95){
                         score = 100
                     } else {
-                        score = 100 - ((nps - 20) / (95 - 20) * 100)
+                        score = ((nps - 20) / (95 - 20) * 100)
                     }
 
                     return score * this.weight
@@ -544,7 +577,7 @@ function surveyCalculation(data:any) {
                             score = 20;
                         } else {
                             // Linear interpolation for values between 1 and 4
-                            score = 100 - ((value - 1) * (100 - 20) / (4 - 1));
+                            score = ((value - 1) * (100 - 20) / (4 - 1));
                         }
                     }
 
@@ -566,7 +599,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
 
                     return score * this.weight
@@ -589,7 +622,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
 
                     return score * this.weight
@@ -611,7 +644,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
                     return score * this.weight
                 }
@@ -626,15 +659,15 @@ function surveyCalculation(data:any) {
                     // Calculate the average
                     const total = value.reduce((sum: any, value: any) => sum + value, 0);
                     const average = value.length > 0 ? total / value.length : 0;
-
+                    let score
                     if (average < 8) {
-                        return 0
+                        score = 0
                     } else if (average > 9.5) {
-                        return 100
+                        score = 100
                     } else {
-                        return 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
                     }
-
+                    return score * this.weight
                 }
             },
             website: {
@@ -653,7 +686,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
                     return score * this.weight
                 }
@@ -674,7 +707,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 80) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 50) / (80 - 50) * 100)
+                        score = ((average - 50) / (80 - 50) * 100)
                     }
                     
                     return score * this.weight 
@@ -697,7 +730,7 @@ function surveyCalculation(data:any) {
                     } else if (average > 9.5) {
                         score = 100
                     } else {
-                        score = 100 - ((average - 8) / (9.5 - 8) * 100)
+                        score = ((average - 8) / (9.5 - 8) * 100)
                     }
 
                     return score * this.weight
@@ -981,7 +1014,6 @@ export const handleScheduleEmail = async () => {
     };
 
     // const result = await SendMailViaElastic(mailOptions);
-    // console.log(result);
     // return JSON.parse(JSON.stringify(result))
     return 
 };

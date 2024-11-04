@@ -14,6 +14,8 @@ type npsItem = {
     date: string;
     value: number;
     comment:string;
+    name?: string;
+
 };
 
 export default function Page({searchParams}:{searchParams:any}) {
@@ -38,15 +40,19 @@ export default function Page({searchParams}:{searchParams:any}) {
         const date = new Date(i.createdAt);
         const formattedDate = date.toISOString().split('T')[0];
 
-        let comment = i.recommendation_feedback
-        if(npsCategory == 'team'){
-            comment = `${i.fname}  ${i.lname}`
+        let comment = i.strengths
+        let name = i.fname
+
+        if(npsCategory != 'team'){
+            comment = `${i.recommendation_feedback}`
+            // comment = `${i.fname}  ${i.lname}`
         }
 
         let nps:npsItem = {
             'date':formattedDate,
             'value': Number(i.recommendation),
-            'comment': comment
+            'comment': comment,
+            'name': name
         }
         npsValues.push(Number(i.recommendation))
 
@@ -59,6 +65,10 @@ export default function Page({searchParams}:{searchParams:any}) {
 
     // Calculate the average
     let npsAverage = (sum / npsValues.length).toFixed(1)
+
+    if(npsCategory != 'team'){
+        npsAverage = (Number(npsAverage) * 10).toFixed(1)
+    }
 
     if(isNaN(sum / npsValues.length)){
         npsAverage = "0.0"

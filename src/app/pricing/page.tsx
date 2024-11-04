@@ -20,6 +20,8 @@ export default function PricingPage({searchParams,children }:any) {
 
     if(currentUser?._id){
         metadata['user_id'] = currentUser._id
+        metadata['useremail'] = currentUser.useremail
+
     }
 
 

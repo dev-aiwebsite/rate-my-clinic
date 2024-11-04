@@ -8,16 +8,21 @@ const shapeStyle: CSSProperties = {
 type Tparams = {
     className?:string;
     canClose?:boolean;
+    onClose?:()=>void;
+    isVisible?:boolean;
 }
-export default function HelperCard({className,canClose}:Tparams) {
-    const [isHidden,setIsHidden] = useState(false);
+export default function HelperCard({className,canClose,onClose,isVisible = true}:Tparams) {
+    const [isThisVisible,setIsThisVisible] = useState(isVisible);
     
 
     function handleClose(){
-        setIsHidden(true)
+        setIsThisVisible(false)
+        if(onClose){
+            onClose()
+        }
     }
     return (
-        <div className={`${className} ${isHidden ? 'hidden' : ''} targetParent md:max-w-[320px] bg-white ring-1 ring-gray-500 rounded-lg p-10 flex pb-0 overflow-hidden mb-px text-sm`}> 
+        <div className={`${className} ${isThisVisible ? '' : 'hidden'} targetParent md:max-w-[320px] bg-white ring-1 ring-gray-500 rounded-lg p-10 flex pb-0 overflow-hidden mb-px text-sm`}> 
         {canClose && <button className="absolute top-4 right-4 transition duration-150 ease-in-out hover:rotate-[10deg] hover:scale-125" type="button" onClick={handleClose}><span className="pi pi-times"></span></button>}
         <div>
             <div className="desktop-shape inline-flex items-end float-right h-full -mr-10 -mb-10" style={shapeStyle}>
@@ -30,10 +35,10 @@ export default function HelperCard({className,canClose}:Tparams) {
                 />
             </div>
             <div className="inline">
-                <span>Need expert advise? Book a free consultation with Paul Hedges</span>
+                <span>Need expert advice? Book a free consultation with Paul Hedges</span>
                 <br></br>
                 <br></br>
-                <button className="btn-primary bg-orange-400 hover:bg-orange-500 mb-10">Book now</button>
+                <a href="https://outlook.office.com/bookwithme/user/0841ad432ac1402f80962c82e69c1da6@ratemyclinic.com.au/meetingtype/t62Ix816wEOeGrY2V3gTEg2?anonymous&ep=mcard" target="_blank" className="inline-block btn-primary bg-orange-400 hover:bg-orange-500 mb-10">Book now</a>
 
             </div>
         </div>

@@ -1,8 +1,9 @@
-import Recommendations, { recommendationBank, Tcategory } from "lib/recommendations";
+import Recommendations, {Tcategory } from "lib/recommendations";
 import HelperCard from "./helperCard";
 import MeterChart from "./meter-chart";
 import Image from "next/image";
 import { useEffect, useState } from "react";
+import { useSessionContext } from "@/context/sessionContext";
 
 
 interface Item {
@@ -16,9 +17,22 @@ interface Item {
 }[]
 const scoreTypeList = ['below','in line with', 'above']
 export default function NpsContent({surveyData,item,className}:{surveyData:any,item:Item,className?:string}) {
-    const [recommendations, setRecommendations] = useState<any[]>([])
+    const {currentUser} = useSessionContext()
     let discrepancy = item[0].value - item[1].value
     let discrepancy_display_text = discrepancy < 0 ? `${discrepancy.toFixed(1)}` : `+${discrepancy.toFixed(1)}`
+    let recommendations = [] as string[]
+    let category = `${item[0].name.toLowerCase()}` as Tcategory
+    if(currentUser.reports){
+        let lastReportJson = currentUser.reports[currentUser.reports.length - 1].data
+        let lastReport
+
+        if(lastReportJson){
+            lastReport =JSON.parse(lastReportJson)
+            surveyData = lastReport.surveyData
+            recommendations = lastReport.recommendations[category]
+        }
+    }
+
 
     let scoreType = 'in line with'
 
@@ -30,12 +44,6 @@ export default function NpsContent({surveyData,item,className}:{surveyData:any,i
         scoreType = scoreTypeList[2]
     }
 
-    let category = `${item[0].name.toLowerCase()}` as Tcategory
-    
-    useEffect(()=>{
-        const recommendations = Recommendations({surveyData,category})
-        setRecommendations(recommendations)
-    },[])
 
     return (
         <div className={`${className} flex flex-col gap-14`}>
@@ -106,7 +114,7 @@ export default function NpsContent({surveyData,item,className}:{surveyData:any,i
                     </ul>
                 </div>
 
-                <div>
+                {recommendations.length ? <><div>
                     <p className="font-medium">Recommendations</p>
                     <ul className="text-sm text-neutral-500 pl-5 mt-3 list-disc space-y-2">
                     {
@@ -115,6 +123,7 @@ export default function NpsContent({surveyData,item,className}:{surveyData:any,i
                     </ul>
                 
                 </div>
+                </> : <></>}
             </div>
 
         </div>

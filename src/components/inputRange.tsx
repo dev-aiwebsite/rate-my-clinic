@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface Props {
     required?: boolean;
@@ -12,27 +12,40 @@ interface Props {
     defaultValue?: number;
     onChange?: (value: number) => void;
     name?: string;
-
 }
 
 function InputRange({ required,min = 0,max = 10,firstInputClassName,className,secondInputClassName,defaultValue,onChange,name}: Props) {
-    const [primaryInputVal,setPrimaryInputVal] = useState(defaultValue)
-    const [secondaryInputVal,setsecondaryInputVal] = useState(defaultValue)
+    const [primaryInputVal,setPrimaryInputVal] = useState(0)
+    const [secondaryInputVal,setsecondaryInputVal] = useState(0)
 
+
+    useEffect(()=>{
+        if(defaultValue){
+            setPrimaryInputVal(defaultValue)
+            setsecondaryInputVal(defaultValue)
+        }
+        
+    },[defaultValue])
 
     function handlePrimaryOnInput(value:number) {
         setPrimaryInputVal(value)
         setsecondaryInputVal(value)
 
-        onChange ? ()=>onChange(value) : ()=>{}
+        if(onChange){
+            onChange(value)
+        }
     }
     function handleSecondaryOnInput(value:number) {
         setPrimaryInputVal(value)
         setsecondaryInputVal(value)
+        if(onChange){
+            onChange(value)
+        }
     }
 
+
     return (
-      <div className={`${className} w-full flex flex-row`}>
+      <div className={`${className} items-center w-full flex flex-row`}>
             <input
             className={`${firstInputClassName} w-full`}
             type="range"

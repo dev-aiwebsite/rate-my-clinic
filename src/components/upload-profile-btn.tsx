@@ -17,7 +17,6 @@ function ProfileUploadBtn({userSession}:any) {
         try {
             const profilePic = e.detail.allEntries[0].cdnUrl
             const user = await UpdateUser({"useremail": userSession?.user_email}, {"img": profilePic})
-            console.log(user, 'from uploadProfile')
         } catch (error) {
             console.log(error)
         }

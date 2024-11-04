@@ -134,6 +134,7 @@ export const Recommendations = ({surveyData,category}:Tparams) => {
     let recommendations = []
     let selected:number[] = []
     let maxTries = 5
+    const min_recommendations = 5
 
     if(category == 'team'){
 
@@ -146,33 +147,36 @@ export const Recommendations = ({surveyData,category}:Tparams) => {
         let serviceKnowledgeTotal = serviceKnowledge.reduce((a: any,b: any) => a + b, 0) / serviceKnowledge.length
 
         if(!teamWork || !communication || !serviceKnowledge) return recommendations = []
+        const choices = [] as string[]
         
         if((teamWorkTotal > 10 && teamWorkTotal < 80) || teamWorkTotal < 8){
-            let choices = recommendationBank.team.teamWork.under
-            let choice = choices[Math.floor(Math.random() * choices.length)]
-            recommendations.push(choice)
+            let selection = recommendationBank.team.teamWork.under
+            if(selection.length){
+                recommendations.push(randomPick(selection))
+                choices.push(...selection)
+            }
+           
         }
         
         if((communicationTotal > 10 && communicationTotal < 80) || communicationTotal < 8){
-            let choices = recommendationBank.team.communication.under
-            let choice = choices[Math.floor(Math.random() * choices.length)]
-            recommendations.push(choice)
+            let selection = recommendationBank.team.teamWork.under
+            if(selection.length){
+                recommendations.push(randomPick(selection))
+                choices.push(...selection)
+            }
         }
         
         if((serviceKnowledgeTotal > 10 && serviceKnowledgeTotal < 80) || serviceKnowledgeTotal < 8){
-            let choices = recommendationBank.team.serviceKnowledge.under
-            let choice = choices[Math.floor(Math.random() * choices.length)]
-            recommendations.push(choice)
+            let selection = recommendationBank.team.serviceKnowledge.under
+            if(selection.length){
+                recommendations.push(randomPick(selection))
+                choices.push(...selection)
+            }
         }
 
-        let choices = recommendationBank.team.all
-        let choice = choices[Math.floor(Math.random() * choices.length)]
-        recommendations.push(choice)
+        completeRecommendations(choices,recommendationBank.team.all)
 
-        if(choices.length > 1){
-            let choice2 = choices[Math.floor(Math.random() * choices.length)]
-            recommendations.push(choice2)
-        }
+      
 
     } else if (category == 'clients'){
 
@@ -180,70 +184,99 @@ export const Recommendations = ({surveyData,category}:Tparams) => {
         let npsTotal = nps.reduce((a: any,b: any) => a + Number(b), 0) / nps.length
 
         if(!npsTotal) return recommendations = []
+        const choices = [] as string[]
+
         if((npsTotal > 10 && npsTotal < 70) || npsTotal < 7){
-            let choices = recommendationBank.clients.score.under
-            let choice = choices[Math.floor(Math.random() * choices.length)]
-            recommendations.push(choice)
+            let selection = recommendationBank.clients.score.under
+            if(selection.length){
+                recommendations.push(randomPick(selection))
+                choices.push(...selection)
+            }
         }
 
-        let choices = recommendationBank.clients.all
-        let choice = choices[Math.floor(Math.random() * choices.length)]
-        recommendations.push(choice)
-        if(choices.length > 1){
-            let choice2 = choices[Math.floor(Math.random() * choices.length)]
-            recommendations.push(choice2)
-        }
+        completeRecommendations(choices,recommendationBank.clients.all)
+
+
     } else if (category == 'strategy'){
         let score = surveyData.summary?.strategy?.score || false
         if(!score) return recommendations = []
+        const choices = [] as string[]
+
         if(surveyData.summary.strategy.score <= 80){
-            let choices = recommendationBank.strategy.score.under
-            let choice = choices[Math.floor(Math.random() * choices.length)]
-            recommendations.push(choice)
+            let selection = recommendationBank.strategy.score.under
+            if(selection.length){
+                recommendations.push(randomPick(selection))
+                choices.push(...selection)
+            }
         } else {
-            let choices = recommendationBank.strategy.score.over
-            let choice = choices[Math.floor(Math.random() * choices.length)]
-            recommendations.push(choice)
+            let selection = recommendationBank.strategy.score.over
+            if(selection.length){
+                recommendations.push(randomPick(selection))
+                choices.push(...selection)
+            }
         }
 
-        let choices = recommendationBank.strategy.current_business_plan[`${surveyData.ownerSurveyData.current_business_plan}`]
-        let choice = choices[Math.floor(Math.random() * choices.length)]
-        recommendations.push(choice)
+        completeRecommendations(choices,recommendationBank.strategy.current_business_plan[`${surveyData.ownerSurveyData.current_business_plan}`])
+
+        
         
     } else if (category == 'finance'){
 
         let score = surveyData.summary?.finance?.score || false
         if(!score) return recommendations = []
+        const choices = [] as string[]
+
         if(score <= 50){
-            let choices = recommendationBank.finance.score.under
-            let choice = choices[Math.floor(Math.random() * choices.length)]
-            recommendations.push(choice)
+            let selection = recommendationBank.finance.score.under
+            if(selection.length){
+                recommendations.push(randomPick(selection))
+                choices.push(...selection)
+            }
         } else {
-            let choices = recommendationBank.finance.score.over
-            let choice = choices[Math.floor(Math.random() * choices.length)]
-            recommendations.push(choice)
+            let selection = recommendationBank.finance.score.over
+            if(selection.length){
+                recommendations.push(randomPick(selection))
+                choices.push(...selection)
+            }
         }
-     
-        let choices = recommendationBank.finance.score.all
-        let firstSelection = Math.floor(Math.random() * choices.length)
-        let choice = choices[firstSelection]
-        recommendations.push(choice)
 
-        if(choices.length > 1){
+        completeRecommendations(choices,recommendationBank.finance.score.all)
+    }
 
-            let secondSelection = Math.floor(Math.random() * choices.length)
-            while(maxTries > 0 && selected.includes(secondSelection)){
-                secondSelection = Math.floor(Math.random() * choices.length)
-                maxTries -= 1
+
+    function completeRecommendations(choices:string[],choices_to_add:string[]){
+        if(recommendations.length <= min_recommendations){
+            maxTries = min_recommendations - recommendations.length
+            if(!choices.length){
+                choices.push(...choices_to_add)
             }
 
-            let choice2 = choices[secondSelection]
-            recommendations.push(choice2)
+            if(maxTries >= choices.length){
+                recommendations.push(...choices)            
+            } else {
+                while (maxTries > 0){
+                    let randNum = Math.floor(Math.random() * choices.length)
+    
+                    if(selected.includes(randNum)) continue
+    
+                    maxTries--
+                    selected.push(randNum)
+                    recommendations.push(choices[randNum])
+                }
+            }
         }
     }
 
+
     return recommendations
 
+}
+
+function randomPick(array:any[]) {
+    const randNum = Math.floor(Math.random() * array.length)
+    const selected = array[randNum]
+    array.splice(randNum, 1)
+    return selected
 }
 
 export default Recommendations

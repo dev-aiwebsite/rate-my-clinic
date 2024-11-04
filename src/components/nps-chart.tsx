@@ -8,6 +8,7 @@ import UpgradePlanBlock from "./upgrade-plan-block";
         
 
 type DataType = {
+    name?: string;
     date: string;
     value: number;
     comment:string;
@@ -47,12 +48,14 @@ export default function NpsChart({data,enabled = true}:{data?:DataType,enabled?:
         // Classify the values
 
         data.forEach((item,index) => {
+            console.log(item)
             let iconPath
             let dataType:"promoters" | "detractors" | "passives"
             if (item.value >= 9) {
                 togglerDataMap.promoters += 1;
                 dataType = "promoters"
                 iconPath = "/icons/smiley-good.svg"
+
             } else if (item.value <= 6) {
                 togglerDataMap.detractors += 1;
                 dataType = "detractors"
@@ -62,23 +65,25 @@ export default function NpsChart({data,enabled = true}:{data?:DataType,enabled?:
                 togglerDataMap.passives += 1;
                 dataType = "passives"
                 iconPath = "/icons/smiley-neutral.svg"
+                
             }
-
+            
+            let tooltipId = `tooltip_${index}`
             if(!dataVisibility[dataType]) return
             chartItems.push (
                 <div className="grid grid-rows-10 h-full row-span-full w-40 relative"
                 data-npsdataclass={dataType}
                 key={index}>
                     <span className={`row-start-${11 - item.value} block leading-[0px] -translate-y-1/2`}>
-                        <Tooltip target=".custom-tooltip-btn" autoHide={false} position="bottom">
+                        <Tooltip target={`.${tooltipId}`} autoHide={false} position="bottom">
                             <div className="max-w-[250px] text-sm">
+                            {item.name && <span className="mb-2 block">{item.name}</span>}
                             {item.comment}
-                            <CopyButton className="float-right !p-1 !ring-0"
-                                textToCopy={"Professional expert advice delivered in a considered friendly manner with great hands on therapy."} toolTip="Copy text"/>
-                                
+                            <CopyButton className="float-right !p-1 !ring-0 !text-sm"
+                                textToCopy={item.comment}/>
                             </div>
                         </Tooltip>
-                        <Image className="custom-tooltip-btn h-full mx-auto" src={iconPath} width={40} height={40} alt="smiley" />
+                        <Image className={`${tooltipId} h-full mx-auto`} src={iconPath} width={40} height={40} alt="smiley" />
                     </span>
                     <span className="absolute bottom-0 text-xs text-center w-full  translate-y-[200%]">{item.date}</span>
                 </div>

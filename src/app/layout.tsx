@@ -1,11 +1,8 @@
+import "./globals.css";
 import { PrimeReactProvider } from 'primereact/api';
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
-// import "primereact/resources/themes/lara-light-cyan/theme.css";
-import "primereact/resources/themes/lara-light-blue/theme.css";
 import 'primeicons/primeicons.css';
-
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -54,10 +51,7 @@ export default async function RootLayout({children}: Readonly<{children: React.R
     current_user_id = session.user_id
   }
 
-  console.log(Users)
-  
   const surveyData = await getSurveyData(current_user_id)
-
   return (
     <PrimeReactProvider>
     <html lang="en">

@@ -16,7 +16,8 @@ const second_list_item = [
     {
         name: "Book a call",
         icon: "/icons/sched.svg",
-        link: "/dashboard/contact"
+        link: "https://outlook.office.com/bookwithme/user/0841ad432ac1402f80962c82e69c1da6@ratemyclinic.com.au/meetingtype/t62Ix816wEOeGrY2V3gTEg2?anonymous&ep=mcard",
+        attr: {'target': "_blank"}
     },
     {
         name: "Settings",
@@ -28,6 +29,10 @@ const second_list_item = [
 const SidebarMobile = ({userData,isVisible = false,position = "right",onHide}:{onHide?:React.Dispatch<React.SetStateAction<boolean>>,userData:any,isVisible?:boolean,position?: "right" | "top" | "bottom" | "left"}) => {
     let userAvatar = userData?.profile_pic ? `${userData?.profile_pic}-/preview/512x512/-/border_radius/50p/` : "/icons/avatar-default.svg"
     let userName = userData?.username || "Guest"
+    let isAdmin = false
+    if(userData.role == 'admin'){
+        isAdmin = true
+    }
 
     function handleHide(){
         if(onHide){
@@ -60,7 +65,7 @@ const SidebarMobile = ({userData,isVisible = false,position = "right",onHide}:{o
                 </li>
             {second_list_item.map((item, index) => (
                 <li key={index} className="mb-1 bg-white hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400" >
-                    <Link href={item.link} className="flex flex-row items-center gap-3 text-xs py-3 px-6">
+                    <Link href={item.link} className="flex flex-row items-center gap-3 text-xs py-3 px-6" {...(item.attr ? item.attr : {})}>
                         {typeof(item.icon) === "string" && <Image
                             className="w-5 h-5" 
                             src={item.icon}
@@ -73,6 +78,11 @@ const SidebarMobile = ({userData,isVisible = false,position = "right",onHide}:{o
                         {item.name}</Link>
                 </li>
             ))}
+            {isAdmin && <li className="hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400">
+                    <Link href='/dashboard/admin' className="flex flex-row items-center gap-3 text-sm py-3 px-6 text-[#388db6]">
+                        <span className="w-4 h-4 pi pi-hashtag"></span><span>Admin</span>
+                    </Link>
+                </li>}
         </ul>
         <div className="mt-auto p-2">
             <LogoutBtn className="text-gray-500 rounded-md text-xs"/>
@@ -85,7 +95,7 @@ const SidebarMobile = ({userData,isVisible = false,position = "right",onHide}:{o
 
     return (<>
        
-         <Sidebar maskClassName="!bg-opacity-5 !bottom-0 !top-auto" className="bottom-16 w-fit h-fit rounded-lg overflow-hidden mr-2 mt-auto shadow-lg" onHide={handleHide} visible={isVisible} position={position} content={customContent}>
+         <Sidebar maskClassName="!bg-opacity-5 !bottom-0 !top-auto" className="bottom-16 !w-fit !h-fit rounded-lg overflow-hidden mr-2 mt-auto shadow-lg" onHide={handleHide} visible={isVisible} position={position} content={customContent}>
         
         </Sidebar>
         </>

@@ -10,6 +10,7 @@ export type Product = {
         app_name: string;
         name: string;
         subscription_level: string;
+        level?: string;
     };
 }
 
@@ -27,7 +28,8 @@ export const Plans:Product[] = [
         metadata: {
             "app_name": "rmc",
             "name": "Free",
-            "subscription_level": "0"
+            "subscription_level": "0",
+            
         }
     },
 ]

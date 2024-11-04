@@ -23,7 +23,6 @@ export async function POST(req:NextRequest, res: NextResponse){
 
     if(sig){
         let event = stripe.webhooks.constructEvent(payload,sig as string,process.env.STRIPE_WEBHOOK_SECRET as string)
-        console.log(event)
     }
 
     try {
@@ -62,7 +61,7 @@ const createStripeCheckoutSession = async (request: { mode:Stripe.Checkout.Sessi
         customer_email: meta.useremail || "",
         allow_promotion_codes: true,
         // redirect_on_completion: "never",
-        return_url: `${domain}/confirmation?session_id={CHECKOUT_SESSION_ID${oldMember}}`,
+        return_url: `${domain}/confirmation?session_id={CHECKOUT_SESSION_ID}`,
    })
 }
 

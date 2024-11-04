@@ -1,6 +1,6 @@
 "use client"
 
-import { getColor } from "@/helperFunctions"
+import { calculateNeedleRotation, getColor } from "lib/helperFunctions"
 
 export default function MeterChart({
     data = [{value: 100, color: "var(--appblue-200)"}],
@@ -14,7 +14,7 @@ export default function MeterChart({
 
 
     let chart_visual = ""
-    let rotation = `${calculateRotation(needle.value)}deg`
+    let rotation = `${calculateNeedleRotation(needle.value)}deg`
    
     data.sort((a,b) => {
         return a.value - b.value
@@ -66,18 +66,4 @@ export default function MeterChart({
         </div>
 
     )
-}
-
-function calculateRotation(value:number, min = 0, max = 100, rotateMin = 0, rotateMax = 180) {
-    // Ensure the value is within the min and max bounds
-    if (value < min) value = min;
-    if (value > max) value = max;
-
-    // Calculate the proportion of the value within the range
-    let proportion = (value - min) / (max - min);
-
-    // Calculate the rotation angle
-    let angle = proportion * (rotateMax - rotateMin) + rotateMin;
-
-    return angle;
 }

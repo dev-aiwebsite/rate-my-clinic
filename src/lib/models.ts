@@ -73,6 +73,21 @@ const user_schema = new mongoose.Schema({
   last_checkout_session_id:{
     type: String
   },
+  checkout_sessions: {
+    type: [
+      {
+        date: {
+          type: Date,
+        },
+        checkout_id:{
+          type: String
+        },
+        subscription_level: {
+          type: String, 
+        },
+      }
+    ]
+  },
   profile_pic: {
     type: String,
     default: ""
@@ -98,6 +113,24 @@ const user_schema = new mongoose.Schema({
   },
   passwordResetExpires: {
     type: Date,
+  },
+  reports: {
+    type: [
+      {
+        date: {
+          type: Date,
+          required: true,
+        },
+        pdf_link:{
+          type: String
+        },
+        data: {
+          type: String, 
+          required: true, 
+        },
+      },
+    ],
+    default: [], 
   },
 
 }, { timestamps: true });
@@ -197,6 +230,10 @@ const clientSurveyDataSchema = new mongoose.Schema({
   comments_questions: {
     type: String,
     required: true,
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
   }
   
 }, { timestamps: true });
@@ -270,6 +307,10 @@ const teamSurveyDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  }
 }, { timestamps: true });
 
 const ownerSurveyDataSchema = new mongoose.Schema({
@@ -297,6 +338,14 @@ const ownerSurveyDataSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  clinic_location_address1: {
+    type: String,
+    default: "", // Default empty string
+  },
+  clinic_location_address2: {
+    type: String,
+    default: "", // Default empty string
+  },
   clinic_location_state: {
     type: String,
     required: true,
@@ -315,127 +364,158 @@ const ownerSurveyDataSchema = new mongoose.Schema({
   },
   clinic_logo: {
     type: String,
+    default: "", // Default empty string
   },
   services_provided: {
     type: String,
-    required: true,
   },
   ndis_clients: {
     type: String,
-    required: true,
   },
   own_building: {
     type: String,
-    required: true,
+    default: "", // Default empty string
   },
   pay_market_rent: {
     type: String,
+    default: "", // Default empty string
   },
   market_rate_difference: {
     type: Number,
+    default: 0, // Default value of 0
   },
   group_classes: {
     type: String,
-    required: true,
+    default: "", // Default empty string
   },
   classes_per_week: {
     type: Number,
+    default: 0, // Default value of 0
   },
   practice_management_software: {
     type: String,
-    required: true,
+    default: "", // Default empty string
   },
   initial_consult_charge: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   initial_consult_duration: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   followup_consult_charge: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   followup_consult_duration: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   current_business_plan: {
     type: String,
-    required: true,
+    default: "", // Default empty string
   },
   plan_execution: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   plan_review_timeline: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   exit_plan: {
     type: String,
-    required: true,
+    default: "", // Default empty string
   },
   leave_comfort_level: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   treating_hours: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   managing_hours: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   pay_treating_clients: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   pay_managing_business: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   turnover: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   profit: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   total_wages: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   non_clinician_wages: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   rent: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   cash_reserves: {
     type: Number,
-    required: true,
+    default: 0, // Default value of 0
   },
   client_survey: {
     type: String,
-    required: true,
+    default: "", // Default empty string
   },
   last_client_survey: {
     type: Number,
+    default: 0, // Default value of 0
   },
   email_software: {
     type: String,
-    required: true,
+    default: "", // Default empty string
   },
   client_source: {
     type: String,
-    required: true,
-  }, written_treatment_plans: { type: String, required: true, }, employee_satisfaction_survey: { type: String, required: true, }, last_employee_survey: { type: Number }, number_of_clinicians: { type: Number, required: true, }, number_of_non_clinicians: { type: Number, required: true, }, work_life_balance: { type: Number, required: true, },
+    default: "", // Default empty string
+  },
+  written_treatment_plans: {
+    type: String,
+    default: "", // Default empty string
+  },
+  employee_satisfaction_survey: {
+    type: String,
+    default: "", // Default empty string
+  },
+  last_employee_survey: {
+    type: Number,
+    default: 0, // Default value of 0
+  },
+  number_of_clinicians: {
+    type: Number,
+    default: 0, // Default value of 0
+  },
+  number_of_non_clinicians: {
+    type: Number,
+    default: 0, // Default value of 0
+  },
+  work_life_balance: {
+    type: Number,
+    default: 0, // Default value of 0
+  },
+  isDeleted: {
+    type: Boolean,
+    default: false
+  }
 }, { timestamps: true });
 
 
