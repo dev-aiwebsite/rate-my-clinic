@@ -16,13 +16,13 @@ interface Item {
  
 }[]
 const scoreTypeList = ['below','in line with', 'above']
-export default function NpsContent({surveyData,item,className}:{surveyData:any,item:Item,className?:string}) {
+export default function NpsContent({surveyData,item,className}:{surveyData?:any,item:Item,className?:string}) {
     const {currentUser} = useSessionContext()
     let discrepancy = item[0].value - item[1].value
     let discrepancy_display_text = discrepancy < 0 ? `${discrepancy.toFixed(1)}` : `+${discrepancy.toFixed(1)}`
     let recommendations = [] as string[]
     let category = `${item[0].name.toLowerCase()}` as Tcategory
-    if(currentUser.reports){
+    if(currentUser.reports && currentUser?.reportToUse){
         let lastReportJson = currentUser.reports[currentUser.reports.length - 1].data
         let lastReport
 
