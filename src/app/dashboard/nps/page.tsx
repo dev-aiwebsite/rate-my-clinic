@@ -20,7 +20,10 @@ type npsItem = {
 
 export default function Page({searchParams}:{searchParams:any}) {
     const {currentUser} = useSessionContext()
+    console.log(currentUser, 'currentUser nps page')
     const {data} = useSurveyDataContext()
+    console.log(data,'data')
+    console.log(currentUser.subscription_level, 'currentUser.subscription_level')
     let hasAccess = currentUser.subscription_level > 0 || false
     let filteredData 
     let npsCategory = searchParams.nps
@@ -41,11 +44,11 @@ export default function Page({searchParams}:{searchParams:any}) {
         const formattedDate = date.toISOString().split('T')[0];
 
         let comment = i.strengths
-        let name = i.fname
+        let name = ""
 
         if(npsCategory != 'team'){
             comment = `${i.recommendation_feedback}`
-            // comment = `${i.fname}  ${i.lname}`
+            name = i.fname
         }
 
         let nps:npsItem = {
@@ -60,7 +63,6 @@ export default function Page({searchParams}:{searchParams:any}) {
     })
 
 
-    
     const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
     // Calculate the average

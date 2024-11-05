@@ -9,6 +9,7 @@ import { MailOptions, elasticTransporter, transporter } from "../../config/nodem
 import { ExtendedSession } from '../../typings';
 import ElasticEmail, { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
 import Stripe from "stripe"
+import { demoEmail } from 'utils/demo';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -217,13 +218,13 @@ try {
 
 
 export const getSurveyData = async (currentUser_id?:string,date?:string) => {
+    const user = await auth() as ExtendedSession;
             
     if(!currentUser_id){
-        const user = await auth() as ExtendedSession;
         currentUser_id = user?.user_id
     }
 
-    if(!currentUser_id) return null
+    if(!currentUser_id && user?.user_email == demoEmail) return null
         
     try{
         const dateFilter = date ? new Date(date) : null;

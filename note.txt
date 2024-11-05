@@ -69,3 +69,7 @@ db.ownersurveydatas.deleteMany({ clinic_id: { $in: userIds } });
 db.teamsurveydatas.deleteMany({ clinicId: { $in: userIds } });
 
 Paul	Hedges	paul.hedges@ratemyclinic.com.au	+61 400 117 320	Initial	admin	Physio Test	Specialist	2002-01-02	Australia	5152	SA	08/09/2024, 10:13:52 AM	10/02/2024, 11:19:43 AM												
+
+66f5da92e6719ead51b5377e
+
+db.clientsurveydatas.find({ clinicid: "66f5da92e6719ead51b5377e" })
