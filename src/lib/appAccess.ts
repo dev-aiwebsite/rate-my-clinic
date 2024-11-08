@@ -17,25 +17,25 @@ const userAccess:TuserAccess[] = [
     },
     {
         subscription_level:1,
-        charts: ['clients','strategy','teams','finance'],
+        charts: ['clients','strategy','team','finance'],
         team_surveys: 0,
         clinic_surveys: 0
     },
     {
         subscription_level:2,
-        charts: ['clients','strategy','teams','finance'],
+        charts: ['clients','strategy','team','finance'],
         team_surveys: 0,
         clinic_surveys: 0
     },
     {
         subscription_level:3,
-        charts: ['clients','strategy','teams','finance'],
+        charts: ['clients','strategy','team','finance'],
         team_surveys: 0,
         clinic_surveys: 0
     },
     {
         subscription_level:4,
-        charts: ['clients','strategy','teams','finance'],
+        charts: ['clients','strategy','team','finance'],
         team_surveys: 0,
         clinic_surveys: 0
     },

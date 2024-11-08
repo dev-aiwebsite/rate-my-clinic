@@ -73,3 +73,9 @@ Paul	Hedges	paul.hedges@ratemyclinic.com.au	+61 400 117 320	Initial	admin	Physio
 66f5da92e6719ead51b5377e
 
 db.clientsurveydatas.find({ clinicid: "66f5da92e6719ead51b5377e" })
+
+
+db.users.updateOne(
+  { _id: ObjectId("672ab879959b625437c0c4f4") },
+  { $set: { clinic_type: 'ndis-provider' } }    
+);
