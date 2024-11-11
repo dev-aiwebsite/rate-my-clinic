@@ -1,5 +1,5 @@
 import { generateReportData } from "./generateReportData"
-import { calculateNeedleRotation, formatDecimal, getColor } from "./helperFunctions"
+import { calculateNeedleRotation, formatDecimal, getColor, getNps } from "./helperFunctions"
 
 export const createReportHtml = async(reportData?:any) => {
     console.log(reportData, 'createReportHtml')
@@ -20,7 +20,8 @@ export const createReportHtml = async(reportData?:any) => {
 
     if(reportData.surveyData.clientSurveyData){
         let clientNpsScoreArray = reportData.surveyData.clientSurveyData.map((i: { recommendation: any }) => Number(i.recommendation))
-        let clientNpsScoreTotal = (clientNpsScoreArray.reduce((a: any,b: any) => Number(a) + Number(b), 0) / clientNpsScoreArray.length ) * 10
+        // let clientNpsScoreTotal = (clientNpsScoreArray.reduce((a: any,b: any) => Number(a) + Number(b), 0) / clientNpsScoreArray.length ) * 10
+        let clientNpsScoreTotal = getNps(clientNpsScoreArray) || 0
         let clientNps = {
             score: clientNpsScoreTotal,
             quality: getQuality(clientNpsScoreTotal)
