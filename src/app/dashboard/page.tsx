@@ -9,7 +9,7 @@ import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { redirect, usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import { isProfileCompleteCheckList, reportGenDays } from "lib/Const";
-import { hasPassedMaxDays } from "lib/helperFunctions";
+import { getNps, hasPassedMaxDays } from "lib/helperFunctions";
 import { useEffect, useState } from "react";
 import Stripe from "stripe";
 import { retrieveCheckoutSession } from "@/api/stripe/actions";
@@ -86,8 +86,8 @@ export default function Page(){
                 })
         
                 const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-                clientNpsAvg = (sum / npsValues.length) * 10 || 0
-        
+                clientNpsAvg = getNps(npsValues) || 0
+                
         
                 filteredData_team.forEach((i)=> {
                     npsValues_team.push(Number(i.recommendation))

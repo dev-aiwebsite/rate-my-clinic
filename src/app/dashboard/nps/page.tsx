@@ -64,6 +64,7 @@ export default function Page({searchParams}:{searchParams:any}) {
     })
 
     let nps = getNps(npsValues)
+    console.log(nps, 'nps')
     const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
     let npsScore = "0.0"
@@ -71,10 +72,8 @@ export default function Page({searchParams}:{searchParams:any}) {
     let npsAverage = (sum / npsValues.length).toFixed(1)
 
 
-    if(npsCategory != 'team'){
-        npsAverage = (Number(npsAverage) * 10).toFixed(1)
-        nps = (Number(npsAverage) * 10)
-
+    if(npsCategory == 'team'){
+        nps = (sum / npsValues.length)
     }
 
 
