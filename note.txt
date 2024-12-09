@@ -79,3 +79,14 @@ db.users.updateOne(
   { _id: ObjectId("672ab879959b625437c0c4f4") },
   { $set: { clinic_type: 'ndis-provider' } }    
 );
+
+{
+    _id: ObjectId('672bf25a7f086914a5bbff23'),
+    useremail: 'rebecca@dynamicphysiorehab.con'
+  },
+
+
+db.collection.updateOne(
+  { _id: ObjectId('672bf25a7f086914a5bbff23') },
+  { $set: { useremail: 'rebecca@dynamicphysiorehab.com' } }
+);
