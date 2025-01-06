@@ -39,3 +39,29 @@ export const clinicFields = [
   ]
 
   export const reportGenDays = 30
+
+  export const ndisProviderServices = [
+    { name: "Occupational Therapy"},
+    { name: "Early childhood therapy"},
+    { name: "Positive Behaviour Support"},
+    { name: "Therapy assessment"},
+    { name: "Physiotherapy"},
+    { name: "Speech pathology"},
+    { name: "Psychology"},
+    { name: "Nursing"},
+    { name: "Exercise physiology"},
+    { name: "Therapy assistant"},
+    { name: "Counselling"},
+    { name: "Dietetics"},
+    { name: "Social Work"},
+    { name: "Podiatry"},
+    { name: "Music Therapy"},
+    { name: "Art Therapy"},
+    { name: "Developmental Education"},
+    { name: "Multi-D"},
+    { name: "Personal training"},
+    { name: "Orthoptist"},
+    { name: "Rehab Counsellor"},
+    { name: "Audiology/audiometry"},
+    { name: "Group therapy"}
+];

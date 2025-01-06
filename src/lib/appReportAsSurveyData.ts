@@ -21,13 +21,14 @@ export const appReportAsSurveyData = (currentUser:any,startDate:Date) =>{
         surveyData = JSON.parse(currentUser.reports[0].data).surveyData
         reportUse = 0
 
-    } else if(lastReportDateString >= maxEndDate.toDateString()) {
+    } else if(lastReportDateString >= maxEndDate.toLocaleDateString()) {
         //check last report date is subscription date + maxGenDays
         surveyData = JSON.parse(currentUser.reports[hasReports - 1].data).surveyData
         reportUse = hasReports - 1
         
     } 
 
+    if(!surveyData) return false
     return {surveyData,reportUse}
 
 }

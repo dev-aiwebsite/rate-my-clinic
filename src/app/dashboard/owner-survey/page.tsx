@@ -11,10 +11,11 @@ import Link from "next/link";
 import { redirect, usePathname } from "next/navigation";
 import Image from "next/image";
 import {useRouter} from "next/navigation";
-import { isProfileCompleteCheckList,mobileNavbarHeight, reportGenDays } from "lib/Const";
+import { isProfileCompleteCheckList,mobileNavbarHeight, ndisProviderServices, reportGenDays } from "lib/Const";
 import { Button } from "primereact/button";
 import { useMediaQuery } from "react-responsive";
 import SelectWithOther from "components/SelectWithOther";
+import MultiSelect from "components/MultiSelect";
 
 type page = number
 interface CustomStyles extends React.CSSProperties {
@@ -33,7 +34,7 @@ export default function Page({searchParams}:{searchParams:any}) {
     let tocheck = isProfileCompleteCheckList
     const max_pages = 15
     const {currentUser} = useSessionContext()
-    
+    const isNdisProvider = currentUser.clinic_type == 'ndis-provider'
     const pathname = usePathname()
  
     function afterSubmit(){
@@ -259,6 +260,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                 {label: 'Gmail', value: 'gmail'},
                 {label: 'Peptalkr', value: 'peptalkr'},
             ]
+            console.log(formData.services_provided)
                 return <>
                     <form className={`h-full card max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col z-[20] ${additionalClass}`} id="owner-survey-form" onSubmit={(e) => handleDefaultSubmit(e, page)}>
                         <input type="hidden" name="clinic_id" value={formData.clinic_id} />
@@ -372,12 +374,12 @@ export default function Page({searchParams}:{searchParams:any}) {
         
                                     <div className="sm:col-span-1">
                                         <label htmlFor="services_provided" className="formLabel">Which services do you provide? Please double check for spelling as these will be used in your client survey.</label>
-                                        <p className="field_instruction">*Please separate each response with a comma. (e.g. Massage, Physical Therapy, Chiropractic)</p>
+                                        {!isNdisProvider && <p className="field_instruction">*Please separate each response with a comma. (e.g. Massage, Physical Therapy, Chiropractic)</p>}
                                         <div className="mt-2">
-                                            <div className="formField">
-                                                {/* go back here */}
+                                            {!isNdisProvider && <div className="formField">
                                                 <textarea onChange={handleChange} name="services_provided" value={formData.services_provided} id="" placeholder=" e.g. Massage, Physical Therapy, Chiropractic" required></textarea>
-                                            </div>
+                                            </div>}
+                                            {isNdisProvider && <MultiSelect name="services_provided" onChange={(v) => handleChange({target: {name:'services_provided',value:v}})} items={ndisProviderServices} value={formData.services_provided} valueAsString={true} required={true}/>}
                                         </div>
                                     </div>
         

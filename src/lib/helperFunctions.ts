@@ -120,10 +120,11 @@ export function hasPassedMaxDays (startDate: string, maxDays: number, currentDat
     const diffInTime = maxEndDate.getTime() - current.getTime();
 
     // Convert the difference to days (1 day = 24 * 60 * 60 * 1000 ms)
-    const remainingDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
+    // const remainingDays = Math.ceil(diffInTime / (1000 * 60 * 60 * 24));
+    const remainingDays = diffInTime > 0 ? Math.ceil(diffInTime / (1000 * 60 * 60 * 24)) : 0;
 
     // If remainingDays is negative, the max days period has passed
-    const hasPassed = remainingDays < 0;
+    const hasPassed = remainingDays <= 0;
 
     return {
         hasPassed,
@@ -149,3 +150,14 @@ export const saveAsExcelFile = (buffer: BlobPart, fileName: string) => {
     });
     saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION); 
 };
+
+
+export const getNps = (arrayOfValues:number[]) => {
+    if(!arrayOfValues && !Array.isArray(arrayOfValues)) return false
+    const detractors =  arrayOfValues.filter((i: number) => i <= 6).length
+    const promoters =  arrayOfValues.filter((i: number) => i >= 9).length
+
+    const nps = ((promoters - detractors) / arrayOfValues.length) * 100
+
+    return nps
+}

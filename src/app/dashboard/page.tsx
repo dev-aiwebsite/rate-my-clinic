@@ -9,7 +9,7 @@ import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { redirect, usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import { isProfileCompleteCheckList, reportGenDays } from "lib/Const";
-import { hasPassedMaxDays } from "lib/helperFunctions";
+import { getNps, hasPassedMaxDays } from "lib/helperFunctions";
 import { useEffect, useState } from "react";
 import Stripe from "stripe";
 import { retrieveCheckoutSession } from "@/api/stripe/actions";
@@ -25,19 +25,20 @@ const defaultNps = [
 export default function Page(){ 
  
     const {data,setData} = useSurveyDataContext()
-    const {currentUser,setCurrentUser} = useSessionContext()
-    const [lastCheckoutSession, setLastCheckoutSession] = useState<undefined | Stripe.Response<Stripe.Checkout.Session>>()
+    const {currentUser} = useSessionContext()
+    // const [lastCheckoutSession, setLastCheckoutSession] = useState<undefined | Stripe.Response<Stripe.Checkout.Session>>()
     const pathname = usePathname()
-    useEffect(()=> {
-        const getLastSession = async () => {
-            let lastCheckoutSession =  await retrieveCheckoutSession(currentUser.last_checkout_session_id)
-            setLastCheckoutSession(lastCheckoutSession)
-            return lastCheckoutSession
-        }
-        getLastSession()
+    // useEffect(()=> {
+    //     const getLastSession = async () => {
+    //         let lastCheckoutSession =  await retrieveCheckoutSession(currentUser.last_checkout_session_id)
+    //         setLastCheckoutSession(lastCheckoutSession)
+    //         return lastCheckoutSession
+    //     }
+    //     getLastSession()
     
-    },[])
+    // },[])
     if(!currentUser) return null
+    const lastCheckoutSession = currentUser.lastCheckoutSession_data
     let tocheck = isProfileCompleteCheckList
     const isProfileComplete = tocheck.every(i => currentUser[i])
     
@@ -51,6 +52,7 @@ export default function Page(){
     let charts = userAccess?.charts
     let userName = currentUser?.username || "Guest"
     
+    console.log(data, 'data dashboardpage')
     let is_ownerSurveyData_complete = data?.ownerSurveyData ? true : false
     let showReport = false
 
@@ -84,8 +86,8 @@ export default function Page(){
                 })
         
                 const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-                clientNpsAvg = (sum / npsValues.length) * 10 || 0
-        
+                clientNpsAvg = getNps(npsValues) || 0
+                
         
                 filteredData_team.forEach((i)=> {
                     npsValues_team.push(Number(i.recommendation))
@@ -146,6 +148,8 @@ export default function Page(){
     } else {
          headerInfoText = 'To access app functionality, please complete the Owner survey.'
     }
+
+    console.log(currentUser, 'currentUser dashboard page')
 
     return (<div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 max-md:flex max-md:flex-row max-md:flex-wrap md:grid md:grid-cols-3">
             <div className="card hidden col-span-3 row-span-1 md:flex flex-row items-center justify-between">

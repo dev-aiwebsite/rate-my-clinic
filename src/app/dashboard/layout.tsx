@@ -8,7 +8,7 @@ import Image from "next/image";
 import { fetchData } from "lib/data";
 import SessionContextProvider from "@/context/sessionContext";
 import SurveyDataContext from "@/context/surveyDataContext";
-import { getSurveyData } from "lib/server-actions";
+import { getSurveyData, RegisterUser } from "lib/server-actions";
 import AppConfigContextProvider from "@/context/appSettingsContext";
 import { hasPassedMaxDays } from "lib/helperFunctions";
 import { SaveReport } from "lib/generateReportData";
@@ -16,7 +16,12 @@ import 'primereact/resources/themes/lara-light-blue/theme.css';
 import { appReportAsSurveyData } from "lib/appReportAsSurveyData";
 import { retrieveCheckoutSession } from "@/api/stripe/actions";
 import { reportGenDays } from "lib/Const";
-
+import { demoEmail, demoReports, demoSubscription } from "utils/demo";
+import Stripe from "stripe";
+import { connectToDb } from "lib/utils";
+import bcrypt from 'bcrypt'
+import { Users as UsersDb } from "lib/models";
+import { randomUUID } from 'crypto';
 
 const Layout = async ({
    children,
@@ -31,11 +36,25 @@ let  currentUser = JSON.parse(c_user)
 let allUsers = JSON.parse(JSON.stringify(Users))
 let surveyData = await getSurveyData(currentUser._id)
 let is_ownerSurveyData_complete = surveyData?.ownerSurveyData ? true : false
-let lastCheckoutSession =  await retrieveCheckoutSession(currentUser.last_checkout_session_id)
-const subscriptionStartDate = new Date(lastCheckoutSession.created * 1000);
+let lastCheckoutSession
+if(currentUser.useremail == demoEmail){
+    demoSubscription[0].lastCheckoutSession_data as Stripe.Checkout.Session
 
+} else {
+    lastCheckoutSession = await retrieveCheckoutSession(currentUser.last_checkout_session_id)
+}
+const subscriptionStartDate = new Date((lastCheckoutSession?.created || 0) * 1000);
+
+currentUser['lastCheckoutSession_data'] = lastCheckoutSession
 const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(subscriptionStartDate.toISOString(),reportGenDays)
+    if(currentUser.useremail == demoEmail){
+        currentUser.reports = demoReports
+        currentUser = {...currentUser, ...demoSubscription[0]}
+    }
+
+
     let reportAsSurveyData = appReportAsSurveyData(currentUser,subscriptionStartDate)
+
     if(reportAsSurveyData){
         surveyData = reportAsSurveyData.surveyData
         currentUser['reportToUse'] = reportAsSurveyData.reportUse
@@ -81,8 +100,10 @@ const value = {
     ripple: true,
 };
 
+
  return <>
     <PrimeReactProvider value={value}>
+        <SurveyDataContext surveyData={surveyData}>
         <SessionContextProvider users={allUsers} current_user={currentUser}>
             <AppConfigContextProvider>
                 <div className="h-screen flex flex-col max-md:bg-slate-100">
@@ -101,16 +122,18 @@ const value = {
                     <div className="h-full max-md:mt-32 max-h-[calc(100vh_-_3.5rem)] md:max-h-[calc(100vh_-_4rem)] overflow-y-hidden flex-1 flex flex-row">
                         <Sidebar/>
                         <div className="flex-1 md:overflow-y-auto">
-                            <SurveyDataContext surveyData={surveyData}>
+                            
                                 <div className="overflow-scroll max-md:pb-20 min-h-full max-h-[calc(100vh_-_11.25rem)] md:max-h-[calc(100vh_-_4rem)]">
                                 {children}
                                 </div>
-                            </SurveyDataContext>
+                            
                         </div>
                     </div>
                 </div>
+            
             </AppConfigContextProvider>
         </SessionContextProvider>
+            </SurveyDataContext>
     </PrimeReactProvider>
  </>
 }
