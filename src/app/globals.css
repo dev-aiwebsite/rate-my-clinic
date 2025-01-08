@@ -217,3 +217,7 @@ border-radius: 50%; /* Round thumb */
   overflow: auto !important;
   max-height: 5rem !important;
 }
+
+.bg-custom-gradient {
+  background: linear-gradient(109.7deg, var(--appblue-200) 0%, var(--appgreen-300) 100%);
+}

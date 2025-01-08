@@ -9,7 +9,7 @@ interface SurveyDataProviderProps {
   children: ReactNode;
   surveyData:surveyData
 }
-type SurveyData = {
+export type SurveyDataType = {
   ownerSurveyData: any;
   clientSurveyData: any[];
   teamSurveyData: any[];
@@ -18,7 +18,7 @@ type SurveyData = {
   overalls:any;
 };
 
-export const SurveyDataContext =  createContext<{data: SurveyData, setData:any} | null>(null);
+export const SurveyDataContext =  createContext<{data: SurveyDataType, setData:any} | null>(null);
 
 export default function SurveyDataContextProvider({surveyData, children }: SurveyDataProviderProps) {
   const [data, setData] = useState<surveyData>(surveyData);
