@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Set the paths and variables
-BACKUP_DIR="/home/iandev/backups"  # Your backup directory
+BACKUP_DIR="/home/ubuntu/backups"  # Your backup directory
 GIT_BACKUP_BRANCH="backup-branch"
 MONGO_DB_NAME="ratemyclinic"  # Your MongoDB database name for the app
 
