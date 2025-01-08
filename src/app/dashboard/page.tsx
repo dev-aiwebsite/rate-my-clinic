@@ -13,6 +13,7 @@ import { hasPassedMaxDays } from "lib/helperFunctions";
 import { useEffect, useState } from "react";
 import Stripe from "stripe";
 import { retrieveCheckoutSession } from "@/api/stripe/actions";
+import ClinicWorth from "components/ClinicWorth";
 
 const defaultNps = [
     {
@@ -74,13 +75,11 @@ export default function Page(){
                 let filteredData_team = data.teamSurveyData.filter((i:any)=> i.clinicId == currentUser._id)
                 let npsValues: number[] = []
                 let npsValues_team: number[] = []
+
                 filteredData.forEach((i)=> {
-        
                     const date = new Date(i.createdAt);
                     const formattedDate = date.toISOString().split('T')[0];
-    
                     npsValues.push(Number(i.recommendation))
-        
                 })
         
                 const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
@@ -93,7 +92,6 @@ export default function Page(){
                 
                 const sum2 = npsValues_team.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
                 teamNpsAvg = sum2 / npsValues_team.length || 0
-
             }
 
         }
@@ -161,23 +159,34 @@ export default function Page(){
                 </div>
            
                 <SummaryOverview enabled={charts} showReport={showReport} surveyData={data} additionalClass={`card max-md:basis-full !px-0 md:*:px-6 gap-6 ${is_ownerSurveyData_complete ? "" : 'disabled'}`}/>
-                <div className={`card md:row-span-1 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
-                    <Link className="h-full gap-5 flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps?nps=client">
-                        <div className="flex-1 min-w-24 grid items-center md:justify-around">
-                            <p>Client NPS</p>
-                            <p className="font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
-                        </div>
-                        <CircleChart className="!max-w-36" data={clientNps} max={100}/>
-                    </Link>
+                <div className="card md:row-span-1 max-md:basis-full flex items-center justify-center bg-custom-gradient text-white tracking-wide">
+                    <ClinicWorth />
                 </div>
-                <div className={`card md:row-span-1 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
-                    <Link className="h-full gap-5 flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps?nps=team">
-                        <div className="flex-1 min-w-24 grid items-center md:justify-around">
-                            <p>Team Satisfaction</p>
-                            <p className="font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
-                        </div>
-                        <CircleChart className="!max-w-36" data={teamNps} max={10}/>
-                    </Link>
+                <div className="card md:row-span-1 max-md:basis-full grid grid-cols-2">
+                    <div className={`h-fit ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
+                        <Link className="h-full gap-5 flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps?nps=client">
+                            <div className="flex-1 min-w-24 grid items-center md:justify-around">
+                                <p>Client NPS</p>
+                                <p className="md:hidden font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
+                            </div>
+                            <CircleChart className="!max-w-36" data={clientNps} max={100}/>
+                            <div className="max-sm:hidden flex-1 min-w-24 grid items-center md:justify-around">
+                                <p className="text-xs font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
+                            </div>
+                        </Link>
+                    </div>
+                    <div className={`h-fit ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
+                        <Link className="h-full gap-5 flex flex-wrap flex-row items-center justify-around" href="/dashboard/nps?nps=team">
+                            <div className="flex-1 min-w-24 grid items-center md:justify-around">
+                                <p>Team Satisfaction</p>
+                                <p className="md:hidden font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
+                            </div>
+                            <CircleChart className="!max-w-36" data={teamNps} max={10}/>
+                            <div className="max-sm:hidden flex-1 min-w-24 grid items-center md:justify-around">
+                                <p className="text-xs font-medium underline text-orange-400 hover:text-orange-500">View Chart</p>
+                            </div>
+                        </Link>
+                    </div>
                 </div>
                 <div className={`card md:row-span-1 !p-0 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
                     <HelperCard className="!ring-0"/>

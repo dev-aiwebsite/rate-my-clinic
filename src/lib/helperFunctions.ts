@@ -149,3 +149,65 @@ export const saveAsExcelFile = (buffer: BlobPart, fileName: string) => {
     });
     saveAs(data, fileName + '_export_' + new Date().getTime() + EXCEL_EXTENSION); 
 };
+
+export const getClientNps = (clientSurveyData:any) => {
+    let clientNpsScoreArray = clientSurveyData.map((i: { recommendation: any }) => Number(i.recommendation))
+        let clientNpsScoreTotal = (clientNpsScoreArray.reduce((a: any,b: any) => Number(a) + Number(b), 0) / clientNpsScoreArray.length ) * 10
+        let clientNps = {
+            score: clientNpsScoreTotal,
+            quality: getClientNpsQuality(clientNpsScoreTotal)
+        }
+        return clientNps
+}
+
+export const getTeamNps = (teamSurveyData:any) => {
+    let teamSatisfactionArray= teamSurveyData.map((i: { recommendation: any }) => i.recommendation)
+    let teamSatisfaction = Number((teamSatisfactionArray.reduce((a: any,b: any) => a + b, 0) / teamSatisfactionArray.length).toFixed(1))
+    let teamNps = {
+        score:teamSatisfaction,
+        quality: getTeamNpsQuality(teamSatisfaction)
+    }
+    return  teamNps
+}
+
+
+export function getClientNpsQuality(score:number) {
+    // 0-75 = below the national average
+// 75-85 = good
+// 85+ = excellent
+
+if (score > 85) {
+    return "excellent";
+} else if (score >= 75) {
+    return "good";
+} else {
+    return "below the national average";
+}
+}
+
+export function getTeamNpsQuality(score:number) {
+    // Team Satisfaction
+    // 0-8 = below the national average
+    // 8-9 = good
+    // 9+ = excellent
+    
+    if (score >= 9) {
+        return "excellent";
+    } else if (score >= 8) {
+        return "good";
+    } else {
+        return "below the national average";
+    }
+}
+
+export const shortenNumber = (value:number) => {
+    
+    if(typeof value !== 'number') return value
+    if (value >= 1_000_000) {
+        return (value / 1_000_000).toFixed(1) + 'm'; // For millions with one decimal
+    } else if (value >= 1_000) {
+        return Math.floor(value / 1_000) + 'k'; // For thousands without decimals
+    } else {
+        return value.toString(); // For values less than 1000
+    }
+};

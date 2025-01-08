@@ -1,5 +1,5 @@
 import { generateReportData } from "./generateReportData"
-import { calculateNeedleRotation, formatDecimal, getColor } from "./helperFunctions"
+import { calculateNeedleRotation, formatDecimal, getClientNps, getColor, getTeamNps } from "./helperFunctions"
 
 export const createReportHtml = async(reportData?:any) => {
     console.log(reportData, 'createReportHtml')
@@ -19,30 +19,19 @@ export const createReportHtml = async(reportData?:any) => {
     }
 
     if(reportData.surveyData.clientSurveyData){
-        let clientNpsScoreArray = reportData.surveyData.clientSurveyData.map((i: { recommendation: any }) => Number(i.recommendation))
-        let clientNpsScoreTotal = (clientNpsScoreArray.reduce((a: any,b: any) => Number(a) + Number(b), 0) / clientNpsScoreArray.length ) * 10
-        let clientNps = {
-            score: clientNpsScoreTotal,
-            quality: getQuality(clientNpsScoreTotal)
-        }
+        const clientNps = getClientNps(reportData.surveyData.clientSurveyData)
         pdfData['client_nps'] = clientNps
     }
 
     if(reportData.surveyData.teamSurveyData){
     
-        let teamSatisfactionArray= reportData.surveyData.teamSurveyData.map((i: { recommendation: any }) => i.recommendation)
-        let teamSatisfaction = Number((teamSatisfactionArray.reduce((a: any,b: any) => a + b, 0) / teamSatisfactionArray.length).toFixed(1))
-        let teamNps = {
-            score:teamSatisfaction,
-            quality: getTeamQuality(teamSatisfaction)
-        }
+        const teamNps = getTeamNps(reportData.surveyData.teamSurveyData)
         pdfData['team_nps'] = teamNps
     }
 
-
     
-        const reportHtml = createReportTemplate(pdfData)
-        return reportHtml
+    const reportHtml = createReportTemplate(pdfData)
+    return reportHtml
 }
 
 export function createReportTemplate(report_data: { client_nps: {score?: any, quality?: any};
@@ -374,34 +363,7 @@ export function createReportTemplate(report_data: { client_nps: {score?: any, qu
 }
 
 
-function getQuality(score:number) {
-        // 0-75 = below the national average
-    // 75-85 = good
-    // 85+ = excellent
 
-    if (score > 85) {
-        return "excellent";
-    } else if (score >= 75) {
-        return "good";
-    } else {
-        return "below the national average";
-    }
-}
-
-function getTeamQuality(score:number) {
-        // Team Satisfaction
-        // 0-8 = below the national average
-        // 8-9 = good
-        // 9+ = excellent
-        
-        if (score >= 9) {
-            return "excellent";
-        } else if (score >= 8) {
-            return "good";
-        } else {
-            return "below the national average";
-        }
-}
 
 function capitalizeFirstLetter(str:string) {
     return str.charAt(0).toUpperCase() + str.slice(1);
