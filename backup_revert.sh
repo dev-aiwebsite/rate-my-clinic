@@ -28,7 +28,7 @@ backup_mongo() {
   echo "Backing up MongoDB database: $MONGO_DB_NAME..."
   
   # Use mongodump to create the backup
-  mongodump --db "$MONGO_DB_NAME" --out "$BACKUP_DIR/mongo/ratemyclinic_db_backup-$(date +'%Y-%m-%d')"
+mongodump 'mongodb://aiAdmin:Welcometoaiwebsitedev1!@127.0.0.1:27017/rmc' --db rmc --out "$BACKUP_DIR/mongo/ratemyclinic_db_backup-$(date +'%Y-%m-%d')"
   echo "MongoDB backup completed!"
 }
 
