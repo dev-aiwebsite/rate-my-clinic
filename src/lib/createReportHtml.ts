@@ -1,6 +1,7 @@
 import { generateReportData } from "./generateReportData"
 import { calculateNeedleRotation, formatDecimal, getClientNps, getColor, getTeamNps } from "./helperFunctions"
 
+
 export const createReportHtml = async(reportData?:any) => {
     console.log(reportData, 'createReportHtml')
     if(!reportData) return false

@@ -13,7 +13,7 @@ type Tparams = {
     showReport?:boolean,
     enabled?:string[]
 }
- const SummaryOverview = ({surveyData,additionalClass = "",showReport = false, enabled = ['clients','strategy','teams','finance'] }:Tparams) => {
+ const SummaryOverview = ({surveyData,additionalClass = "",showReport = false, enabled = ['clients','strategy','team','finance'] }:Tparams) => {
     const allData = surveyData
 let [isOpen, setIsOpen] = useState(false)
 function closeModal() {
@@ -41,11 +41,11 @@ const data = [
         isEnabled: enabled.includes('strategy')
     },
     {
-        name: 'Teams',
+        name: 'Team',
         value: surveyData?.summary?.team?.score || 0,
         color: 'var(--appblue-200)',
         icon: '/icons/team.svg',
-        isEnabled: enabled.includes('teams')
+        isEnabled: enabled.includes('team')
     },
     {
         name: 'Finance',

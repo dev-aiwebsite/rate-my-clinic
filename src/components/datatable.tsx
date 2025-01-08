@@ -11,11 +11,16 @@ import { useRef, useState } from "react";
 import { ProgressSpinner } from "primereact/progressspinner";
 import { Toast } from "primereact/toast";
 import { deleteAData } from "lib/server_actions/deleteAData";
+import { InputText } from "primereact/inputtext";
+import { IconField } from 'primereact/iconfield';
+import { InputIcon } from 'primereact/inputicon';
+
 export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',options}:{datatable:any[]; filename?:string; options?:{[key:string]:any}}) {
     const [tableData,setTableData] = useState(datatable);
     const [selectedItems, setSelectedItems] = useState<any[]>([]);
     const [deleteDialog, setDeleteDialog] = useState(false);
     const [isDeleting,setIsDeleting] = useState(false);
+    const [globalFilter, setGlobalFilter] = useState("");
     const toast = useRef<Toast>(null);
 
     const deleteEnabled = options?.delete.enabled || false
@@ -100,16 +105,24 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
                             </div>
                         </Dialog>}
                         <Tooltip target=".export-buttons>button" position="bottom" />
-                        <div className="flex align-items-center justify-between gap-2 w-full sticky top-0 z-10 bg-white p-2">
-                            <div>
-                            {deleteEnabled && selectedItems?.length ? <><Button label="Delete" icon="pi pi-trash" severity="danger" onClick={()=> setDeleteDialog(true)} /></>: ""}
+                        <div>
+                            <div className="flex align-items-center justify-between gap-2 w-full sticky top-0 z-10 bg-white p-2">
+                                <div>
+                                {deleteEnabled && selectedItems?.length ? <><Button label="Delete" icon="pi pi-trash" severity="danger" onClick={()=> setDeleteDialog(true)} /></>: ""}
+                                </div>
+                                <div>
+                                    <Button type="button" icon="pi pi-file-excel" className='!bg-green-600 text-white p-2 w-fit aspect-square' onClick={exportExcel} data-pr-tooltip="XLS" />
+                                </div>
                             </div>
                             <div>
-                                <Button type="button" icon="pi pi-file-excel" className='!bg-green-600 text-white p-2 w-fit aspect-square' onClick={exportExcel} data-pr-tooltip="XLS" />
-                            </div>
+                                <IconField iconPosition="left">
+                                    <InputIcon className="pi pi-search" />
+                                    <InputText className="!shadow-none !py-2" value={globalFilter} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
+                                </IconField>
+                                </div>
                         </div>
-
-                        <DataTable className="text-sm" value={tableData} selectionMode="single" onSelectionChange={(e) => setSelectedItems(e.value)} selection={selectedItems!} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort>
+                        {/* paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} */}
+                        <DataTable className="text-sm" value={tableData} selectionMode="single" onSelectionChange={(e) => setSelectedItems(e.value)} selection={selectedItems!} globalFilter={globalFilter} removableSort>
                             <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
 
                             {tableData?.length ? (Object.keys(tableData[0]).filter((key) => key !== "id").map((key,indx) => {

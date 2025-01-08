@@ -10,9 +10,13 @@ import 'jspdf-autotable'
 import ExcelJS from 'exceljs';
 import { subscriptionLevels } from "lib/Const";
 import { redirect, useRouter } from "next/navigation";
-
+import { useState } from "react";
+import { InputText } from "primereact/inputtext";
+import { IconField } from 'primereact/iconfield';
+import { InputIcon } from 'primereact/inputicon';
 export default function Page({searchParams}:{searchParams:any}) {
     const {currentUser,users} = useSessionContext()
+    const [globalFilter, setGlobalFilter] = useState("");
     let isAdmin = false
     if(currentUser.role == 'admin'){
         isAdmin = true
@@ -78,10 +82,19 @@ export default function Page({searchParams}:{searchParams:any}) {
     return <>
          <div className="card m-5">
             <Tooltip target=".export-buttons>button" position="bottom" />
-            <div className="flex align-items-center justify-end gap-2 w-full sticky top-0 z-10 bg-white p-2">
-                <Button type="button" icon="pi pi-file-excel" className='!bg-green-600 text-white p-2 w-fit aspect-square' onClick={exportExcel} data-pr-tooltip="XLS" />
+           
+            <div>
+                <div className="flex align-items-center justify-end gap-2 w-full sticky top-0 z-10 bg-white p-2">
+                    <Button type="button" icon="pi pi-file-excel" className='!bg-green-600 text-white p-2 w-fit aspect-square' onClick={exportExcel} data-pr-tooltip="XLS" />
+                </div>
+                <div>
+                    <IconField iconPosition="left">
+                        <InputIcon className="pi pi-search" />
+                        <InputText className="!shadow-none !py-2" value={globalFilter} onChange={(e) => setGlobalFilter(e.target.value)} placeholder="Search..." />
+                    </IconField>
+                </div>
             </div>
-            <DataTable value={users_datatable_all} selectionMode="single" onSelectionChange={(e) => tableRowOnClick(e)} paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} removableSort stripedRows>
+            <DataTable value={users_datatable_all} selectionMode="single" onSelectionChange={(e) => tableRowOnClick(e)} globalFilter={globalFilter} removableSort stripedRows>
             {Object.keys(users_datatable_all[0]).map((key,indx) => {
                     if(key == 'Profile Picture'){
                         return <Column key={`${key}_${indx}`} field={key} header={key} />

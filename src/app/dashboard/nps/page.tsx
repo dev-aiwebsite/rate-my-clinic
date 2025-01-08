@@ -2,6 +2,7 @@
 import NpsChart from "../../../components/nps-chart";
 import { useSessionContext } from "@/context/sessionContext";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
+import { getNps } from "lib/helperFunctions";
 
 type npsData = {
     date: string;
@@ -20,7 +21,10 @@ type npsItem = {
 
 export default function Page({searchParams}:{searchParams:any}) {
     const {currentUser} = useSessionContext()
+    console.log(currentUser, 'currentUser nps page')
     const {data} = useSurveyDataContext()
+    console.log(data,'data')
+    console.log(currentUser.subscription_level, 'currentUser.subscription_level')
     let hasAccess = currentUser.subscription_level > 0 || false
     let filteredData 
     let npsCategory = searchParams.nps
@@ -41,11 +45,11 @@ export default function Page({searchParams}:{searchParams:any}) {
         const formattedDate = date.toISOString().split('T')[0];
 
         let comment = i.strengths
-        let name = i.fname
+        let name = ""
 
         if(npsCategory != 'team'){
             comment = `${i.recommendation_feedback}`
-            // comment = `${i.fname}  ${i.lname}`
+            name = i.fname
         }
 
         let nps:npsItem = {
@@ -59,15 +63,22 @@ export default function Page({searchParams}:{searchParams:any}) {
        return nps
     })
 
-
-    
+    let nps = getNps(npsValues)
+    console.log(nps, 'nps')
     const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
 
+    let npsScore = "0.0"
     // Calculate the average
     let npsAverage = (sum / npsValues.length).toFixed(1)
 
-    if(npsCategory != 'team'){
-        npsAverage = (Number(npsAverage) * 10).toFixed(1)
+
+    if(npsCategory == 'team'){
+        nps = (sum / npsValues.length)
+    }
+
+
+    if(nps){
+        npsScore = nps.toFixed(1)
     }
 
     if(isNaN(sum / npsValues.length)){
@@ -76,11 +87,13 @@ export default function Page({searchParams}:{searchParams:any}) {
 
     if(!hasAccess){
         npsAverage = "--"
+        npsScore = "--"
     }
+
 
     return (<>
         <div className="col-span-3 row-span-1 flex flex-row items-center justify-between card">
-            <h1 className="text-2xl capitalize">{`${npsTextHeader}: ${npsAverage}`}</h1>
+            <h1 className="text-2xl capitalize">{`${npsTextHeader}: ${npsScore}`}</h1>
         </div>
 
         <div className="col-span-3 row-span-5 h-fit max-md:!pb-30 card">

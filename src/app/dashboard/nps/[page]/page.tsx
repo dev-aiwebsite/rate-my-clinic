@@ -30,7 +30,7 @@ const items:Titems = {
         color: 'var(--appgreen-300)',
         icon: '/icons/strategy.svg',
     },
-    teams:  {
+    team:  {
         name: 'Team',
         color: 'var(--appgreen-300)',
         icon: '/icons/team.svg',
@@ -52,7 +52,7 @@ export default function Page({params}:{params:any}){
     
     let npsCategory = pageName
 
-    if(pageName == 'team' || pageName == "teams"){
+    if(pageName == 'team'){
         npsCategory = 'team'
     }
 
