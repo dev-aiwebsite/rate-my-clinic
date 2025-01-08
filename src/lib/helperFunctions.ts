@@ -213,3 +213,13 @@ export const shortenNumber = (value:number) => {
     }
 };
 
+
+export const getNps = (arrayOfValues:number[]) => {
+    if(!arrayOfValues && !Array.isArray(arrayOfValues)) return false
+    const detractors =  arrayOfValues.filter((i: number) => i <= 6).length
+    const promoters =  arrayOfValues.filter((i: number) => i >= 9).length
+
+    const nps = ((promoters - detractors) / arrayOfValues.length) * 100
+
+    return nps
+}
