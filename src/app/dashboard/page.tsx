@@ -192,7 +192,7 @@ export default function Page(){
                         </Link>
                     </div>
                 </div>
-                <div className={`card md:row-span-1 !p-0 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
+                <div className={`card items-center content-center md:row-span-1 !p-0 max-md:basis-full ${is_ownerSurveyData_complete ? "" : 'disabled'}`}>
                     <HelperCard className="!ring-0"/>
                 </div>
            
