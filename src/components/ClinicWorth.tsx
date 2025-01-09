@@ -3,20 +3,49 @@
 import { SurveyDataType, useSurveyDataContext } from "@/context/surveyDataContext";
 import { getClientNps, getTeamNps, shortenNumber } from "lib/helperFunctions";
 import Link from "next/link";
+import { OverlayPanel } from "primereact/overlaypanel";
+import { useRef } from "react";
 
-const ClinicWorth = ({className}:{className?:string}) => {
+const ClinicWorth = ({ className }: { className?: string }) => {
     const { data } = useSurveyDataContext()
+    const op = useRef<OverlayPanel | null>(null);
     console.log(data)
+
+    function toggleHowDidWeCalculate(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
+        if (!op.current) return
+        op.current.toggle(e)
+    }
+    // Here's how we calculated your score:
+
+    // Years in Operation: Based on your input, you received points according to the predefined range.
+    // Number of Clinicians: Your score was prorated depending on the number of clinicians.
+    // Client NPS, Team Satisfaction, and Treatment Hours: Points were assigned based on where your inputs fell within the set thresholds.
+    // Profit: Your score was calculated based on your reported profit, following a specific formula.
+    // Each metric was weighted accordingly to contribute to your final score.
+
     const clinicWorth = getClinicWorth(data) || "--"
     return (
         <div className="flex gap-5 items-center flex-col text-inherit justify-center">
             <span className="font-bold">Estimated Clinic Worth</span>
             <span className="font-bold text-[2.5em]">$ {clinicWorth}</span>
             <div className="text-inherit">
-                <Link href="#" className="flex gap-1 justify-center items-center">
+
+                <Link href="#" className="flex gap-1 justify-center items-center" onClick={(e) => toggleHowDidWeCalculate(e)} >
                     <span className="pi pi-info-circle !text-[.8em]"></span>
                     <span className="!text-[.8em]">How did we calculate</span>
                 </Link>
+                <OverlayPanel ref={op}>
+                    <div className="max-w-96 text-sm space-y-5">
+                        <h3>{`Here's how we calculated your score:`}</h3>
+                        <ul className="list-disc pl-5 space-y-1">
+                            <li><strong>Years in Operation:</strong> Based on your input, you received points according to the predefined range.</li>
+                            <li><strong>Number of Clinicians:</strong> Your score was prorated depending on the number of clinicians.</li>
+                            <li><strong>Client NPS, Team Satisfaction, and Treatment Hours:</strong> Points were assigned based on where your inputs fell within the set thresholds.</li>
+                            <li><strong>Profit:</strong> Your score was calculated based on your reported profit, following a specific formula.</li>
+                        </ul>
+                        <p>Each metric was weighted accordingly to contribute to your final score.</p>
+                    </div>
+                </OverlayPanel>
             </div>
         </div>
     );
@@ -29,7 +58,7 @@ function getClinicWorth(surveyData: SurveyDataType) {
     const teamSatisfaction = teamSurveyData?.length && getTeamNps(teamSurveyData)
     const profit = surveyData.ownerSurveyData.profit
 
-    if (!clientNps || !teamSatisfaction|| !profit) return null
+    if (!clientNps || !teamSatisfaction || !profit) return null
 
     const today = new Date()
     const currentYear = today.getFullYear()
@@ -37,7 +66,7 @@ function getClinicWorth(surveyData: SurveyDataType) {
     const yearsInOperations = dateStablished && currentYear - dateStablished.getFullYear()
     const amountOfClinicians = surveyData.ownerSurveyData.number_of_clinicians
     const ownerTreatmentHours = surveyData.ownerSurveyData.treating_hours
-    
+
 
     const measures = {
         yearsInOperations: {
@@ -75,11 +104,11 @@ function getClinicWorth(surveyData: SurveyDataType) {
                 const value = Number(clientNps.score)
                 if (value > 85) {
                     return 100; // Case 1: value > 85
-                  } else if (value >= 50) {
+                } else if (value >= 50) {
                     return 100 - ((value - 50) / (85 - 50)) * (100 - 10); // Case 2: value between 50 and 85
-                  } else {
+                } else {
                     return 0; // Case 3: value < 50
-                  }
+                }
             }
         },
         teamSatisfaction: {
@@ -89,11 +118,11 @@ function getClinicWorth(surveyData: SurveyDataType) {
                 const value = Number(teamSatisfaction.score)
                 if (value > 9.2) {
                     return 100; // Case 1: value > 9.2
-                  } else if (value >= 7) {
+                } else if (value >= 7) {
                     return 100 - ((value - 7) / (9.2 - 7)) * (100 - 10); // Case 2: value between 7 and 9.2
-                  } else {
+                } else {
                     return 0; // Case 3: value < 7
-                  }
+                }
             }
         },
         ownerTreatmentHours: {
@@ -103,19 +132,19 @@ function getClinicWorth(surveyData: SurveyDataType) {
                 const value = ownerTreatmentHours
                 if (value < 15) {
                     return 100; // Case 1
-                  } else if (value <= 40) {
+                } else if (value <= 40) {
                     return 100 - ((value - 15) / (40 - 15)) * (100 - 10);
-                  } else {
+                } else {
                     return 0; // Case 3
-                  }
+                }
             }
         },
-    } as Record<string,Record<"weight" | "score",any>>
+    } as Record<string, Record<"weight" | "score", any>>
 
 
     let totalScore = 0;
     let totalWeight = 0;
-    
+
     // Loop through all measures to calculate the weighted score
     for (let key in measures) {
         const measure = measures[key];
@@ -124,17 +153,17 @@ function getClinicWorth(surveyData: SurveyDataType) {
         totalScore += weightedScore;  // Add weighted score to total
         totalWeight += measure.weight; // Add weight to total
     }
-  
-    
+
+
     const multiple = () => {
         //  >80 = 3.5, 65-80 = 3, 50-65 = 2.5, 35-50 = 2
-        if(totalScore > 80){
+        if (totalScore > 80) {
             return 3.5
-        } else if ( totalScore >= 65 ){
+        } else if (totalScore >= 65) {
             return 3
-        } else if ( totalScore >= 50 ){
+        } else if (totalScore >= 50) {
             return 2.5
-        } else if (totalScore >= 35 ){
+        } else if (totalScore >= 35) {
             return 2
         } else {
             return 1
@@ -143,13 +172,13 @@ function getClinicWorth(surveyData: SurveyDataType) {
 
     const estimatedClinicWorth = Number(profit) * multiple()
     const calculatedRange = calculateRange(estimatedClinicWorth)
-   
-    
-    function calculateRange (value:number){
+
+
+    function calculateRange(value: number) {
         const percentage = 0.20; // 20%
         const lowerBound = value - (value * percentage); // Value - 20%
         const upperBound = value + (value * percentage); // Value + 20%
-    
+
         return {
             lower: lowerBound,
             upper: upperBound
@@ -160,4 +189,6 @@ function getClinicWorth(surveyData: SurveyDataType) {
 
 }
 
+
 export default ClinicWorth;
+
