@@ -22,12 +22,12 @@ export default function HelperCard({className,canClose,onClose,isVisible = true}
         }
     }
     return (
-        <div className={`${className} ${isThisVisible ? '' : 'hidden'} targetParent md:max-w-[320px] bg-white ring-1 ring-gray-500 rounded-lg p-10 flex pb-0 overflow-hidden mb-px text-sm`}> 
+        <div className={`${className} ${isThisVisible ? '' : 'hidden'} h-full targetParent bg-white ring-1 ring-gray-500 p-10 flex pb-0 overflow-hidden mb-px text-sm`}> 
         {canClose && <button className="absolute top-4 right-4 transition duration-150 ease-in-out hover:rotate-[10deg] hover:scale-125" type="button" onClick={handleClose}><span className="pi pi-times"></span></button>}
         <div>
             <div className="desktop-shape inline-flex items-end float-right h-full -mr-10 -mb-10" style={shapeStyle}>
                 <Image
-                    className="w-[150px] aspect-square" 
+                    className="w-[150px] aspect-square w-auto h-auto" 
                     src="/images/logos/helper_avatar.png"
                     alt="recommendation avatar"
                     width={150}
