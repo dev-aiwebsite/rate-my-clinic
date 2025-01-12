@@ -36,14 +36,14 @@ const ClinicWorth = ({ className }: { className?: string }) => {
                 </Link>
                 <OverlayPanel ref={op}>
                     <div className="max-w-96 text-sm space-y-5">
-                        <h3>{`Here's how we calculated your score:`}</h3>
+                        <h3>{`Here's how we calculated your valuation:`}</h3>
                         <ul className="list-disc pl-5 space-y-1">
                             <li><strong>Years in Operation:</strong> Based on your input, you received points according to the predefined range.</li>
-                            <li><strong>Number of Clinicians:</strong> Your score was prorated depending on the number of clinicians.</li>
+                            <li><strong>Number of Clinicians:</strong> Your valuation was prorated depending on the number of clinicians.</li>
                             <li><strong>Client NPS, Team Satisfaction, and Treatment Hours:</strong> Points were assigned based on where your inputs fell within the set thresholds.</li>
-                            <li><strong>Profit:</strong> Your score was calculated based on your reported profit, following a specific formula.</li>
+                            <li><strong>Profit:</strong> Your valuation was calculated based on your reported profit, following a specific formula.</li>
                         </ul>
-                        <p>Each metric was weighted accordingly to contribute to your final score.</p>
+                        <p>Each metric was weighted accordingly to contribute to your final valuation.</p>
                     </div>
                 </OverlayPanel>
             </div>
@@ -58,6 +58,7 @@ function getClinicWorth(surveyData: SurveyDataType) {
     const teamSatisfaction = teamSurveyData?.length && getTeamNps(teamSurveyData)
     const profit = surveyData.ownerSurveyData.profit
 
+    console.log(surveyData)
     if (!clientNps || !teamSatisfaction || !profit) return null
 
     const today = new Date()
@@ -71,6 +72,7 @@ function getClinicWorth(surveyData: SurveyDataType) {
     const measures = {
         yearsInOperations: {
             weight: 20,
+            value: yearsInOperations,
             score: () => {
                 // >15 = 100, 5-15 = pro rated between 20 and 100, <5 =20
                 const value = yearsInOperations
@@ -85,6 +87,7 @@ function getClinicWorth(surveyData: SurveyDataType) {
         },
         amountOfClinicians: {
             weight: 20,
+            value:amountOfClinicians,
             score: () => {
                 // >10 = 100, 2-10 = pro rated between 10 and 100, <2 =0
                 const value = amountOfClinicians
@@ -99,6 +102,7 @@ function getClinicWorth(surveyData: SurveyDataType) {
         },
         clientNps: {
             weight: 20,
+            value: clientNps.score,
             score: () => {
                 // >85 = 100, 50-85 = pro rated between 10 and 100, <50 =0
                 const value = Number(clientNps.score)
@@ -113,13 +117,14 @@ function getClinicWorth(surveyData: SurveyDataType) {
         },
         teamSatisfaction: {
             weight: 20,
+            value: teamSatisfaction.score,
             score: () => {
                 // >9.2 = 100, 7-9.2 = pro rated between 10 and 100, <7 =0
                 const value = Number(teamSatisfaction.score)
                 if (value > 9.2) {
                     return 100; // Case 1: value > 9.2
                 } else if (value >= 7) {
-                    return 100 - ((value - 7) / (9.2 - 7)) * (100 - 10); // Case 2: value between 7 and 9.2
+                    return 10 + ((value - 7) / (9.2 - 7)) * (100 - 10); // Case 2: value between 7 and 9.2 (increase from 10 to 100)
                 } else {
                     return 0; // Case 3: value < 7
                 }
@@ -127,6 +132,7 @@ function getClinicWorth(surveyData: SurveyDataType) {
         },
         ownerTreatmentHours: {
             weight: 20,
+            value: ownerTreatmentHours,
             score: () => {
                 // <15 = 100, 15-40 is prorated between 10 and 100 and >40 = 0
                 const value = ownerTreatmentHours
@@ -144,15 +150,19 @@ function getClinicWorth(surveyData: SurveyDataType) {
 
     let totalScore = 0;
     let totalWeight = 0;
-
+    console.log(`currentYear: ${currentYear}`)
+    console.log(`dateStablished: ${dateStablished}`)
+    console.log(measures)
     // Loop through all measures to calculate the weighted score
     for (let key in measures) {
         const measure = measures[key];
         const score = measure.score();
         const weightedScore = (score * measure.weight) / 100; // Weighted score
+        console.log(`${key}_totalScore: ${weightedScore}`)
         totalScore += weightedScore;  // Add weighted score to total
         totalWeight += measure.weight; // Add weight to total
     }
+
 
 
     const multiple = () => {
@@ -184,6 +194,11 @@ function getClinicWorth(surveyData: SurveyDataType) {
             upper: upperBound
         };
     };
+
+    console.log(`totalScore: ${totalScore}`)
+    console.log(`multiple: ${multiple()}`)
+    console.log(`estimatedClinicWorth: ${estimatedClinicWorth}`)
+    console.log(`calculatedRange: `, calculatedRange)
 
     return `${shortenNumber(calculatedRange.lower)} - ${shortenNumber(calculatedRange.upper)}`
 

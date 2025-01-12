@@ -155,7 +155,7 @@ export const getClientNps = (clientSurveyData:any) => {
     let clientNpsScoreArray = clientSurveyData.map((i: { recommendation: any }) => Number(i.recommendation))
         let clientNpsScoreTotal = (clientNpsScoreArray.reduce((a: any,b: any) => Number(a) + Number(b), 0) / clientNpsScoreArray.length ) * 10
         let clientNps = {
-            score: clientNpsScoreTotal,
+            score: getNps(clientNpsScoreArray),
             quality: getClientNpsQuality(clientNpsScoreTotal)
         }
         return clientNps
