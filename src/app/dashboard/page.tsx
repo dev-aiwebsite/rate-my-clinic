@@ -9,7 +9,7 @@ import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { redirect, usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import { isProfileCompleteCheckList, reportGenDays } from "lib/Const";
-import { getNps, hasPassedMaxDays } from "lib/helperFunctions";
+import { getClientNps, getNps, getTeamNps, hasPassedMaxDays } from "lib/helperFunctions";
 import { useEffect, useState } from "react";
 import Stripe from "stripe";
 import { retrieveCheckoutSession } from "@/api/stripe/actions";
@@ -78,14 +78,16 @@ export default function Page(){
                 let npsValues: number[] = []
                 let npsValues_team: number[] = []
 
-                filteredData.forEach((i)=> {
-                    const date = new Date(i.createdAt);
-                    const formattedDate = date.toISOString().split('T')[0];
-                    npsValues.push(Number(i.recommendation))
-                })
+               const clientNpsInfo = getClientNps(filteredData)
+               
+                // filteredData.forEach((i)=> {
+                //     const date = new Date(i.createdAt);
+                //     const formattedDate = date.toISOString().split('T')[0];
+                //     npsValues.push(Number(i.recommendation))
+                // })
         
-                const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-                clientNpsAvg = getNps(npsValues) || 0
+                // const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+                clientNpsAvg = clientNpsInfo.score 
                 
         
                 filteredData_team.forEach((i)=> {
@@ -94,6 +96,9 @@ export default function Page(){
                 
                 const sum2 = npsValues_team.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
                 teamNpsAvg = sum2 / npsValues_team.length || 0
+                
+                // const teamNpsInfo = getTeamNps(filteredData_team)
+                // teamNpsAvg = teamNpsInfo.score
             }
 
         }
