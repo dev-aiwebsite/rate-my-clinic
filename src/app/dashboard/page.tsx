@@ -71,7 +71,7 @@ export default function Page(){
 
     if(is_ownerSurveyData_complete){
         
-        if(currentUser.subscription_level > 0){
+        if(charts.every(i => i == 'team' || i == 'clients')){
             if(data){
                 let filteredData = data.clientSurveyData.filter((i:any)=> i.clinicid == currentUser._id)
                 let filteredData_team = data.teamSurveyData.filter((i:any)=> i.clinicId == currentUser._id)
@@ -80,13 +80,6 @@ export default function Page(){
 
                const clientNpsInfo = getClientNps(filteredData)
                
-                // filteredData.forEach((i)=> {
-                //     const date = new Date(i.createdAt);
-                //     const formattedDate = date.toISOString().split('T')[0];
-                //     npsValues.push(Number(i.recommendation))
-                // })
-        
-                // const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
                 clientNpsAvg = clientNpsInfo.score 
                 
         
@@ -96,9 +89,7 @@ export default function Page(){
                 
                 const sum2 = npsValues_team.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
                 teamNpsAvg = sum2 / npsValues_team.length || 0
-                
-                // const teamNpsInfo = getTeamNps(filteredData_team)
-                // teamNpsAvg = teamNpsInfo.score
+
             }
 
         }
@@ -124,18 +115,19 @@ export default function Page(){
 
     let hasReport = false
     if(is_ownerSurveyData_complete){
-        if(currentUser.subscription_level < 1){
-            let report = currentUser.reports
-            if(report.length){
+        // if(currentUser.subscription_level < 1){
+        //     let report = currentUser.reports
+        //     if(report.length){
                 
-                headerInfoText = `Your final report is generated`
-                showReport = true
-                hasReport = true
-            } else {
-                hasReport = false
-            }
+        //         headerInfoText = `Your final report is generated`
+        //         showReport = true
+        //         hasReport = true
+        //     } else {
+        //         hasReport = false
+        //     }
 
-        } else if(!hasPassed){
+        // } else 
+        if(!hasPassed){
             headerInfoText = `You have ${remainingDays} days till your final report is generated`
         } else {
             let report = currentUser.reports
