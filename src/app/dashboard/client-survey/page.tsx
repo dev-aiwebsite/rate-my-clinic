@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { mobileNavbarHeight } from "lib/Const";
 import UpgradePlanBlock from "components/upgrade-plan-block";
 import ClientsDataTable from "components/clients-datatable";
+import AppAcess from "lib/appAccess";
 
 export default function Page({ searchParams }: { searchParams: any }) {
     const router = useRouter()
@@ -33,9 +34,12 @@ export default function Page({ searchParams }: { searchParams: any }) {
         setIsJourney(false)
     }
 
-    let isRestricted = false
-    if (currentUser.subscription_level == 0) {
-        isRestricted = true
+    const appAccess = AppAcess(currentUser.subscription_level || 0)
+    let isRestricted = true 
+    const clientSurveyAccess = appAccess.clinic_surveys
+    
+    if(clientSurveyAccess == Infinity || clientSurveyAccess > 0){
+        isRestricted = false
     }
 
     function exitJourney() {

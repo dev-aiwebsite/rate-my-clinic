@@ -68,10 +68,11 @@ export default function Page(){
     }
 
     const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(startDate,reportGenDays)
-
+    console.log(charts, 'charts')
     if(is_ownerSurveyData_complete){
         
-        if(charts.every(i => i == 'team' || i == 'clients')){
+        if (charts.includes('team') && charts.includes('clients')) {
+
             if(data){
                 let filteredData = data.clientSurveyData.filter((i:any)=> i.clinicid == currentUser._id)
                 let filteredData_team = data.teamSurveyData.filter((i:any)=> i.clinicId == currentUser._id)

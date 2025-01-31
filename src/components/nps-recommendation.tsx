@@ -1,8 +1,6 @@
-import Recommendations, {Tcategory } from "lib/recommendations";
-import HelperCard from "./helperCard";
+import {Tcategory } from "lib/recommendations";
 import MeterChart from "./meter-chart";
 import Image from "next/image";
-import { useEffect, useState } from "react";
 import { useSessionContext } from "@/context/sessionContext";
 
 
