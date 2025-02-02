@@ -1,5 +1,5 @@
 import { Dialog, DialogPanel, DialogTitle, Transition, TransitionChild } from '@headlessui/react'
-import { Fragment, useState, useCallback } from 'react'
+import { Fragment, useState, useCallback, useEffect } from 'react'
 import Stripe from 'stripe';
 import {loadStripe} from '@stripe/stripe-js';
 import {
@@ -7,13 +7,16 @@ import {
   EmbeddedCheckout
 } from '@stripe/react-stripe-js';
 import { IoIosArrowRoundBack } from 'react-icons/io';
+import { useSearchParams } from 'next/navigation';
 
 
 export default function PaymentModalButton({priceId,meta,mode}:{priceId:string, meta?:{[key:string]:any},mode:Stripe.Checkout.SessionCreateParams.Mode}) {
   const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLIC_KEY as string);
   let [isOpen, setIsOpen] = useState(false)
   let [isComplete, setIsComplete] = useState(false)
-
+  const searchParams = useSearchParams()
+  const checkoutSubsLevel = searchParams.get('csl')
+  
   const fetchClientSecret = useCallback(async () => {
     // Create a Checkout Session
     const res = await fetch("/api/stripe", {
@@ -46,6 +49,14 @@ export default function PaymentModalButton({priceId,meta,mode}:{priceId:string, 
   function openModal() {
     setIsOpen(true)
   }
+
+   // Auto open modal if 'sub' param exists
+   useEffect(() => {
+    if (checkoutSubsLevel && meta?.subscription_level == checkoutSubsLevel) {
+      openModal();
+    }
+  }, [checkoutSubsLevel]);
+
 
   return (
     <>

@@ -5,15 +5,20 @@ import { FormEvent, useState } from "react";
 import { useSessionContext } from "@/context/sessionContext";
 import { IoIosArrowRoundBack } from "react-icons/io";
 import { ProductCards } from "components/product-cards";
+import { useSearchParams } from 'next/navigation'
 
 export default function SignupPage({children}:any) {
     interface UserInfo {
         [key: string]: string;
       }
     const max_page = 2
+    const searchParams = useSearchParams()
+    const checkoutSubsLevel = searchParams.get('csl')
     const [page, setPage] = useState(1)
     const [userInfo,setUserInfo] = useState<UserInfo | null>(null)
     const [emailExist,setEmailExist] = useState(false)
+
+
    
     const {users} = useSessionContext()
     function handlePrev(){

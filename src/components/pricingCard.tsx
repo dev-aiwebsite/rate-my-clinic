@@ -31,27 +31,27 @@ const PricingCard = ({product, durations,metadata}:{product:TproductWithPrices |
     // Post-assessment options will only be displayed if the user has an initial assessment plan.
     if(currentUser){
 
-        if(Number(currentUser.subscription_level) > 0){
+        // if(Number(currentUser.subscription_level) > 0){
             isUpgrade = true
-        }
+        // }
         if(Number(currentUser.subscription_level) == Number(product?.metadata.subscription_level)){
             isCurrentPlan = true
         }
 
     }
 
-    if(isUpgrade && Number(product?.metadata.subscription_level) < 2){
-        return (<>
-        </>)
+    // if(isUpgrade && Number(product?.metadata.subscription_level) < 2){
+    //     return (<>
+    //     </>)
 
-    } else if(!isUpgrade && Number(product?.metadata.subscription_level) > 1){
-        return (<>
-        </>)
-    }
+    // } else if(!isUpgrade && Number(product?.metadata.subscription_level) > 1){
+    //     return (<>
+    //     </>)
+    // }
 
-    if(Number(product?.metadata.subscription_level) > 1){
-        price_name = product.metadata.level || price_name
-    }
+    // if(Number(product?.metadata.subscription_level) > 1){
+    //     price_name = product.metadata.level || price_name
+    // }
 
     return (
         <div className="col-span-2 hover:ring-10 hover:ring-appblue-350 flex flex-col gap-6 rounded-3xl ring-1 ring-gray-300 p-6 text-sm font-[300]">

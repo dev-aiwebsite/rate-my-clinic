@@ -374,10 +374,10 @@ export default function Page({searchParams}:{searchParams:any}) {
         
                                     <div className="sm:col-span-1">
                                         <label htmlFor="services_provided" className="formLabel">Which services do you provide? Please double check for spelling as these will be used in your client survey.</label>
-                                        {!isNdisProvider && <p className="field_instruction">*Please separate each response with a comma. (e.g. Massage, Physical Therapy, Chiropractic)</p>}
+                                        {!isNdisProvider && <p className="field_instruction">*Please separate each response with a comma. (Physiotherapy, Massage, Osteopathy, Exercise Physiology etc.)</p>}
                                         <div className="mt-2">
                                             {!isNdisProvider && <div className="formField">
-                                                <textarea onChange={handleChange} name="services_provided" value={formData.services_provided} id="" placeholder=" e.g. Massage, Physical Therapy, Chiropractic" required></textarea>
+                                                <textarea onChange={handleChange} name="services_provided" value={formData.services_provided} id="" placeholder="Physiotherapy, Massage, Osteopathy, Exercise Physiology etc." required></textarea>
                                             </div>}
                                             {isNdisProvider && <MultiSelect name="services_provided" onChange={(v) => handleChange({target: {name:'services_provided',value:v}})} items={ndisProviderServices} value={formData.services_provided} valueAsString={true} required={true}/>}
                                         </div>
