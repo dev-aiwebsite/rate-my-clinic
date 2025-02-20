@@ -221,3 +221,16 @@ border-radius: 50%; /* Round thumb */
 .bg-custom-gradient {
   background: linear-gradient(109.7deg, var(--appblue-200) 0%, var(--appgreen-300) 100%);
 }
+
+.progress-save-toast > div > div:not(:first-child) {
+  transition: none;
+}
+
+.progress-save-toast > div > div:not(:last-child) {
+  display:none;
+}
+
+tbody.p-datatable-tbody > tr:hover {
+  background: #0000000d;
+  cursor: pointer;
+}

@@ -4,7 +4,7 @@ import 'jspdf-autotable'
 import ExcelJS from 'exceljs';
 import { Tooltip } from "primereact/tooltip"
 import { Button } from "primereact/button"
-import { DataTable } from "primereact/datatable"
+import { DataTable, DataTableRowClickEvent } from "primereact/datatable"
 import { Column } from "primereact/column"
 import { Dialog } from "primereact/dialog";
 import { useRef, useState } from "react";
@@ -15,7 +15,15 @@ import { InputText } from "primereact/inputtext";
 import { IconField } from 'primereact/iconfield';
 import { InputIcon } from 'primereact/inputicon';
 
-export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',options}:{datatable:any[]; filename?:string; options?:{[key:string]:any}}) {
+type CustomDataTable = {
+    datatable:any[];
+    filename?:string;
+    options?:{
+        [key:string]:any
+    }
+    }
+
+export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',options}:CustomDataTable) {
     const [tableData,setTableData] = useState(datatable);
     const [selectedItems, setSelectedItems] = useState<any[]>([]);
     const [deleteDialog, setDeleteDialog] = useState(false);
@@ -29,6 +37,7 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
     console.log(options?.data, 'data')
     console.log(options?.updateData, 'setter')
 
+    const hasExcelExport = options?.export?.excel
     const exportExcel = async () => {
         if(!tableData) return false
         
@@ -59,9 +68,16 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
     async function deleteSelectedItems(){
         setIsDeleting(true)
         const ids = selectedItems.map(i => i.id)
+        console.log(ids, 'ids to delete')
         if(!ids && !options?.delete.enabled && options?.delete.db_name) return
          (ids)
-         deleteAData(ids,options?.delete.db_name).then((res: { success: any; message: any; }) => {
+
+         const deleteConfig = {
+            userId: options?.delete?.userId,
+            ids,
+            dbName: options?.delete.db_name
+         }
+         deleteAData(deleteConfig).then((res: { success: any; message: any; }) => {
             if(res.success){
                 let updatedData = tableData.filter(i => !ids.includes(i.id) )
                 setTableData(updatedData)
@@ -93,6 +109,13 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
         setDeleteDialog(false)
     }
 
+    function handleOnRowClick(e:DataTableRowClickEvent){
+        console.log(e, 'tablerowclick event')
+        if(options?.onRowClick){
+            options.onRowClick(e)
+        }
+    }
+
         return <>
                     <div>
                         <Toast ref={toast} />
@@ -111,7 +134,7 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
                                 {deleteEnabled && selectedItems?.length ? <><Button label="Delete" icon="pi pi-trash" severity="danger" onClick={()=> setDeleteDialog(true)} /></>: ""}
                                 </div>
                                 <div>
-                                    <Button type="button" icon="pi pi-file-excel" className='!bg-green-600 text-white p-2 w-fit aspect-square' onClick={exportExcel} data-pr-tooltip="XLS" />
+                                    {hasExcelExport && <Button type="button" icon="pi pi-file-excel" className='!bg-green-600 text-white p-2 w-fit aspect-square' onClick={exportExcel} data-pr-tooltip="XLS" />}
                                 </div>
                             </div>
                             <div>
@@ -122,9 +145,10 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
                                 </div>
                         </div>
                         {/* paginator rows={5} rowsPerPageOptions={[5, 10, 25, 50]} */}
-                        <DataTable className="text-sm" value={tableData} selectionMode="single" onSelectionChange={(e) => setSelectedItems(e.value)} selection={selectedItems!} globalFilter={globalFilter} removableSort>
+                        <DataTable className="text-sm" value={tableData} selectionMode="checkbox" onRowClick={(e)=>handleOnRowClick(e)} onSelectionChange={(e) => setSelectedItems(e.value)} selection={selectedItems!} globalFilter={globalFilter} removableSort>
                             <Column selectionMode="multiple" headerStyle={{ width: '3rem' }}></Column>
-
+                            <Column field="ID" header="ID" style={{display:'none'}}/>
+                            <Column field="id" header="ID" style={{display:'none'}}/>
                             {tableData?.length ? (Object.keys(tableData[0]).filter((key) => key !== "id").map((key,indx) => {
                                 
                                 let limitArea = ""

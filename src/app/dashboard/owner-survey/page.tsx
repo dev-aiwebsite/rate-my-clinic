@@ -75,7 +75,18 @@ export default function Page({searchParams}:{searchParams:any}) {
             const [page,setPage] = useState(1)
             const [submitBtnText, setSubmitBtnText] = useState("Next")
             const phoneInputRef = useRef<any>();
-        
+            const toastProgressSave = useRef<Toast>(null);
+            const [localData,setLocalData] = useState(null)
+            const showToastProgressSave = () => {
+                toastProgressSave.current?.show({
+                    id: 'progress-save-toast', // Use a unique ID to replace old toast
+                    severity: 'info',
+                    summary: 'Progress Saved',
+                    detail: 'Saved in browser',
+                    life: 1000, // Toast will close after 3 seconds
+                  });
+            }
+
             let clinic_id = currentUser._id
             const [formData, setFormData] = useState({
                 "clinic_id": clinic_id,
@@ -131,9 +142,10 @@ export default function Page({searchParams}:{searchParams:any}) {
             });
         
             useEffect(()=>{
-                const localData = window.localStorage['ownerSurveyFormData']
+                const currentLocalData = window.localStorage['ownerSurveyFormData']
                 if(localData){
-                    setFormData(JSON.parse(localData))
+                    setFormData(JSON.parse(currentLocalData))
+                    setLocalData(currentLocalData)
                 }
             },[])
             
@@ -229,6 +241,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                         [name]: value, // Dynamically update the field in formData
                     }
                     window.localStorage["ownerSurveyFormData"] = JSON.stringify(newFormData)
+                    showToastProgressSave()
                     return newFormData
                 })
         
@@ -260,8 +273,9 @@ export default function Page({searchParams}:{searchParams:any}) {
                 {label: 'Gmail', value: 'gmail'},
                 {label: 'Peptalkr', value: 'peptalkr'},
             ]
-            console.log(formData.services_provided)
+            
                 return <>
+                    <Toast className="progress-save-toast" ref={toastProgressSave} />
                     <form className={`h-full card max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col z-[20] ${additionalClass}`} id="owner-survey-form" onSubmit={(e) => handleDefaultSubmit(e, page)}>
                         <input type="hidden" name="clinic_id" value={formData.clinic_id} />
                         <div className="flex-1 overflow-y-scroll *:p-2">

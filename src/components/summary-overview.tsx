@@ -96,48 +96,8 @@ let subtext = {
                         </div>
                     </div>
                     {showReport && <>
-                        <Transition appear show={isOpen} as={Fragment}>
-                            <Dialog as="div" className="max-md:!max-h-[calc(100svh_-_3.5rem)] relative z-10" onClose={closeModal}>
-                                <TransitionChild
-                                    as={Fragment}
-                                    enter="ease-out duration-300"
-                                    enterFrom="opacity-0"
-                                    enterTo="opacity-100"
-                                    leave="ease-in duration-200"
-                                    leaveFrom="opacity-100"
-                                    leaveTo="opacity-0"
-                                >
-                                    <div className="max-md:!max-h-[calc(100svh_-_3.5rem)] fixed inset-0 bg-black/25"/>
-                                </TransitionChild>
-
-                                <div className="max-md:!max-h-[calc(100svh_-_3.5rem)] fixed inset-0 overflow-y-auto">
-                                    <div className="flex min-h-full md:items-center md:justify-center p-2 md:p-4 text-center">
-                                    <TransitionChild
-                                        as={Fragment}
-                                        enter="ease-out duration-300"
-                                        enterFrom="opacity-0 scale-95"
-                                        enterTo="opacity-100 scale-100"
-                                        leave="ease-in duration-200"
-                                        leaveFrom="opacity-100 scale-100"
-                                        leaveTo="opacity-0 scale-95"
-                                    >
-                                        <DialogPanel className="overflow-y-hidden w-full max-w-[70rem] max-h-[90vh] transform overflow-hidden rounded-2xl bg-white p-6 text-left align-middle shadow-xl transition-all">
-                                        <DialogTitle
-                                            as="h3"
-                                            className="sticky top-0 text-lg font-medium leading-6 text-gray-900"
-                                        >
-                                        <button className='bg-none' onClick={closeModal}>
-                                            <IoIosArrowRoundBack size={24} />
-                                            </button>
-                                        </DialogTitle>
-                                            <GenerateReport/>
-                                        </DialogPanel>
-                                    </TransitionChild>
-                                    </div>
-                                </div>
-                            </Dialog>
-                        </Transition>
-                    <button type="button" className="font-medium text-gray-400 underline text-orange-400" onClick={openModal}>Download full report</button>
+                       <Link className="font-medium text-gray-400 underline text-orange-400" href="/dashboard/reports">View Report</Link>
+                    {/* <button type="button" className="font-medium text-gray-400 underline text-orange-400" onClick={openModal}>Download full report</button> */}
                     </> }
                 </div>
                 <div className="md:col-span-2 grid grid-cols-2 gap-4 md:gap-6 max-md:*:bg-white">

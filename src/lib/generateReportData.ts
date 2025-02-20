@@ -1,8 +1,10 @@
+"use server"
 import { Recommendations } from "./recommendations"
 import { getSurveyData, UpdateUser } from "./server-actions"
 import { Tcategory } from "./recommendations"
 import { createReportHtml } from "./createReportHtml"
 import { savePdf } from "utils/savePdf"
+
 export async function generateReportData({currentUserId,date}:{currentUserId?:string,date?:string}){
     let surveyData = await getSurveyData(currentUserId,date)
     let recommendations = {} as {[key:string]:any}

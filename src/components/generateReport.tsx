@@ -1,45 +1,25 @@
 "use client"
-import React, { useEffect, useRef, useState } from 'react';
-import html2canvas from 'html2canvas';
-import jsPDF from 'jspdf';
-import CircleChart from 'components/circle-chart';
-import MeterChart from './meter-chart';
-import NpsContent from './nps-recommendation';
-import { useSurveyDataContext } from '@/context/surveyDataContext';
+import React, { useEffect, useState } from 'react';
 import { useSessionContext } from '@/context/sessionContext';
 import AppAcess from 'lib/appAccess';
-import { Button } from 'primereact/button';
-import DialogConfirm from './confirm-dialog';
-import AppDialog from './dialog';
-import { ProgressBar } from 'primereact/progressbar';
 import { throttle } from 'lodash';
 import { useMediaQuery } from 'react-responsive';
 import { createReportHtml } from 'lib/createReportHtml';
+import { ReportData } from './ReportsSections';
 
 type Tparams = {
     clinicId: string
 }
-const GenerateReport = (report:any) => {
-    const captureRef = useRef<HTMLDivElement>(null);
+const GenerateReport = ({reportId,report}:{reportId?:string, report?:ReportData}) => {
     const {currentUser} = useSessionContext()
-    const reportToUse = currentUser?.reportToUse
-    const [showDialog, setShowDialog] = useState(false);
     const reports = currentUser.reports
-    // if(!report){
-    //     if(currentUser.reports.length){
-            
-    //         if(reportToUse){
-    //             report = currentUser.reports[reportToUse]
-    //         } else {
-    //             report = currentUser.reports[0]
-    //         }
-    //     }
-       
-    // }
 
-    if(reports.length){
-        report = reports[reports.length - 1]
+    if(!report){
+        if(reports.length){
+            report = reports[reports.length - 1]
+        }
     }
+   
     console.log(currentUser)
     console.log(report)
     let reportData = {}
@@ -66,45 +46,19 @@ const GenerateReport = (report:any) => {
     const handleGeneratePDF = async () => {
 
     };
-
-
-    const handleCloseDialog = () => {
-        setShowDialog(false);
-      };
-
-      
-
+    
       
       useEffect(()=>{
         if(reportHtml || !reportData) return
         const renderReport = async () => {
             const pdfHtml = await createReportHtml(reportData)
-            // document.querySelector('.report_wrapper').innerHTML = pdfHtml
             setReportHtml(pdfHtml)
         }
         renderReport()
     },[])
 
-    
-    // if(isMobile){
-    //     <>
-    //         <AppDialog position='top' setIsVisible={handleCloseDialog} header={'Download Report'}>
-    //             <div className='!select-none'>
-    //                 <p>Unable to generate the report as the file size exceeds the limits for mobile devices. Please use a desktop computer to generate the report.</p>
-    //                 {/* <a className='select-none block mx-auto text-center mt-10 text-white btn bg-red-400 hover:bg-red-500' href={pdfUrl} download={`${pdfFileName}`} target='_blank'>{`${pdfFileName}`}</a> */}
-    //             </div>
-    //         </AppDialog>
-    //     </>
-    // }
-
     return (
         <div className={`h-full md:h-[80vh]  bg-gray-200 p-2 md:p-10 rounded-lg ${loading ? 'overflow-hidden' : 'overflow-scroll'}`}>
-            {/* {isMobile && <AppDialog isVisible={showDialog} setIsVisible={handleCloseDialog} header={'Download Report'}>
-                <div className='!select-none'>
-                    <p>Unable to generate the report as the file size exceeds the limits for mobile devices. Please use a desktop computer to generate the report.</p>
-                </div>
-            </AppDialog>
-             } */}
             
            {pdfUrl && <a href={pdfUrl} target="_blank" rel="noopener noreferrer" className="btn sticky left-full top-0 z-10 right-2 bg-red-500 text-white font-bold" onClick={handleGeneratePDF} download={pdfFileName}>Download</a>}
             <div className="report_wrapper" dangerouslySetInnerHTML={{ __html: reportHtml || '' }}>

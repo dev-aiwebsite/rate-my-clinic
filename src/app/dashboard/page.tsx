@@ -53,6 +53,7 @@ export default function Page(){
     let charts = userAccess?.charts
     let userName = currentUser?.username || "Guest"
     
+    console.log(currentUser, 'currentUser')
     console.log(data, 'data dashboardpage')
     let is_ownerSurveyData_complete = data?.ownerSurveyData ? true : false
     let showReport = false

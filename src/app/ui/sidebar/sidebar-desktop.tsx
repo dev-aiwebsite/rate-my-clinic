@@ -30,6 +30,11 @@ const list_item = [
         icon: "/icons/client.svg",
         link: "/dashboard/client-survey"
     },
+    {
+        name: "Reports",
+        icon: "/icons/checklist.svg",
+        link: "/dashboard/reports"
+    },
 ]
 
 const second_list_item:list_item = [
