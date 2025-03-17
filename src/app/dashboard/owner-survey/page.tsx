@@ -54,7 +54,8 @@ export default function Page({searchParams}:{searchParams:any}) {
         }
     }
 
-    const isSurveyClosed = currentUser['isSurveyClosed']
+    // const isSurveyClosed = currentUser['isSurveyClosed']
+    const isSurveyClosed = false
     let FormComponent
     if(isSurveyClosed){
         const SurveyClosed = () => {
@@ -141,13 +142,26 @@ export default function Page({searchParams}:{searchParams:any}) {
                 "work_life_balance": formValues?.work_life_balance
             });
         
-            useEffect(()=>{
-                const currentLocalData = window.localStorage['ownerSurveyFormData']
-                if(localData){
-                    setFormData(JSON.parse(currentLocalData))
-                    setLocalData(currentLocalData)
+            useEffect(() => {
+                const currentLocalData = localStorage.getItem('ownerSurveyFormData');
+                console.log(currentLocalData, 'usersurvey local');
+                
+                if (currentLocalData) {
+                  try {
+                    const parsedData = JSON.parse(currentLocalData);
+                    console.log(parsedData,'parsedData')
+                    setFormData((prev) => ({
+                      ...prev,
+                      ...parsedData, // Merges parsed data into the current state
+                    }));
+                    setLocalData(parsedData);
+                  } catch (error) {
+                    console.error('Error parsing localStorage data:', error);
+                  }
                 }
-            },[])
+              }, []);
+              
+            
             
             const handlePrev = useCallback((index: page) => {
                 if(index <= 1){
@@ -233,22 +247,22 @@ export default function Page({searchParams}:{searchParams:any}) {
                 }));
             }
             
-              const handleChange = (e:any) => {
-                const { name, value } = e.target;
-                setFormData((prevData) => {
-                    const newFormData = {
-                        ...prevData,
-                        [name]: value, // Dynamically update the field in formData
-                    }
-                    window.localStorage["ownerSurveyFormData"] = JSON.stringify(newFormData)
-                    showToastProgressSave()
-                    return newFormData
-                })
-        
-        
-        
-              };
-        
+            const handleChange = (e:any) => {
+            const { name, value } = e.target;
+            setFormData((prevData) => {
+                const newFormData = {
+                    ...prevData,
+                    [name]: value, // Dynamically update the field in formData
+                }
+                window.localStorage["ownerSurveyFormData"] = JSON.stringify(newFormData)
+                showToastProgressSave()
+                return newFormData
+            })
+    
+    
+    
+            };
+    
             //   toggle required states
             const required = {
                 market_rate_difference: formData.own_building == 'yes' && formData.pay_market_rent == 'no',
@@ -274,6 +288,8 @@ export default function Page({searchParams}:{searchParams:any}) {
                 {label: 'Peptalkr', value: 'peptalkr'},
             ]
             
+            console.log(formData, 'formData')
+
                 return <>
                     <Toast className="progress-save-toast" ref={toastProgressSave} />
                     <form className={`h-full card max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col z-[20] ${additionalClass}`} id="owner-survey-form" onSubmit={(e) => handleDefaultSubmit(e, page)}>

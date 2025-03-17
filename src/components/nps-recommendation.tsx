@@ -2,6 +2,7 @@ import {Tcategory } from "lib/recommendations";
 import MeterChart from "./meter-chart";
 import Image from "next/image";
 import { useSessionContext } from "@/context/sessionContext";
+import Link from "next/link";
 
 
 interface Item {
@@ -108,8 +109,8 @@ export default function NpsContent({surveyData,item,className}:{surveyData?:any,
                     <p className="font-medium">Key points include:</p>
                     <ul className="text-sm text-neutral-500 pl-5 mt-3 list-disc">
                         <li>Your score is {scoreType} the current national average</li>
-
                     </ul>
+                    <Link className="block mt-5 font-medium text-gray-400 underline text-orange-400" href="/dashboard/reports">Generate Report to View Recommendations</Link>
                 </div>
 
                 {recommendations.length ? <><div>

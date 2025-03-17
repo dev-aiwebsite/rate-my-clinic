@@ -41,6 +41,7 @@ export default function Page(){
     if(!currentUser) return null
     const lastCheckoutSession = currentUser.lastCheckoutSession_data
     let tocheck = isProfileCompleteCheckList
+    console.log(tocheck)
     const isProfileComplete = tocheck.every(i => currentUser[i])
     
     if(pathname != '/dashboard/settings/account'){

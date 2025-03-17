@@ -56,7 +56,7 @@ function getClinicWorth(surveyData: SurveyDataType) {
     const { clientSurveyData, teamSurveyData, ownerSurveyData } = surveyData
     const clientNps = clientSurveyData?.length && getClientNps(clientSurveyData)
     const teamSatisfaction = teamSurveyData?.length && getTeamNps(teamSurveyData)
-    const profit = surveyData.ownerSurveyData.profit
+    const profit = surveyData?.ownerSurveyData?.profit || ""
 
     console.log(surveyData)
     if (!clientNps || !teamSatisfaction || !profit) return null
