@@ -6,14 +6,15 @@ import Link from "next/link";
 import CircleChart from "components/circle-chart";
 import { useSessionContext } from "@/context/sessionContext";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
-import { redirect, usePathname } from "next/navigation";
+import { usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import { isProfileCompleteCheckList, reportGenDays } from "lib/Const";
-import { getClientNps, getNps, getTeamNps, hasPassedMaxDays } from "lib/helperFunctions";
-import { useEffect, useState } from "react";
-import Stripe from "stripe";
-import { retrieveCheckoutSession } from "@/api/stripe/actions";
+import { getClientNps, hasPassedMaxDays } from "lib/helperFunctions";
+import {useState } from "react";
 import ClinicWorth from "components/ClinicWorth";
+import { Dialog } from "primereact/dialog";
+import FeatureWidget from "components/FeatureWidget";
+
 
 const defaultNps = [
     {
@@ -23,10 +24,13 @@ const defaultNps = [
     },
 ]
 
-export default function Page(){ 
- 
+export default function Page({searchParams}:{searchParams:any}){ 
+    const isDisplayFeatureDialogLink = searchParams.featuredialog == "" ? true : false
+    
+    const [appFeatureDialogVisible, setAppFeatureDialogVisible] = useState(true)
     const {data,setData} = useSurveyDataContext()
     const {currentUser} = useSessionContext()
+    const [isDisplayFeatureDialog, setIsDisplayFeatureDialog] = useState(isDisplayFeatureDialogLink)
     // const [lastCheckoutSession, setLastCheckoutSession] = useState<undefined | Stripe.Response<Stripe.Checkout.Session>>()
     const pathname = usePathname()
     // useEffect(()=> {
@@ -148,7 +152,7 @@ export default function Page(){
 
     console.log(currentUser, 'currentUser dashboard page')
 
-    return (<div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 max-md:flex max-md:flex-row max-md:flex-wrap md:grid md:grid-cols-3">
+    return (<><div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 max-md:flex max-md:flex-row max-md:flex-wrap md:grid md:grid-cols-3">
             <div className="card hidden col-span-3 row-span-1 md:flex flex-row items-center justify-between">
                 <div>
                     <h1 className="text-2xl inline-block mr-2 capitalize">{userName}</h1>
@@ -197,6 +201,18 @@ export default function Page(){
            
             
         </div>
+
+       {(!isProfileComplete || isDisplayFeatureDialog) && <Dialog className="rounded-lg" header="App Features" visible={appFeatureDialogVisible} style={{ width: '95vw', maxWidth: "1000px" }} onHide={() => {if (!appFeatureDialogVisible) return; setAppFeatureDialogVisible(false); }}  pt={{
+    content: {
+      className: "!p-0 !rounded-b-2xl",
+    },
+    header: {
+        className: "!rounded-t-2xl"
+    }
+  }}>
+            <FeatureWidget />
+        </Dialog>}
+        </>
     )};
 
 
