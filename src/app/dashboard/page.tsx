@@ -25,7 +25,7 @@ const defaultNps = [
 ]
 
 export default function Page({searchParams}:{searchParams:any}){ 
-    const isDisplayFeatureDialogLink = searchParams.featuredialog == "" ? true : false
+    const isDisplayFeatureDialogLink = searchParams.appfeature == "" ? true : false
     
     const [appFeatureDialogVisible, setAppFeatureDialogVisible] = useState(true)
     const {data,setData} = useSurveyDataContext()
