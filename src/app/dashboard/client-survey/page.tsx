@@ -146,7 +146,7 @@ export default function Page({ searchParams }: { searchParams: any }) {
 
             {!isRestricted && !shareSurveyView && clientSurvey && <>
                 <div className="card">
-                    <ClientsDataTable clientSurveyData={clientSurvey} />
+                    <ClientsDataTable clientSurveyData={clientSurvey} options={{export:{excel: true}}}/>
 
                 </div>
             </>

@@ -46,13 +46,13 @@ export default function Page({searchParams}:{searchParams:any}) {
         setIsJourney(false)
     }
 
-    const isProfileComplete = tocheck.every(i => currentUser[i])
+    // const isProfileComplete = tocheck.every(i => currentUser[i])
         
-    if(pathname != '/dashboard/settings/account'){
-        if(!isProfileComplete){
-            redirect('/dashboard/settings/account')
-        }
-    }
+    // if(pathname != '/dashboard/settings/account'){
+    //     if(!isProfileComplete){
+    //         redirect('/dashboard/settings/account')
+    //     }
+    // }
 
     // const isSurveyClosed = currentUser['isSurveyClosed']
     const isSurveyClosed = false
@@ -1074,10 +1074,12 @@ export default function Page({searchParams}:{searchParams:any}) {
                 <div className="max-md:!text-sm md:w-96 flex flex-col flex-nowrap -mb-10">
                     <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                     {formValues && <button className="absolute right-4 group" onClick={exitJourney}><span className="pi pi-times flex items-center justify-center text-lg text-gray-600 transform transition-transform duration-300 hover:scale-110 hover:text-red-400"></span></button>}
-                        <h1 className="inline-block md:text-lg font-bold">2. Take the owner survey.</h1>
+                        <h1 className="inline-block md:text-lg font-bold">Take the owner survey.</h1>
                         
                         <p className="md:text-md text-gray-700">{`You need to answer all the questions as accurately as you can. Once submitted your response is recorded in our database.`}</p>
                         <p className="md:text-md text-gray-700">{`You must complete this step before you can share the Team and Client surveys.`}</p>
+                        <Link className="btn-secondary !mt-[30px] text-sm block float-right min-w-[unset] w-fit"
+                        href="/dashboard">Maybe later</Link>
                     </div>
                     <Image
                     className="w-32 md:w-36 aspect-square" 

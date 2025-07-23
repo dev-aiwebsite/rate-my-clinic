@@ -31,7 +31,7 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
     const [globalFilter, setGlobalFilter] = useState("");
     const toast = useRef<Toast>(null);
 
-    const deleteEnabled = options?.delete.enabled || false
+    const deleteEnabled = options?.delete?.enabled || false
     if(!tableData) return <><span>No data found.</span></>
 
     console.log(options?.data, 'data')
@@ -69,13 +69,13 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
         setIsDeleting(true)
         const ids = selectedItems.map(i => i.id)
         console.log(ids, 'ids to delete')
-        if(!ids && !options?.delete.enabled && options?.delete.db_name) return
+        if(!ids && !options?.delete?.enabled && options?.delete.db_name) return
          (ids)
 
          const deleteConfig = {
             userId: options?.delete?.userId,
             ids,
-            dbName: options?.delete.db_name
+            dbName: options?.delete?.db_name
          }
          deleteAData(deleteConfig).then((res: { success: any; message: any; }) => {
             if(res.success){
