@@ -113,7 +113,7 @@ const SidebarDesktop = ({userData}:{userData:any}) => {
             </li>
             <li className="hover:bg-appblue-200 rounded-lg hover:text-appblue-400 [&.active]:bg-appblue-200 [&.active]:text-appblue-400">
                 <Link href='/dashboard/features' className="flex flex-row items-center gap-3 text-sm py-3 px-6">
-                    <span className="text-red-400 w-4 h-4 pi pi-list-check"></span><span className="underline">How it works</span>
+                    <span className="text-gray-500/80 w-4 h-4 pi pi-box"></span><span>Features</span>
                 </Link>
             </li>
         </ul>

@@ -157,6 +157,9 @@
   .disabled {
     @apply !pointer-events-none !grayscale !opacity-80;
   }
+  .p-datatable-table {
+    @apply text-sm;
+  }
 }
 
 
@@ -233,4 +236,12 @@ border-radius: 50%; /* Round thumb */
 tbody.p-datatable-tbody > tr:hover {
   background: #0000000d;
   cursor: pointer;
+}
+
+.single-user-summary-overview-wrapper a {
+  pointer-events: none;
+}
+
+.single-user-summary-overview-wrapper p.underline {
+  display: none;
 }

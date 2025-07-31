@@ -153,20 +153,21 @@ export const saveAsExcelFile = (buffer: BlobPart, fileName: string) => {
 
 export const getClientNps = (clientSurveyData:any) => {
     let clientNpsScoreArray = clientSurveyData.map((i: { recommendation: any }) => Number(i.recommendation))
-        let clientNpsScoreTotal = (clientNpsScoreArray.reduce((a: any,b: any) => Number(a) + Number(b), 0) / clientNpsScoreArray.length ) * 10
+        // let clientNpsScoreTotal = (clientNpsScoreArray.reduce((a: any,b: any) => Number(a) + Number(b), 0) / clientNpsScoreArray.length ) * 10
+        const nps = calculateNps(clientNpsScoreArray, 'client')
         let clientNps = {
-            score: getNps(clientNpsScoreArray),
-            quality: getClientNpsQuality(clientNpsScoreTotal)
+            score: nps.score,
+            quality: getClientNpsQuality(Number(nps.score))
         }
         return clientNps
 }
 
 export const getTeamNps = (teamSurveyData:any) => {
-    let teamSatisfactionArray= teamSurveyData.map((i: { recommendation: any }) => i.recommendation)
-    let teamSatisfaction = Number((teamSatisfactionArray.reduce((a: any,b: any) => a + b, 0) / teamSatisfactionArray.length).toFixed(1))
-    let teamNps = {
-        score:teamSatisfaction,
-        quality: getTeamNpsQuality(teamSatisfaction)
+    const teamSatisfactionArray= teamSurveyData.map((i: { recommendation: any }) => i.recommendation)
+    const nps = calculateNps(teamSatisfactionArray, 'team')
+    const teamNps = {
+        score: nps.score,
+        quality: getTeamNpsQuality(Number(nps.score))
     }
     return  teamNps
 }
@@ -230,4 +231,30 @@ export const getNps = (arrayOfValues: number[]): number => {
     const nps = promoterPercentage - detractorPercentage;
 
     return nps;
+}
+
+
+export const calculateNps = (npsValues: number[], npsCategory: "client" | "team") => {
+    const result = {
+        score: "0.0",
+        nps: 0,
+    }
+
+    result.nps = getNps(npsValues);
+
+      const sum = npsValues.reduce(
+        (accumulator, currentValue) => accumulator + currentValue,
+        0
+      );
+    
+    
+      if (npsCategory == "team") {
+        result.nps = sum / npsValues.length;
+      }
+    
+      if (result.nps) {
+        result.score = result.nps.toFixed(1);
+      }
+
+      return result
 }

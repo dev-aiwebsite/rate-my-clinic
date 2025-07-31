@@ -10,6 +10,7 @@ import { ExtendedSession } from '../../typings';
 import ElasticEmail, { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
 import Stripe from "stripe"
 import { demoEmail } from 'utils/demo';
+import { getNps } from './helperFunctions';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -539,11 +540,12 @@ function surveyCalculation(data:any) {
                 score: function () {
                     // 95+ = 100, <20 = 0. In between is pro-rated
 
-                    const value = data.clientSurveyData.map((i: SurveyData) => i.recommendation);
-                    const detractors =  value.filter((i: number) => i <= 6).length
-                    const promoters =  value.filter((i: number) => i >= 9).length
+                    const values = data.clientSurveyData.map((i: SurveyData) => i.recommendation);
+                    // const detractors =  values.filter((i: number) => i <= 6).length
+                    // const promoters =  values.filter((i: number) => i >= 9).length
 
-                    const nps = ((promoters - detractors) / value.length) * 100
+                    // const nps = ((promoters - detractors) / value.length) * 100
+                    const nps = getNps(values)
 
 
                     let score = 0

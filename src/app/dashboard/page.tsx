@@ -9,7 +9,7 @@ import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import { isProfileCompleteCheckList, reportGenDays } from "lib/Const";
-import { getClientNps, hasPassedMaxDays } from "lib/helperFunctions";
+import { getClientNps, getTeamNps, hasPassedMaxDays } from "lib/helperFunctions";
 import {useState } from "react";
 import ClinicWorth from "components/ClinicWorth";
 import { Dialog } from "primereact/dialog";
@@ -28,7 +28,7 @@ export default function Page({searchParams}:{searchParams:any}){
     const isDisplayFeatureDialogLink = searchParams.appfeature == "" ? true : false
     
     const [appFeatureDialogVisible, setAppFeatureDialogVisible] = useState(true)
-    const {data,setData} = useSurveyDataContext()
+    const {data} = useSurveyDataContext()
     const {currentUser} = useSessionContext()
     const [isDisplayFeatureDialog, setIsDisplayFeatureDialog] = useState(isDisplayFeatureDialogLink)
     // const [lastCheckoutSession, setLastCheckoutSession] = useState<undefined | Stripe.Response<Stripe.Checkout.Session>>()
@@ -46,12 +46,6 @@ export default function Page({searchParams}:{searchParams:any}){
     const lastCheckoutSession = currentUser.lastCheckoutSession_data
     let tocheck = isProfileCompleteCheckList
     const isProfileComplete = tocheck.every(i => currentUser[i])
-    
-    // if(pathname != '/dashboard/settings/account'){
-    //     if(!isProfileComplete){
-    //         redirect('/dashboard/settings/account')
-    //     }
-    // }
 
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
     let charts = userAccess?.charts
@@ -62,7 +56,11 @@ export default function Page({searchParams}:{searchParams:any}){
     let is_ownerSurveyData_complete = data?.ownerSurveyData ? true : false
     let showReport = false
 
-    let clientNps = defaultNps, teamNps = defaultNps, clientNpsAvg = 0,teamNpsAvg = 0
+    let clientNps = defaultNps,
+    teamNps = defaultNps,
+    clientNpsAvg = "0",
+    teamNpsAvg = "0"
+    
     let startDate = currentUser.createdAt
 
 
@@ -81,29 +79,23 @@ export default function Page({searchParams}:{searchParams:any}){
             if(data){
                 let filteredData = data.clientSurveyData.filter((i:any)=> i.clinicid == currentUser._id)
                 let filteredData_team = data.teamSurveyData.filter((i:any)=> i.clinicId == currentUser._id)
-                let npsValues: number[] = []
-                let npsValues_team: number[] = []
 
-               const clientNpsInfo = getClientNps(filteredData)
-               
-                clientNpsAvg = clientNpsInfo.score 
-                
+                const clientNpsInfo = getClientNps(filteredData);
+                clientNpsAvg = clientNpsInfo.score;
         
-                filteredData_team.forEach((i)=> {
-                    npsValues_team.push(Number(i.recommendation))
-                })
-                
-                const sum2 = npsValues_team.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-                teamNpsAvg = sum2 / npsValues_team.length || 0
+                const teamNpsInfo = getTeamNps(filteredData_team)
+                teamNpsAvg = teamNpsInfo.score;
 
             }
+
+    
 
         }
     
         clientNps = [
             {
                 name: 'Group A',
-                value: Number(clientNpsAvg.toFixed(1)),
+                value: Number(clientNpsAvg),
                 color: '#94BDE5',
             },
         ]
@@ -111,7 +103,7 @@ export default function Page({searchParams}:{searchParams:any}){
         teamNps = [
             {
                 name: 'Group A',
-                value: Number(teamNpsAvg.toFixed(1)),
+                value: Number(teamNpsAvg),
                 color: '#94BDE5',
             },
         ]

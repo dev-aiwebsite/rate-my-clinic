@@ -4,10 +4,11 @@ import { SurveyDataType, useSurveyDataContext } from "@/context/surveyDataContex
 import { getClientNps, getTeamNps, shortenNumber } from "lib/helperFunctions";
 import Link from "next/link";
 import { OverlayPanel } from "primereact/overlaypanel";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 
-const ClinicWorth = ({ className }: { className?: string }) => {
-    const { data } = useSurveyDataContext()
+const ClinicWorth = ({ className, surveyData }: { className?: string, surveyData?:SurveyDataType }) => {
+    const { data: currentUserData } = useSurveyDataContext();
+    const data = surveyData ?? currentUserData
     const op = useRef<OverlayPanel | null>(null);
     console.log(data)
 
