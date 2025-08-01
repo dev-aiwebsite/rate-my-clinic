@@ -9,10 +9,10 @@ type TuserAccess = {
 const userAccess: TuserAccess[] = [
     {
         subscription_level: 0,
-        charts: ['clients', 'strategy', 'team', 'finance'],
-        team_surveys: 10,
-        clinic_surveys: 10,
-        nps: true
+        charts: ['strategy', 'finance'],
+        team_surveys: 0,
+        clinic_surveys: 0,
+        nps: false
     },
     {
         subscription_level: 1,
