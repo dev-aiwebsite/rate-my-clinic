@@ -62,7 +62,6 @@ export function ReportTable({data,options,onRowClick}:{onRowClick?:(e:DataTableR
         dataTable_all =  tableData.map( i => {
             return {
                 'id':i._id,
-                'ID': i._id,
                 'Name': i.pdf_link.split("/").at(-1),
                 'Date': formatDateTime(new Date(i.date)),
                 'Action': "Download"

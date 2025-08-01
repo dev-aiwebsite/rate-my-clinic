@@ -160,6 +160,12 @@
   .p-datatable-table {
     @apply text-sm;
   }
+  .comparison-report-table td {
+    @apply border border-gray-200
+  }
+  .comparison-report-table :where(td,th) {
+    @apply p-3 capitalize
+  }
 }
 
 
