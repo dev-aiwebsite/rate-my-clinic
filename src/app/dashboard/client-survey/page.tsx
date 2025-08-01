@@ -35,12 +35,7 @@ export default function Page({ searchParams }: { searchParams: any }) {
     }
 
     const appAccess = AppAcess(currentUser.subscription_level || 0)
-    let isRestricted = true 
-    const clientSurveyAccess = appAccess.clinic_surveys
-    
-    if(clientSurveyAccess == Infinity || clientSurveyAccess > 0){
-        isRestricted = false
-    }
+    let isRestricted = !appAccess.clinic_surveys 
 
     function exitJourney() {
         router.replace('/dashboard/client-survey')

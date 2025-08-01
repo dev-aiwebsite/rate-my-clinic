@@ -6,7 +6,6 @@ import Link from "next/link";
 import CircleChart from "components/circle-chart";
 import { useSessionContext } from "@/context/sessionContext";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
-import { usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import { isProfileCompleteCheckList, reportGenDays } from "lib/Const";
 import { getClientNps, getTeamNps, hasPassedMaxDays } from "lib/helperFunctions";
@@ -29,19 +28,9 @@ export default function Page({searchParams}:{searchParams:any}){
     
     const [appFeatureDialogVisible, setAppFeatureDialogVisible] = useState(true)
     const {data} = useSurveyDataContext()
-    const {currentUser} = useSessionContext()
+    const {currentUser, users} = useSessionContext()
     const [isDisplayFeatureDialog, setIsDisplayFeatureDialog] = useState(isDisplayFeatureDialogLink)
-    // const [lastCheckoutSession, setLastCheckoutSession] = useState<undefined | Stripe.Response<Stripe.Checkout.Session>>()
-    const pathname = usePathname()
-    // useEffect(()=> {
-    //     const getLastSession = async () => {
-    //         let lastCheckoutSession =  await retrieveCheckoutSession(currentUser.last_checkout_session_id)
-    //         setLastCheckoutSession(lastCheckoutSession)
-    //         return lastCheckoutSession
-    //     }
-    //     getLastSession()
-    
-    // },[])
+
     if(!currentUser) return null
     const lastCheckoutSession = currentUser.lastCheckoutSession_data
     let tocheck = isProfileCompleteCheckList
@@ -51,8 +40,6 @@ export default function Page({searchParams}:{searchParams:any}){
     let charts = userAccess?.charts
     let userName = currentUser?.username || "Guest"
     
-    console.log(currentUser, 'currentUser')
-    console.log(data, 'data dashboardpage')
     let is_ownerSurveyData_complete = data?.ownerSurveyData ? true : false
     let showReport = false
 
@@ -62,7 +49,7 @@ export default function Page({searchParams}:{searchParams:any}){
     teamNpsAvg = "0"
     
     let startDate = currentUser.createdAt
-
+    
 
 
     if(lastCheckoutSession){

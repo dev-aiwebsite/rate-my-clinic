@@ -36,11 +36,8 @@ export default function Page({ searchParams }: { searchParams: any }) {
     let teamSurvey = data?.teamSurveyData
 
     const appAccess = AppAcess(currentUser.subscription_level || 0)
-    let isRestricted = true 
-    const teamSurveyAccess = appAccess.team_surveys
-    if(teamSurveyAccess == Infinity || teamSurveyAccess > 0){
-        isRestricted = false
-    }
+    let isRestricted = !appAccess.team_surveys 
+   
 
     function exitJourney() {
         router.replace('/dashboard/team-survey')
