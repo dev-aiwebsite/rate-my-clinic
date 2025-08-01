@@ -25,6 +25,11 @@ export async function generateReportData({currentUserId,date}:{currentUserId?:st
 }
 
 export async function SaveReport({filename,currentUserId,currentUserEmail,date}:{filename?:string,currentUserId?:string,currentUserEmail?:any,date?:string}) {
+  const result = {
+    success: false,
+    message: "",
+    data: null as any
+  }
   if(currentUserEmail){
     if(!filename){
       filename = currentUserEmail.split('@')[0]
@@ -59,26 +64,19 @@ export async function SaveReport({filename,currentUserId,currentUserEmail,date}:
   
       // Return success response
       if(res.success){
-        return {
-          success: true,
-          message: "Report saved",
-          data: res,
-        };
+        result.success = true
+        result.message = res.message
+        result.data = cleanedFormData
         
       } else {
-
-        return {
-          success: false,
-          message: res.message,
-        };
+        result.message = res.message
       }
+
+      return result
       
     } catch (err) {
-      // Catch errors and return failure response
-      return {
-        success: false,
-        message: `An error occurred ${err}`,
-      };
+      result.message = `An error occurred ${err}`
+      return result
     }
   }
   
