@@ -8,6 +8,7 @@ declare module '@elasticemail/elasticemail-client' {
     interface EmailRecipient {
       Email: string;
       Fields?: Record<string, string>;
+      Type?: 'To' | 'Cc' | 'Bcc'; // optional if using grouped fields
     }
   
     interface BodyPart {
@@ -39,7 +40,7 @@ declare module '@elasticemail/elasticemail-client' {
       instance: ApiClientInstance;
     };
     const EmailsApi: new () => EmailsApi;
-    const EmailRecipient: new (email: string, name?: string) => EmailRecipient;
+    const EmailRecipient: new (email: string, name?: string, type?: 'To' | 'Cc' | 'Bcc') => EmailRecipient;
     const BodyPart: {
       constructFromObject(data: { ContentType: string; Content: string }): BodyPart;
     };

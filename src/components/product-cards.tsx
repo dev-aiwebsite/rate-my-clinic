@@ -19,23 +19,19 @@ export const ProductCards = ({enabled = false,metadata}:{enabled?:boolean,metada
         GetProductsWithPrices()
         .then(p => {
             // show only free
-            const selectedProduct = p.find(a => a.metadata.subscription_level == '0')
+            // const selectedProduct = p.find(a => a.metadata.subscription_level == '0')
+            // if(selectedProduct){
+            //     setProducts([selectedProduct])
+            // } 
+
+            const selectedProduct = p.find(a => a.metadata.subscription_level == checkoutSubsLevel)
             if(selectedProduct){
                 setProducts([selectedProduct])
-            } 
-
-            // if(checkoutSubsLevel){
-            //     const selectedProduct = p.find(a => a.metadata.subscription_level == checkoutSubsLevel)
-            //     if(selectedProduct){
-            //         setProducts([selectedProduct])
-            //     } else {
-            //         p.sort((a, b) => Number(a.metadata.subscription_level) - Number(b.metadata.subscription_level));
-            //         setProducts(p)
-            //     }
-            // } else {
-            //     p.sort((a, b) => Number(a.metadata.subscription_level) - Number(b.metadata.subscription_level));
-            //     setProducts(p)
-            // }
+            } else {
+                p.sort((a, b) => Number(a.metadata.subscription_level) - Number(b.metadata.subscription_level));
+                setProducts(p)
+            }
+         
     
         })
     },[])

@@ -7,7 +7,7 @@ import { connectToDb } from "./utils"
 import bcrypt from 'bcrypt'
 import { MailOptions, elasticTransporter, transporter } from "../../config/nodemailer.config"
 import { ExtendedSession } from '../../typings';
-import ElasticEmail, { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
+import { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
 import Stripe from "stripe"
 import { demoEmail } from 'utils/demo';
 import { getNps } from './helperFunctions';
@@ -135,7 +135,7 @@ export const OwnerSurveyAction = async (formData: FormData) => {
             }
 
             const  mailOptions = {
-                to: userEmail,
+                to: [userEmail],
                 subject: "Your report is ready for download",
                 templateName: 'Report ready',
                 dynamicFields: {
@@ -946,16 +946,28 @@ export const SendMailViaElastic = async (mailOptions: MailOptions) => {
         apikey.apiKey = process.env.EMAIL_API_KEY;
 
         let api = new EmailsApi();
-        let timeOffset;
-        if (mailOptions.sendTime) {
+        let timeOffset = 0;
+        if (mailOptions.sendTime instanceof Date && !isNaN(mailOptions.sendTime.getTime())) {
             const now = new Date();
-            timeOffset = Math.round((mailOptions.sendTime.getTime() - now.getTime()) / 60000); // Convert milliseconds to minutes
+            timeOffset = Math.max(0, Math.round((mailOptions.sendTime.getTime() - now.getTime()) / 60000));
         }
 
+
+        const toRecipients = Array.isArray(mailOptions.to)
+            ? mailOptions.to.map(email => new EmailRecipient(email, mailOptions?.name, "To"))
+            : [new EmailRecipient(mailOptions.to, mailOptions?.name, "To")];
+
+            const ccRecipients = Array.isArray(mailOptions.cc)
+            ? mailOptions.cc.map(email => new EmailRecipient(email, mailOptions?.name, "Cc"))
+            : [];
+
+            const bccRecipients = Array.isArray(mailOptions.bcc)
+            ? mailOptions.bcc.map(email => new EmailRecipient(email, mailOptions?.name, "Bcc"))
+            : [];
+
+            const Recipients = [...toRecipients, ...ccRecipients, ...bccRecipients];
         let email = EmailMessageData.constructFromObject({
-            Recipients: [
-                new EmailRecipient(mailOptions.to, mailOptions?.name)
-            ],
+            Recipients: Recipients,
             Content: {
                 Body: [
                     BodyPart.constructFromObject({
