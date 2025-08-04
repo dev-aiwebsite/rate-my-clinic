@@ -7,6 +7,7 @@ import { getSurveyData } from "lib/server-actions";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { IoIosArrowRoundBack } from "react-icons/io";
+import { SurveyData, SurveyOldData } from "../../../../../../../types/types";
 
 type npsData =
   | {
@@ -14,7 +15,7 @@ type npsData =
       value: number;
       comment: string;
     }[]
-  | null;
+  | null | undefined;
 
 type npsItem = {
   date: string;
@@ -35,7 +36,7 @@ type DataType = {
     [key: string]: any;
   }[];
   other_summary: {};
-  oldData: summary[];
+  oldData: SurveyOldData[];
   overalls: {
     [key: string]: any;
   };
@@ -48,13 +49,13 @@ type DataType = {
 } | null;
 
 export default function Page({ searchParams, params }: PageProps) {
-  const [data, setData] = useState<DataType>(null);
+  const [data, setData] = useState<SurveyData | null>(null);
   const { users } = useSessionContext();
   const userId = params.user_id;
 
   useEffect(() => {
     if (data) return;
-    let user = users.find((i: { _id: string }) => i._id == userId);
+    let user = users.find((i) => i._id == userId);
     if (!user) return;
     const getSD = async () => {
       let SD = await getSurveyData(userId);

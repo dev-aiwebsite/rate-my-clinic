@@ -1,8 +1,9 @@
 "use client"
 import {createContext, useContext, useState } from "react";
+import { User } from "../../../types/types";
 
   
-export const SessionContext = createContext<{currentUser: any, setCurrentUser:any, users:any} | null>(null);
+export const SessionContext = createContext<{currentUser: any, setCurrentUser:any, users:User[]} | null>(null);
 
 
 type CurrentUser = any |null

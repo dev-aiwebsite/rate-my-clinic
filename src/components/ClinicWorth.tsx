@@ -1,12 +1,13 @@
 "use client"
 
-import { SurveyDataType, useSurveyDataContext } from "@/context/surveyDataContext";
+import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { getClientNps, getTeamNps, shortenNumber } from "lib/helperFunctions";
 import Link from "next/link";
 import { OverlayPanel } from "primereact/overlaypanel";
 import { useRef, useState } from "react";
+import { SurveyData } from "../../types/types";
 
-const ClinicWorth = ({ className, surveyData }: { className?: string, surveyData?:SurveyDataType }) => {
+const ClinicWorth = ({ className, surveyData }: { className?: string, surveyData?:SurveyData }) => {
     const { data: currentUserData } = useSurveyDataContext();
     const data = surveyData ?? currentUserData
     const op = useRef<OverlayPanel | null>(null);
@@ -53,7 +54,7 @@ const ClinicWorth = ({ className, surveyData }: { className?: string, surveyData
 }
 
 
-function getClinicWorth(surveyData: SurveyDataType) {
+function getClinicWorth(surveyData: SurveyData) {
     const { clientSurveyData, teamSurveyData, ownerSurveyData } = surveyData
     const clientNps = clientSurveyData?.length && getClientNps(clientSurveyData)
     const teamSatisfaction = teamSurveyData?.length && getTeamNps(teamSurveyData)

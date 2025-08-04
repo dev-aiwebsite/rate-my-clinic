@@ -1,3 +1,5 @@
+import { Summary, SurveyOldData } from "../../types/types"
+
 export const old_survey_data = [
     {
         "Start Date": "2024-06-20 15:22:12",
@@ -3362,17 +3364,22 @@ export const old_survey_data = [
 ]
 
 
-type summary = {
-   [key:string]:any 
-}
-export const oldData = old_survey_data.map(d => {
-    let summary:summary = {}
-    summary['clinic'] = d['FIELD3']
-    summary['overall'] = d['Overall']
-    summary['strategy'] = d['Strategy']
-    summary['finance'] = d['Finance']
-    summary['clients'] = d['Clients']
-    summary['team'] = d['Team']
 
-    return summary
+export const oldData = old_survey_data.map(d => {
+    let oldata:SurveyOldData = {
+        clients: 0,
+        clinic: "",
+        finance: 0,
+        overall: 0,
+        strategy: 0,
+        team: 0,
+    }
+    oldata['clinic'] = d['FIELD3']
+    oldata['overall'] = d['Overall']
+    oldata['strategy'] = d['Strategy']
+    oldata['finance'] = d['Finance']
+    oldata['clients'] = d['Clients']
+    oldata['team'] = d['Team']
+
+    return oldata
 })

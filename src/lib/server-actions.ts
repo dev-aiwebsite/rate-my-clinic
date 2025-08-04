@@ -12,6 +12,7 @@ import Stripe from "stripe"
 import { demoEmail } from 'utils/demo';
 import { getNps } from './helperFunctions';
 import { Types } from 'mongoose';
+import { Summary, SurveyData } from '../../types/types';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -271,13 +272,21 @@ export const getSurveyData = async (currentUser_id?:string,date?:string) => {
         let clinicIds = convertedSurveys.ownerSurveyData.map((i: { clinic_id: any }) => i.clinic_id)
         type mySurveys = {
             [key:string]:any,
-            summary:{[key:string]:any},
-            ownerSurveyData?:any,
-            clientSurveyData?:any,
-            teamSurveyData?:any
+            summary:Summary,
+            ownerSurveyData:any,
+            clientSurveyData:any,
+            teamSurveyData:any
         }
         let mySurveys:mySurveys = {
-            summary: {}
+            summary: {
+                clients: {},
+                finance: {},
+                team: {},
+                strategy: {}
+            },
+            ownerSurveyData: "" as any,
+            clientSurveyData: [],
+            teamSurveyData: [],
         }
         
         let otherSummary: { [key: string]: any; }[] = []
@@ -326,7 +335,12 @@ export const getSurveyData = async (currentUser_id?:string,date?:string) => {
 
         let overalls:{[key:string]:any} = {}
 
-        let other_summary = {}
+        let other_summary:Summary = {
+            clients: {},
+            team: {},
+            strategy: {},
+            finance: {}
+        }
         
         const oldDataTotal = oldData.reduce((a,b) => Number(a) + Number(b.overall), 0)
         overalls['other'] = oldDataTotal / oldData.length
@@ -365,7 +379,7 @@ export const getSurveyData = async (currentUser_id?:string,date?:string) => {
             }
         }
 
-        let results = {
+        let results:SurveyData = {
             ...mySurveys,
             other:otherSummary,
             other_summary,
@@ -401,7 +415,7 @@ function surveyCalculation(data:any) {
         recommendedPreviously:string;
         recommendation:number;
     }
-    let summary:{[key: string]:any} = {
+    let summary:Summary = {
         strategy: {
             current_business_plan: {
                 value: data.ownerSurveyData.current_business_plan,
@@ -929,16 +943,21 @@ function surveyCalculation(data:any) {
         }
     }
 
-    const scores: { [key: string]: any } = {};
+    const scores: Summary = {
+        clients: {},
+        finance: {},
+        team: {},
+        strategy: {}
+    };
 
     Object.keys(summary).forEach((key) => {
-        scores[key] = {}
-        Object.keys(summary[key]).forEach((key2, index) => {
-            scores[key][key2] = summary[key][key2].score()
+        scores[key as keyof Summary] = {}
+        Object.keys(summary[key as keyof Summary]).forEach((key2, index) => {
+            scores[key as keyof Summary][key2] = summary[key as keyof Summary][key2].score()
 
-            if(index == Object.keys(summary[key]).length - 1){
-                scores[key]['total'] = Object.values(scores[key]).reduce((a, b) => Number(a) + Number(b), 0);
-                scores[key]['score'] = Math.round((scores[key]['total'] / 100) * 10) / 10;
+            if(index == Object.keys(summary[key as keyof Summary]).length - 1){
+                scores[key as keyof Summary]['total'] = Object.values(scores[key as keyof Summary]).reduce((a, b) => Number(a) + Number(b), 0);
+                scores[key as keyof Summary]['score'] = Math.round((scores[key as keyof Summary]['total'] / 100) * 10) / 10;
 
             }
             

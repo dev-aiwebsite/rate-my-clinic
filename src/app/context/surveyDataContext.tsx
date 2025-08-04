@@ -2,6 +2,7 @@
 "use client";
 
 import { createContext, useContext, ReactNode, useEffect, useState } from "react";
+import { SurveyData } from "../../../types/types";
 
 
 type surveyData = any | null
@@ -9,16 +10,8 @@ interface SurveyDataProviderProps {
   children: ReactNode;
   surveyData:surveyData
 }
-export type SurveyDataType = {
-  ownerSurveyData: any;
-  clientSurveyData: any[];
-  teamSurveyData: any[];
-  summary:any;
-  other_summary:any;
-  overalls:any;
-};
 
-export const SurveyDataContext =  createContext<{data: SurveyDataType, setData:any} | null>(null);
+export const SurveyDataContext =  createContext<{data: SurveyData, setData:any} | null>(null);
 
 export default function SurveyDataContextProvider({surveyData, children }: SurveyDataProviderProps) {
   const [data, setData] = useState<surveyData>(surveyData);
