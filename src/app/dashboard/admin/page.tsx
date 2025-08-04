@@ -41,7 +41,7 @@ export default function Page({searchParams}:{searchParams:any}) {
     if(users.length){
 
         if(selectedOption.code == "profiles"){
-            users_datatable_all = users.map((i: { _id: any; username: any; fname: any; lname: any; useremail: any; role: any; clinic_name: any; clinic_type: any; subscription_level: any; subscription_id: any; last_checkout_session_id: any; profile_pic: any; isActive: any; isVerified: any; isDeleted: any; isBlocked: any; createdAt: any; updatedAt: any; clinic_established: any; clinic_location_country: any; clinic_location_postcode: any; clinic_location_state: any; usermobile: any; }) => {
+            users_datatable_all = users.map((i) => {
 
                 return {
                     // 'Profile Picture': i.profile_pic,
@@ -49,7 +49,7 @@ export default function Page({searchParams}:{searchParams:any}) {
                     'Last Name': i.lname,
                     'Email': i.useremail,
                     'Mobile': i.usermobile,
-                    'Subscription Level': subscriptionLevels.find(s => s.level == i.subscription_level)?.name,
+                    'Subscription Level': subscriptionLevels.find(s => String(s.level) == i.subscription_level)?.name,
                     'Clinic Name': i.clinic_name,
                     'Clinic Type': i.clinic_type,
                     'Clinic Established': i.clinic_established,

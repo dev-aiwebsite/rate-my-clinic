@@ -5,10 +5,9 @@ import NpsContent from "components/nps-recommendation";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
 import { useSessionContext } from "@/context/sessionContext";
 import AppAcess from "lib/appAccess";
-import Link from "next/link";
 import UpgradePlanBlock from "components/upgrade-plan-block";
-import { useState } from "react";
 import { useAppConfigContext } from "@/context/appSettingsContext";
+import { Summary } from "../../../../../types/types";
 
 
 type Titems = {
@@ -50,7 +49,7 @@ export default function Page({params}:{params:any}){
     console.log(data, 'data')
     console.log(currentUser)
     
-    let npsCategory = pageName
+    let npsCategory = pageName as keyof Summary
 
     if(pageName == 'team'){
         npsCategory = 'team'

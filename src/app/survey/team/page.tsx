@@ -54,7 +54,7 @@ export default function TeamSurveyForm({searchParams}:{searchParams:any}) {
     const {users} = useSessionContext()
     const toast = useRef<Toast>(null);
     const clinic_id = searchParams.cid
-    const user_data = users?.find((i: { _id: string; }) => i._id == `${clinic_id}`)
+    const user_data = users?.find((i) => i._id == `${clinic_id}`)
     const [formSubmitted, setFormSubmitted] = useState(false)
 
     return (

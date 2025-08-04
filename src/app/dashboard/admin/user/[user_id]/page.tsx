@@ -11,23 +11,7 @@ import SummaryOverview from "components/summary-overview";
 import CircleChart from "components/circle-chart";
 import { getClientNps, getTeamNps } from "lib/helperFunctions";
 import ClinicWorth from "components/ClinicWorth";
-
-type TsurveyData = {
-  other: {
-    [key: string]: any;
-  }[];
-  other_summary: {};
-  oldData: any[];
-  overalls: {
-    [key: string]: any;
-  };
-  summary: {
-    [key: string]: any;
-  };
-  ownerSurveyData?: any;
-  clientSurveyData?: any;
-  teamSurveyData?: any;
-} | null;
+import { SurveyData } from "../../../../../../types/types";
 
 const defaultNps = [
   {
@@ -40,9 +24,9 @@ const defaultNps = [
 const charts = ["clients", "strategy", "team", "finance"];
 export default function Page({ params }: { params: any }) {
   const { currentUser, users } = useSessionContext();
-  const [surveyData, setSurveyData] = useState<TsurveyData>(null);
+  const [surveyData, setSurveyData] = useState<SurveyData | null>(null);
   const userId = params.user_id;
-  let user = users.find((i: { _id: string }) => i._id == userId);
+  let user = users.find((i) => i._id == userId);
   if (currentUser.role != "admin") {
     redirect("/dashboard"); // Redirect to /dashboard
   }
@@ -58,7 +42,7 @@ export default function Page({ params }: { params: any }) {
       }
     };
     getSD();
-  }, [userId]);
+  }, [surveyData, user, userId]);
 
   let is_ownerSurveyData_complete = surveyData?.ownerSurveyData ? true : false;
   let clientNps = defaultNps,
@@ -112,7 +96,7 @@ export default function Page({ params }: { params: any }) {
       >
         <IoIosArrowRoundBack size={32} />
       </Link>
-        <h1 className="text-black/50 text-lg">{user.clinic_name}</h1>
+        <h1 className="text-black/50 text-lg">{user?.clinic_name}</h1>
     </div>
 
       <SummaryOverview
@@ -127,14 +111,7 @@ export default function Page({ params }: { params: any }) {
       <div className="grid md:grid-cols-3 gap-5 mx-5">
         <div className="text-center card flex items-center justify-center bg-custom-gradient text-white tracking-wide">
           <ClinicWorth
-            surveyData={{
-              ownerSurveyData: surveyData?.ownerSurveyData,
-              clientSurveyData: surveyData?.clientSurveyData,
-              teamSurveyData: surveyData?.teamSurveyData,
-              summary: surveyData?.summary,
-              other_summary: surveyData?.other_summary,
-              overalls: surveyData?.overalls,
-            }}
+            surveyData={surveyData ?? undefined}
           />
         </div>
         <div className="card">

@@ -86,7 +86,7 @@ export default function ClientSurveyForm({searchParams}:{searchParams:any}) {
    
 
     const clinic_id = searchParams.cid
-    const user_data = users?.find((i: { _id: string; }) => i._id == `${clinic_id}`)
+    const user_data = users?.find((i) => i._id == `${clinic_id}`)
     const clinic_name = user_data?.clinic_name || ""
     const clinic_logo = user_data?.clinic_logo || ""
 

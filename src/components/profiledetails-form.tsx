@@ -178,8 +178,8 @@ export default function ProfileForm({ afterSubmit,redirectTo }: { afterSubmit?: 
                      <Switcher
                     enabled={switchEnabled}
                     setEnabled={handleSwitcherClick}
-                    textone="Profile details"
-                    texttwo="Clinic details"
+                    item1={{text:"Profile details"}}
+                    item2={{text:"Clinic details"}}
                     />
                 </div>
                 <div className="max-md:overflow-auto p-1">
