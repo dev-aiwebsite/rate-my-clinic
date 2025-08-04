@@ -12,6 +12,7 @@ import { useRouter } from "next/navigation";
 import { mobileNavbarHeight } from "lib/Const";
 import UpgradePlanBlock from "components/upgrade-plan-block";
 import TeamDataTable from "components/team-datatable";
+import AppAcess from "lib/appAccess";
 
 export default function Page({ searchParams }: { searchParams: any }) {
     const router = useRouter()
@@ -34,10 +35,9 @@ export default function Page({ searchParams }: { searchParams: any }) {
 
     let teamSurvey = data?.teamSurveyData
 
-    let isRestricted = false
-    if (currentUser.subscription_level == 0) {
-        isRestricted = true
-    }
+    const appAccess = AppAcess(currentUser.subscription_level || 0)
+    let isRestricted = !appAccess.team_surveys 
+   
 
     function exitJourney() {
         router.replace('/dashboard/team-survey')
@@ -137,7 +137,7 @@ export default function Page({ searchParams }: { searchParams: any }) {
             }
             {!isRestricted && !shareSurveyView && teamSurvey && <>
                <div className="card">
-                <TeamDataTable teamSurveyData={teamSurvey} />
+                <TeamDataTable teamSurveyData={teamSurvey} options={{export:{excel: true}}} />
                 </div> 
             </>
             }

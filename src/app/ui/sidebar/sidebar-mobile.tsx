@@ -9,6 +9,11 @@ import { useEffect, useState } from "react";
 
 const second_list_item = [
     {
+        name: "Reports",
+        icon: "/icons/checklist.svg",
+        link: "/dashboard/reports"
+    },
+    {
         name: "Nps chart",
         icon: "/icons/nps.svg",
         link: "/dashboard/nps"

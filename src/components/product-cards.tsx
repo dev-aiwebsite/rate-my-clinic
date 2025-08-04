@@ -4,6 +4,7 @@ import PricingCard from "components/pricingCard";
 import Stripe from "stripe";
 import { useEffect, useState } from "react";
 import { useSessionContext } from "@/context/sessionContext";
+import { useSearchParams } from "next/navigation";
 
 interface TproductWithPrices extends Stripe.Product {
     prices: {[key:number]:any}
@@ -11,15 +12,31 @@ interface TproductWithPrices extends Stripe.Product {
 
 export const ProductCards = ({enabled = false,metadata}:{enabled?:boolean,metadata:{[key:string]:any}})=>{
     const [products,setProducts] = useState<TproductWithPrices[] | null>(null)
+    const searchParams = useSearchParams()
+    const checkoutSubsLevel = searchParams.get('csl')
     
     useEffect(()=>{
         GetProductsWithPrices()
         .then(p => {
-            p.sort((a, b) => Number(a.metadata.subscription_level) - Number(b.metadata.subscription_level));
-            setProducts(p)
+            // show only free
+            const selectedProduct = p.find(a => a.metadata.subscription_level == '0' || '5')
+            if(selectedProduct){
+                setProducts([selectedProduct])
+            } 
+
+            // const selectedProduct = p.find(a => a.metadata.subscription_level == checkoutSubsLevel)
+            // if(selectedProduct){
+            //     setProducts([selectedProduct])
+            // } else {
+            //     p.sort((a, b) => Number(a.metadata.subscription_level) - Number(b.metadata.subscription_level));
+            //     setProducts(p)
+            // }
+         
     
         })
     },[])
+
+    console.log(products)
 
     return <>
     {!products && <><div className="flex items-center justify-center">
@@ -30,7 +47,7 @@ export const ProductCards = ({enabled = false,metadata}:{enabled?:boolean,metada
             </div>
     </div></>}
             {products &&
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-6 mx-auto max-w-screen-lg">
+                <div className="flex justify-center grid-cols-1 sm:grid-cols-2 md:grid-cols-6 gap-6 mx-auto max-w-screen-lg">
                 {products.map((product, index) => {
                     const allMeta = {...product.metadata, ...metadata}
                     return <PricingCard metadata={allMeta} product={product} durations={enabled ? "annually" : "monthly"} key={index}/>

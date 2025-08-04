@@ -5,16 +5,17 @@ import {createContext, useContext, useState } from "react";
 export const SessionContext = createContext<{currentUser: any, setCurrentUser:any, users:any} | null>(null);
 
 
-type currentUser = any |null
+type CurrentUser = any |null
 type SessionContextProviderType = {
-    children: React.ReactNode,
-    current_user:currentUser,
-    users?:any | null,
-}
+    children: React.ReactNode;
+    current_user: CurrentUser;
+    users?: any | null;
+};
+
 
 export default function SessionContextProvider({children,current_user,users}:SessionContextProviderType) {
 
-    const [currentUser,setCurrentUser] = useState<currentUser>(current_user)
+    const [currentUser,setCurrentUser] = useState<CurrentUser>(current_user)
 
     return (
         <SessionContext.Provider value={{ currentUser, setCurrentUser, users }}>

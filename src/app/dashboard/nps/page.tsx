@@ -2,6 +2,7 @@
 import NpsChart from "../../../components/nps-chart";
 import { useSessionContext } from "@/context/sessionContext";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
+import AppAcess from "lib/appAccess";
 import { getNps } from "lib/helperFunctions";
 
 type npsData = {
@@ -21,11 +22,8 @@ type npsItem = {
 
 export default function Page({searchParams}:{searchParams:any}) {
     const {currentUser} = useSessionContext()
-    console.log(currentUser, 'currentUser nps page')
     const {data} = useSurveyDataContext()
-    console.log(data,'data')
-    console.log(currentUser.subscription_level, 'currentUser.subscription_level')
-    let hasAccess = currentUser.subscription_level > 0 || false
+    let hasAccess = AppAcess(currentUser.subscription_level || 0).nps
     let filteredData 
     let npsCategory = searchParams.nps
     let npsTextHeader = 'Client NPS'

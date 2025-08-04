@@ -7,7 +7,7 @@ import { ProductCards } from "components/product-cards";
 import { useSessionContext } from "@/context/sessionContext";
 
 export default function PricingPage({searchParams,children }:any) {
-    const [enabled, setEnabled] = useState(false);
+    const [enabled, setEnabled] = useState(true);
     const {currentUser} = useSessionContext()
     
     const handleSwitcherClick = () => {
@@ -36,7 +36,7 @@ export default function PricingPage({searchParams,children }:any) {
                 <h1 className="text-4xl font-medium my-4">Pricing plans for teams of all sizes</h1>
                 <p className="font-[300] max-w-2xl text-center">Choose an affordable plan that’s packed with the best features for engaging your audience, creating customer loyalty, and driving sales.</p>
                 <div className="py-16">
-                    <Switcher enabled={enabled} setEnabled={handleSwitcherClick}/>
+                    <Switcher enabled={enabled} setEnabled={handleSwitcherClick} item1={{disabled:true, text: "Monthly"}}/>
                 </div>
                 <div>
                     <ProductCards metadata={metadata}/>

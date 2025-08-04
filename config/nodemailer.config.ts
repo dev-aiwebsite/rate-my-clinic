@@ -25,7 +25,9 @@ export const elasticTransporter = nodemailer.createTransport({
 
 export interface MailOptions {
     from?: string;
-    to: string;
+    to: string[];
+    cc?: string[];
+    bcc?: string[]; 
     name?: string;
     subject?: string;
     htmlBody?: string;

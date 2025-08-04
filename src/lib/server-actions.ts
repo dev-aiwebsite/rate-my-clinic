@@ -7,9 +7,11 @@ import { connectToDb } from "./utils"
 import bcrypt from 'bcrypt'
 import { MailOptions, elasticTransporter, transporter } from "../../config/nodemailer.config"
 import { ExtendedSession } from '../../typings';
-import ElasticEmail, { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
+import { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
 import Stripe from "stripe"
 import { demoEmail } from 'utils/demo';
+import { getNps } from './helperFunctions';
+import { Types } from 'mongoose';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -61,25 +63,39 @@ export const RegisterUser = async (formData:FormData) =>{
     }
 }
 
-export const UpdateUser = async (query = {"useremail":"string"}, data = {}) =>{
-    try {        
-        let user = await Users.findOneAndUpdate(query, data, {new:true})
-
-        let response = {
-            user:JSON.parse(JSON.stringify(user)),
-            success: true,
-            message: 'User updated successfully'
-        }
-        return response
-        
-    } catch (error:any) {
-        let response = {
-            success: false,
-            message:error.toString()
-        }
-        return response
+export const UpdateUser = async (
+    query: { useremail?: string; _id?: string | Types.ObjectId },
+    data = {}
+  ) => {
+    const result = {
+      user: null as null | any,
+      success: false,
+      message: "User update failed",
+    };
+  
+    try {
+      // Convert string _id to ObjectId if necessary
+      if (query._id && typeof query._id === "string") {
+        query._id = new Types.ObjectId(query._id);
+      }
+  
+      const user = await Users.findOneAndUpdate(query, data, { new: true });
+  
+      if (!user) {
+        result.message = "User not found";
+        return result;
+      }
+  
+      result.user = JSON.parse(JSON.stringify(user));
+      result.success = true;
+      result.message = "User updated successfully";
+  
+      return result;
+    } catch (error: any) {
+      result.message = error.toString();
+      return result;
     }
-}
+  };
 
 export const AuthenticateUser = async (formData: FormData) => {
     const { useremail, userpass, viaadmin } = Object.fromEntries(formData);    
@@ -134,7 +150,7 @@ export const OwnerSurveyAction = async (formData: FormData) => {
             }
 
             const  mailOptions = {
-                to: userEmail,
+                to: [userEmail],
                 subject: "Your report is ready for download",
                 templateName: 'Report ready',
                 dynamicFields: {
@@ -539,11 +555,12 @@ function surveyCalculation(data:any) {
                 score: function () {
                     // 95+ = 100, <20 = 0. In between is pro-rated
 
-                    const value = data.clientSurveyData.map((i: SurveyData) => i.recommendation);
-                    const detractors =  value.filter((i: number) => i <= 6).length
-                    const promoters =  value.filter((i: number) => i >= 9).length
+                    const values = data.clientSurveyData.map((i: SurveyData) => i.recommendation);
+                    // const detractors =  values.filter((i: number) => i <= 6).length
+                    // const promoters =  values.filter((i: number) => i >= 9).length
 
-                    const nps = ((promoters - detractors) / value.length) * 100
+                    // const nps = ((promoters - detractors) / value.length) * 100
+                    const nps = getNps(values)
 
 
                     let score = 0
@@ -944,16 +961,28 @@ export const SendMailViaElastic = async (mailOptions: MailOptions) => {
         apikey.apiKey = process.env.EMAIL_API_KEY;
 
         let api = new EmailsApi();
-        let timeOffset;
-        if (mailOptions.sendTime) {
+        let timeOffset = 0;
+        if (mailOptions.sendTime instanceof Date && !isNaN(mailOptions.sendTime.getTime())) {
             const now = new Date();
-            timeOffset = Math.round((mailOptions.sendTime.getTime() - now.getTime()) / 60000); // Convert milliseconds to minutes
+            timeOffset = Math.max(0, Math.round((mailOptions.sendTime.getTime() - now.getTime()) / 60000));
         }
 
+
+        const toRecipients = Array.isArray(mailOptions.to)
+            ? mailOptions.to.map(email => new EmailRecipient(email, mailOptions?.name, "To"))
+            : [new EmailRecipient(mailOptions.to, mailOptions?.name, "To")];
+
+            const ccRecipients = Array.isArray(mailOptions.cc)
+            ? mailOptions.cc.map(email => new EmailRecipient(email, mailOptions?.name, "Cc"))
+            : [];
+
+            const bccRecipients = Array.isArray(mailOptions.bcc)
+            ? mailOptions.bcc.map(email => new EmailRecipient(email, mailOptions?.name, "Bcc"))
+            : [];
+
+            const Recipients = [...toRecipients, ...ccRecipients, ...bccRecipients];
         let email = EmailMessageData.constructFromObject({
-            Recipients: [
-                new EmailRecipient(mailOptions.to, mailOptions?.name)
-            ],
+            Recipients: Recipients,
             Content: {
                 Body: [
                     BodyPart.constructFromObject({

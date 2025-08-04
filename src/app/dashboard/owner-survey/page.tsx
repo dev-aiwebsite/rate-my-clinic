@@ -46,15 +46,16 @@ export default function Page({searchParams}:{searchParams:any}) {
         setIsJourney(false)
     }
 
-    const isProfileComplete = tocheck.every(i => currentUser[i])
+    // const isProfileComplete = tocheck.every(i => currentUser[i])
         
-    if(pathname != '/dashboard/settings/account'){
-        if(!isProfileComplete){
-            redirect('/dashboard/settings/account')
-        }
-    }
+    // if(pathname != '/dashboard/settings/account'){
+    //     if(!isProfileComplete){
+    //         redirect('/dashboard/settings/account')
+    //     }
+    // }
 
-    const isSurveyClosed = currentUser['isSurveyClosed']
+    // const isSurveyClosed = currentUser['isSurveyClosed']
+    const isSurveyClosed = false
     let FormComponent
     if(isSurveyClosed){
         const SurveyClosed = () => {
@@ -75,7 +76,18 @@ export default function Page({searchParams}:{searchParams:any}) {
             const [page,setPage] = useState(1)
             const [submitBtnText, setSubmitBtnText] = useState("Next")
             const phoneInputRef = useRef<any>();
-        
+            const toastProgressSave = useRef<Toast>(null);
+            const [localData,setLocalData] = useState(null)
+            const showToastProgressSave = () => {
+                toastProgressSave.current?.show({
+                    id: 'progress-save-toast', // Use a unique ID to replace old toast
+                    severity: 'info',
+                    summary: 'Progress Saved',
+                    detail: 'Saved in browser',
+                    life: 1000, // Toast will close after 3 seconds
+                  });
+            }
+
             let clinic_id = currentUser._id
             const [formData, setFormData] = useState({
                 "clinic_id": clinic_id,
@@ -130,12 +142,26 @@ export default function Page({searchParams}:{searchParams:any}) {
                 "work_life_balance": formValues?.work_life_balance
             });
         
-            useEffect(()=>{
-                const localData = window.localStorage['ownerSurveyFormData']
-                if(localData){
-                    setFormData(JSON.parse(localData))
+            useEffect(() => {
+                const currentLocalData = localStorage.getItem('ownerSurveyFormData');
+                console.log(currentLocalData, 'usersurvey local');
+                
+                if (currentLocalData) {
+                  try {
+                    const parsedData = JSON.parse(currentLocalData);
+                    console.log(parsedData,'parsedData')
+                    setFormData((prev) => ({
+                      ...prev,
+                      ...parsedData, // Merges parsed data into the current state
+                    }));
+                    setLocalData(parsedData);
+                  } catch (error) {
+                    console.error('Error parsing localStorage data:', error);
+                  }
                 }
-            },[])
+              }, []);
+              
+            
             
             const handlePrev = useCallback((index: page) => {
                 if(index <= 1){
@@ -221,21 +247,22 @@ export default function Page({searchParams}:{searchParams:any}) {
                 }));
             }
             
-              const handleChange = (e:any) => {
-                const { name, value } = e.target;
-                setFormData((prevData) => {
-                    const newFormData = {
-                        ...prevData,
-                        [name]: value, // Dynamically update the field in formData
-                    }
-                    window.localStorage["ownerSurveyFormData"] = JSON.stringify(newFormData)
-                    return newFormData
-                })
-        
-        
-        
-              };
-        
+            const handleChange = (e:any) => {
+            const { name, value } = e.target;
+            setFormData((prevData) => {
+                const newFormData = {
+                    ...prevData,
+                    [name]: value, // Dynamically update the field in formData
+                }
+                window.localStorage["ownerSurveyFormData"] = JSON.stringify(newFormData)
+                showToastProgressSave()
+                return newFormData
+            })
+    
+    
+    
+            };
+    
             //   toggle required states
             const required = {
                 market_rate_difference: formData.own_building == 'yes' && formData.pay_market_rent == 'no',
@@ -260,8 +287,11 @@ export default function Page({searchParams}:{searchParams:any}) {
                 {label: 'Gmail', value: 'gmail'},
                 {label: 'Peptalkr', value: 'peptalkr'},
             ]
-            console.log(formData.services_provided)
+            
+            console.log(formData, 'formData')
+
                 return <>
+                    <Toast className="progress-save-toast" ref={toastProgressSave} />
                     <form className={`h-full card max-md:gap-6 col-span-3 row-start-2 row-span-full flex flex-col z-[20] ${additionalClass}`} id="owner-survey-form" onSubmit={(e) => handleDefaultSubmit(e, page)}>
                         <input type="hidden" name="clinic_id" value={formData.clinic_id} />
                         <div className="flex-1 overflow-y-scroll *:p-2">
@@ -374,10 +404,10 @@ export default function Page({searchParams}:{searchParams:any}) {
         
                                     <div className="sm:col-span-1">
                                         <label htmlFor="services_provided" className="formLabel">Which services do you provide? Please double check for spelling as these will be used in your client survey.</label>
-                                        {!isNdisProvider && <p className="field_instruction">*Please separate each response with a comma. (e.g. Massage, Physical Therapy, Chiropractic)</p>}
+                                        {!isNdisProvider && <p className="field_instruction">*Please separate each response with a comma. (Physiotherapy, Massage, Osteopathy, Exercise Physiology etc.)</p>}
                                         <div className="mt-2">
                                             {!isNdisProvider && <div className="formField">
-                                                <textarea onChange={handleChange} name="services_provided" value={formData.services_provided} id="" placeholder=" e.g. Massage, Physical Therapy, Chiropractic" required></textarea>
+                                                <textarea onChange={handleChange} name="services_provided" value={formData.services_provided} id="" placeholder="Physiotherapy, Massage, Osteopathy, Exercise Physiology etc." required></textarea>
                                             </div>}
                                             {isNdisProvider && <MultiSelect name="services_provided" onChange={(v) => handleChange({target: {name:'services_provided',value:v}})} items={ndisProviderServices} value={formData.services_provided} valueAsString={true} required={true}/>}
                                         </div>
@@ -1044,10 +1074,12 @@ export default function Page({searchParams}:{searchParams:any}) {
                 <div className="max-md:!text-sm md:w-96 flex flex-col flex-nowrap -mb-10">
                     <div className="mt-auto relative bg-white w-fit rounded-2xl p-5 mx-auto space-y-4 after:content-[''] after:bg-red after:w-0 after:h-0 after:absolute after:border-solid after:border-[15px] after:border-transparent after:border-t-white after:top-full ">
                     {formValues && <button className="absolute right-4 group" onClick={exitJourney}><span className="pi pi-times flex items-center justify-center text-lg text-gray-600 transform transition-transform duration-300 hover:scale-110 hover:text-red-400"></span></button>}
-                        <h1 className="inline-block md:text-lg font-bold">2. Take the owner survey.</h1>
+                        <h1 className="inline-block md:text-lg font-bold">Take the owner survey.</h1>
                         
                         <p className="md:text-md text-gray-700">{`You need to answer all the questions as accurately as you can. Once submitted your response is recorded in our database.`}</p>
                         <p className="md:text-md text-gray-700">{`You must complete this step before you can share the Team and Client surveys.`}</p>
+                        <Link className="btn-secondary !mt-[30px] text-sm block float-right min-w-[unset] w-fit"
+                        href="/dashboard">Maybe later</Link>
                     </div>
                     <Image
                     className="w-32 md:w-36 aspect-square" 

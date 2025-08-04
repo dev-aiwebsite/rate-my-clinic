@@ -6,14 +6,14 @@ import Link from "next/link";
 import CircleChart from "components/circle-chart";
 import { useSessionContext } from "@/context/sessionContext";
 import { useSurveyDataContext } from "@/context/surveyDataContext";
-import { redirect, usePathname } from "next/navigation";
 import AppAcess from "lib/appAccess";
 import { isProfileCompleteCheckList, reportGenDays } from "lib/Const";
-import { getNps, hasPassedMaxDays } from "lib/helperFunctions";
-import { useEffect, useState } from "react";
-import Stripe from "stripe";
-import { retrieveCheckoutSession } from "@/api/stripe/actions";
+import { getClientNps, getTeamNps, hasPassedMaxDays } from "lib/helperFunctions";
+import {useState } from "react";
 import ClinicWorth from "components/ClinicWorth";
+import { Dialog } from "primereact/dialog";
+import FeatureWidget from "components/FeatureWidget";
+
 
 const defaultNps = [
     {
@@ -23,43 +23,33 @@ const defaultNps = [
     },
 ]
 
-export default function Page(){ 
- 
-    const {data,setData} = useSurveyDataContext()
-    const {currentUser} = useSessionContext()
-    // const [lastCheckoutSession, setLastCheckoutSession] = useState<undefined | Stripe.Response<Stripe.Checkout.Session>>()
-    const pathname = usePathname()
-    // useEffect(()=> {
-    //     const getLastSession = async () => {
-    //         let lastCheckoutSession =  await retrieveCheckoutSession(currentUser.last_checkout_session_id)
-    //         setLastCheckoutSession(lastCheckoutSession)
-    //         return lastCheckoutSession
-    //     }
-    //     getLastSession()
+export default function Page({searchParams}:{searchParams:any}){ 
+    const isDisplayFeatureDialogLink = searchParams.appfeature == "" ? true : false
     
-    // },[])
+    const [appFeatureDialogVisible, setAppFeatureDialogVisible] = useState(true)
+    const {data} = useSurveyDataContext()
+    const {currentUser, users} = useSessionContext()
+    const [isDisplayFeatureDialog, setIsDisplayFeatureDialog] = useState(isDisplayFeatureDialogLink)
+
     if(!currentUser) return null
     const lastCheckoutSession = currentUser.lastCheckoutSession_data
     let tocheck = isProfileCompleteCheckList
     const isProfileComplete = tocheck.every(i => currentUser[i])
-    
-    if(pathname != '/dashboard/settings/account'){
-        if(!isProfileComplete){
-            redirect('/dashboard/settings/account')
-        }
-    }
 
     const userAccess = AppAcess(Number(currentUser.subscription_level) || 0)
     let charts = userAccess?.charts
     let userName = currentUser?.username || "Guest"
     
-    console.log(data, 'data dashboardpage')
     let is_ownerSurveyData_complete = data?.ownerSurveyData ? true : false
     let showReport = false
 
-    let clientNps = defaultNps, teamNps = defaultNps, clientNpsAvg = 0,teamNpsAvg = 0
+    let clientNps = defaultNps,
+    teamNps = defaultNps,
+    clientNpsAvg = "0",
+    teamNpsAvg = "0"
+    
     let startDate = currentUser.createdAt
-
+    
 
 
     if(lastCheckoutSession){
@@ -68,40 +58,31 @@ export default function Page(){
     }
 
     const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(startDate,reportGenDays)
-
+    console.log(charts, 'charts')
     if(is_ownerSurveyData_complete){
         
-        if(currentUser.subscription_level > 0){
+        if (charts.includes('team') && charts.includes('clients')) {
+
             if(data){
                 let filteredData = data.clientSurveyData.filter((i:any)=> i.clinicid == currentUser._id)
                 let filteredData_team = data.teamSurveyData.filter((i:any)=> i.clinicId == currentUser._id)
-                let npsValues: number[] = []
-                let npsValues_team: number[] = []
 
-                filteredData.forEach((i)=> {
-                    const date = new Date(i.createdAt);
-                    const formattedDate = date.toISOString().split('T')[0];
-                    npsValues.push(Number(i.recommendation))
-                })
+                const clientNpsInfo = getClientNps(filteredData);
+                clientNpsAvg = clientNpsInfo.score;
         
-                const sum = npsValues.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-                clientNpsAvg = getNps(npsValues) || 0
-                
-        
-                filteredData_team.forEach((i)=> {
-                    npsValues_team.push(Number(i.recommendation))
-                })
-                
-                const sum2 = npsValues_team.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-                teamNpsAvg = sum2 / npsValues_team.length || 0
+                const teamNpsInfo = getTeamNps(filteredData_team)
+                teamNpsAvg = teamNpsInfo.score;
+
             }
+
+    
 
         }
     
         clientNps = [
             {
                 name: 'Group A',
-                value: Number(clientNpsAvg.toFixed(1)),
+                value: Number(clientNpsAvg),
                 color: '#94BDE5',
             },
         ]
@@ -109,7 +90,7 @@ export default function Page(){
         teamNps = [
             {
                 name: 'Group A',
-                value: Number(teamNpsAvg.toFixed(1)),
+                value: Number(teamNpsAvg),
                 color: '#94BDE5',
             },
         ]
@@ -119,18 +100,19 @@ export default function Page(){
 
     let hasReport = false
     if(is_ownerSurveyData_complete){
-        if(currentUser.subscription_level < 1){
-            let report = currentUser.reports
-            if(report.length){
+        // if(currentUser.subscription_level < 1){
+        //     let report = currentUser.reports
+        //     if(report.length){
                 
-                headerInfoText = `Your final report is generated`
-                showReport = true
-                hasReport = true
-            } else {
-                hasReport = false
-            }
+        //         headerInfoText = `Your final report is generated`
+        //         showReport = true
+        //         hasReport = true
+        //     } else {
+        //         hasReport = false
+        //     }
 
-        } else if(!hasPassed){
+        // } else 
+        if(!hasPassed){
             headerInfoText = `You have ${remainingDays} days till your final report is generated`
         } else {
             let report = currentUser.reports
@@ -149,7 +131,7 @@ export default function Page(){
 
     console.log(currentUser, 'currentUser dashboard page')
 
-    return (<div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 max-md:flex max-md:flex-row max-md:flex-wrap md:grid md:grid-cols-3">
+    return (<><div className="bg-transparent flex-1 p-6 gap-x-6 gap-y-10 max-md:flex max-md:flex-row max-md:flex-wrap md:grid md:grid-cols-3">
             <div className="card hidden col-span-3 row-span-1 md:flex flex-row items-center justify-between">
                 <div>
                     <h1 className="text-2xl inline-block mr-2 capitalize">{userName}</h1>
@@ -198,6 +180,18 @@ export default function Page(){
            
             
         </div>
+
+       {(!isProfileComplete || isDisplayFeatureDialog) && <Dialog className="rounded-lg" header="App Features" visible={appFeatureDialogVisible} style={{ width: '95vw', maxWidth: "1000px" }} onHide={() => {if (!appFeatureDialogVisible) return; setAppFeatureDialogVisible(false); }}  pt={{
+    content: {
+      className: "!p-0 !rounded-b-2xl",
+    },
+    header: {
+        className: "!rounded-t-2xl"
+    }
+  }}>
+            <FeatureWidget />
+        </Dialog>}
+        </>
     )};
 
 

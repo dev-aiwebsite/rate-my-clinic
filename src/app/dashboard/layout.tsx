@@ -53,47 +53,48 @@ const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(subscriptionStar
     }
 
 
-    let reportAsSurveyData = appReportAsSurveyData(currentUser,subscriptionStartDate)
+    // let reportAsSurveyData = appReportAsSurveyData(currentUser,subscriptionStartDate)
 
-    if(reportAsSurveyData){
-        surveyData = reportAsSurveyData.surveyData
-        currentUser['reportToUse'] = reportAsSurveyData.reportUse
-    }
+    // if(reportAsSurveyData){
+    //     surveyData = reportAsSurveyData.surveyData
+    //     currentUser['reportToUse'] = reportAsSurveyData.reportUse
+    // }
     if(hasPassed){
         currentUser['isSurveyClosed'] = true
     }
 
-    if(!reportAsSurveyData){
-        if(hasPassed){
-            let params = {
-                currentUserId:currentUser._id,
-                currentUserEmail:currentUser.useremail,
-                date: maxEndDate.toLocaleString()
-            }
-            let newReport = await SaveReport(params)
-            console.log(newReport, 'newreport1')
-            if(newReport?.data  && 'user' in newReport?.data){
-                currentUser = newReport.data.user
-                const reports = currentUser.reports
-                surveyData = JSON.parse(reports[reports.length - 1].data).surveyData
-            }
+    // if(!reportAsSurveyData){
+        // if(hasPassed){
+        //     let params = {
+        //         currentUserId:currentUser._id,
+        //         currentUserEmail:currentUser.useremail,
+        //         date: maxEndDate.toLocaleString()
+        //     }
+        //     let newReport = await SaveReport(params)
+        //     console.log(newReport, 'newreport1')
+        //     if(newReport?.data  && 'user' in newReport?.data){
+        //         currentUser = newReport.data.user
+        //         const reports = currentUser.reports
+        //         surveyData = JSON.parse(reports[reports.length - 1].data).surveyData
+        //     }
             
-        } else {
+        // } 
+        // else {
 
-            if(currentUser.subscription_level < 1 && is_ownerSurveyData_complete){
-                let params = {
-                    currentUserId:currentUser._id,
-                    currentUserEmail:currentUser.useremail,
-                    date: maxEndDate.toLocaleString()
-                }
-                let newReport = await SaveReport(params)
-                if(newReport?.data  && 'user' in newReport?.data){
-                    currentUser = newReport.data.user
-                    surveyData = JSON.parse(currentUser.reports[0].data).surveyData
-                }
-            }
-        }
-    }
+        //     if(currentUser.subscription_level < 1 && is_ownerSurveyData_complete){
+        //         let params = {
+        //             currentUserId:currentUser._id,
+        //             currentUserEmail:currentUser.useremail,
+        //             date: maxEndDate.toLocaleString()
+        //         }
+        //         let newReport = await SaveReport(params)
+        //         if(newReport?.data  && 'user' in newReport?.data){
+        //             currentUser = newReport.data.user
+        //             surveyData = JSON.parse(currentUser.reports[0].data).surveyData
+        //         }
+        //     }
+        // }
+    // }
  
 
 const value = {

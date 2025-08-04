@@ -11,6 +11,7 @@ import { useRouter } from "next/navigation";
 import { mobileNavbarHeight } from "lib/Const";
 import UpgradePlanBlock from "components/upgrade-plan-block";
 import ClientsDataTable from "components/clients-datatable";
+import AppAcess from "lib/appAccess";
 
 export default function Page({ searchParams }: { searchParams: any }) {
     const router = useRouter()
@@ -33,10 +34,8 @@ export default function Page({ searchParams }: { searchParams: any }) {
         setIsJourney(false)
     }
 
-    let isRestricted = false
-    if (currentUser.subscription_level == 0) {
-        isRestricted = true
-    }
+    const appAccess = AppAcess(currentUser.subscription_level || 0)
+    let isRestricted = !appAccess.clinic_surveys 
 
     function exitJourney() {
         router.replace('/dashboard/client-survey')
@@ -142,7 +141,7 @@ export default function Page({ searchParams }: { searchParams: any }) {
 
             {!isRestricted && !shareSurveyView && clientSurvey && <>
                 <div className="card">
-                    <ClientsDataTable clientSurveyData={clientSurvey} />
+                    <ClientsDataTable clientSurveyData={clientSurvey} options={{export:{excel: true}}}/>
 
                 </div>
             </>

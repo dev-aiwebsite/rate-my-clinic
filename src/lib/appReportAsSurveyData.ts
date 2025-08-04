@@ -9,7 +9,10 @@ export const appReportAsSurveyData = (currentUser:any,startDate:Date) =>{
     const reports = currentUser.reports
     const hasReports = reports.length
     
-    if(!hasReports) return false
+    // if(!hasReports) return false
+
+    return false // returning false because of new logic update to show report realtime data
+
     // check if user is from free
     // let firstReportDate = new Date(currentUser.reports[0].date)
     let lastReportDate = new Date(reports[hasReports - 1].date)

@@ -39,3 +39,6 @@ next-env.d.ts
 
 /public/reports/
 .note.txt
+
+# Ignore specific Stripe backend action
+src/app/api/stripe/actions.ts

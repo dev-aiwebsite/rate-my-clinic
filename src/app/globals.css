@@ -157,6 +157,15 @@
   .disabled {
     @apply !pointer-events-none !grayscale !opacity-80;
   }
+  .p-datatable-table {
+    @apply text-sm;
+  }
+  .comparison-report-table td {
+    @apply border border-gray-200
+  }
+  .comparison-report-table :where(td,th) {
+    @apply p-3 capitalize
+  }
 }
 
 
@@ -220,4 +229,25 @@ border-radius: 50%; /* Round thumb */
 
 .bg-custom-gradient {
   background: linear-gradient(109.7deg, var(--appblue-200) 0%, var(--appgreen-300) 100%);
+}
+
+.progress-save-toast > div > div:not(:first-child) {
+  transition: none;
+}
+
+.progress-save-toast > div > div:not(:last-child) {
+  display:none;
+}
+
+tbody.p-datatable-tbody > tr:hover {
+  background: #0000000d;
+  cursor: pointer;
+}
+
+.single-user-summary-overview-wrapper a {
+  pointer-events: none;
+}
+
+.single-user-summary-overview-wrapper p.underline {
+  display: none;
 }

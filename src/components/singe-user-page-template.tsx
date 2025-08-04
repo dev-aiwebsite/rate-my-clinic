@@ -43,9 +43,9 @@ export default function SingleUserPageTemplate({surveyData}:{surveyData:any}) {
         'delete':{
             "enabled":true,
             "db_name":'team',
-            "updateData": (newData: any) => {setTeamSurvey(newData)},
-            "data":teamSurvey
-        }
+        },
+        "updateData": (newData: any) => {setTeamSurvey(newData)},
+        "data":teamSurvey
     }
     const clientTableOptions = {
         'delete':{

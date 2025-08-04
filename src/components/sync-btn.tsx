@@ -33,20 +33,20 @@ export default function SyncButton({buttonClass,textClass}:{buttonClass?:string,
             startDate = subscriptionStartDate
         }
 
-        if(currentUser.reports.length){
-            const useReportAsSurvey = appReportAsSurveyData(currentUser,startDate)
-            if(useReportAsSurvey){    
-                setData(useReportAsSurvey.surveyData)
-            }
+        // if(currentUser.reports.length){
+        //     const useReportAsSurvey = appReportAsSurveyData(currentUser,startDate)
+        //     if(useReportAsSurvey){    
+        //         setData(useReportAsSurvey.surveyData)
+        //     }
             
-        } else {
+        // } else {
             getSurveyData(currentUser._id).then(d => {
                 setData(d);
                 setIsLoading(false);
                 setLastSync(new Date());
                 setTextTime(formatDistanceToNow(lastSync, { addSuffix: true }))
             });
-        }
+        // }
       
     };
 
