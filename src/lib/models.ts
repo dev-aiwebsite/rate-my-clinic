@@ -518,8 +518,30 @@ const ownerSurveyDataSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
+const cronLogSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true,
+  },
+  status: {
+    type: String,
+    enum: ['success', 'failed'],
+    required: true,
+  },
+  message: {
+    type: String,
+  },
+  data: {
+    type: Object,
+    default: {},
+  },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
+});
 
-
+export const CronLog = mongoose.models.CronLog || mongoose.model('CronLog', cronLogSchema);
 export const Users = mongoose.models.Users || mongoose.model("Users", user_schema);
 export const UserMeta = mongoose.models.UserMeta || mongoose.model("UserMeta", userMetaSchema);
 export const DB_TeamSurveyData = mongoose.models.TeamSurveyData || mongoose.model("TeamSurveyData", teamSurveyDataSchema);

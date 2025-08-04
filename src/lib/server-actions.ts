@@ -12,7 +12,7 @@ import Stripe from "stripe"
 import { demoEmail } from 'utils/demo';
 import { getNps } from './helperFunctions';
 import { Types } from 'mongoose';
-import { Summary, SurveyData } from '../../types/types';
+import { Summary, SurveyData, User } from '../../types/types';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -64,6 +64,26 @@ export const RegisterUser = async (formData:FormData) =>{
     }
 }
 
+export const GetUsers = async () => {
+    const result = {
+      success: false,
+      message: "something went wrong",
+      data: [] as User[] | [],
+    };
+  
+    try {
+      const users = await Users.find();
+      result.success = true;
+      result.message = "Users fetched successfully";
+      result.data = JSON.parse(JSON.stringify(users)) as User[];
+      return result;
+    } catch (error) {
+      console.error("Error fetching users:", error);
+      result.message = "Failed to fetch users";
+      return result;
+    }
+};
+
 export const UpdateUser = async (
     query: { useremail?: string; _id?: string | Types.ObjectId },
     data = {}
@@ -96,7 +116,7 @@ export const UpdateUser = async (
       result.message = error.toString();
       return result;
     }
-  };
+};
 
 export const AuthenticateUser = async (formData: FormData) => {
     const { useremail, userpass, viaadmin } = Object.fromEntries(formData);    
@@ -213,11 +233,9 @@ export const AppSendMail = async(mailOptions:MailOptions) => {
 
 }
 
-
-
 export const handleLogout = async () => {
     await signOut();
-  };
+};
 
 export const resetPassword = async (formData: FormData) => {
 
@@ -231,8 +249,6 @@ try {
     
 }
 }
-
-
 
 export const getSurveyData = async (currentUser_id?:string,date?:string) => {
     const user = await auth() as ExtendedSession;
@@ -394,8 +410,6 @@ export const getSurveyData = async (currentUser_id?:string,date?:string) => {
         throw new Error(error.toString())
     }
 }
-
-
 
 function surveyCalculation(data:any) {
     // apoi = as percent of income
@@ -966,7 +980,6 @@ function surveyCalculation(data:any) {
     return scores
 }
 
-
 export const SendMailViaElastic = async (mailOptions: MailOptions) => {
     let fromEmail = process.env.ELASTIC_EMAIL || "info.ratemyclinic@gmail.com";
     try {
@@ -1046,7 +1059,6 @@ export const SendMailViaElastic = async (mailOptions: MailOptions) => {
         }
     }
 };
-
 
 export const handleScheduleEmail = async () => {
     const sendTime = new Date(); // Set your desired send time

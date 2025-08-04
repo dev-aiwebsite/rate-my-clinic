@@ -33,13 +33,7 @@ export async function GET(req: NextRequest) {
 
     const domain = process.env.NEXTAUTH_URL;
 
-    result.success = true;
-    result.message = "Report generated and email sent.";
-    result.data = {
-      name: `${userData.fname} ${userData.lname}`.trim(),
-      email: userData.useremail,
-      pdf_link: domain + report.pdf_link,
-    };
+  
 
     const fileName = report.pdf_link.split("/").pop();
 
@@ -55,7 +49,16 @@ export async function GET(req: NextRequest) {
       `,
     };
 
-    await AppSendMail(mailOptions);
+    const emailStatus = await AppSendMail(mailOptions);
+
+    result.success = true;
+    result.message = emailStatus.success ? "Report generated and email sent." : `Report generated but email failed. ERROR: ${emailStatus.message}`;
+    result.data = {
+      name: `${userData.fname} ${userData.lname}`.trim(),
+      email: userData.useremail,
+      pdf_link: domain + report.pdf_link,
+    };
+
   } else {
     result.message = saveReportRes.message || "Failed to generate report.";
   }

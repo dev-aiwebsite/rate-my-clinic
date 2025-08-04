@@ -23,6 +23,6 @@
     },
     "types": ["@uploadcare/blocks/types/jsx","./types/elasticemail-client"],
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/lib/utils.js", "public/static.js", "src/app/api/forgot-password."],
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts", "src/lib/utils.js", "public/static.js", "src/app/api/forgot-password.", "src/cron/generateReportInterval6.js"],
   "exclude": ["node_modules"],
 }
