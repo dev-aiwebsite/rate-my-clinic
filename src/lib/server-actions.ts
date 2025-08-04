@@ -11,6 +11,7 @@ import { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from
 import Stripe from "stripe"
 import { demoEmail } from 'utils/demo';
 import { getNps } from './helperFunctions';
+import { Types } from 'mongoose';
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -62,25 +63,39 @@ export const RegisterUser = async (formData:FormData) =>{
     }
 }
 
-export const UpdateUser = async (query = {"useremail":"string"}, data = {}) =>{
-    try {        
-        let user = await Users.findOneAndUpdate(query, data, {new:true})
-
-        let response = {
-            user:JSON.parse(JSON.stringify(user)),
-            success: true,
-            message: 'User updated successfully'
-        }
-        return response
-        
-    } catch (error:any) {
-        let response = {
-            success: false,
-            message:error.toString()
-        }
-        return response
+export const UpdateUser = async (
+    query: { useremail?: string; _id?: string | Types.ObjectId },
+    data = {}
+  ) => {
+    const result = {
+      user: null as null | any,
+      success: false,
+      message: "User update failed",
+    };
+  
+    try {
+      // Convert string _id to ObjectId if necessary
+      if (query._id && typeof query._id === "string") {
+        query._id = new Types.ObjectId(query._id);
+      }
+  
+      const user = await Users.findOneAndUpdate(query, data, { new: true });
+  
+      if (!user) {
+        result.message = "User not found";
+        return result;
+      }
+  
+      result.user = JSON.parse(JSON.stringify(user));
+      result.success = true;
+      result.message = "User updated successfully";
+  
+      return result;
+    } catch (error: any) {
+      result.message = error.toString();
+      return result;
     }
-}
+  };
 
 export const AuthenticateUser = async (formData: FormData) => {
     const { useremail, userpass, viaadmin } = Object.fromEntries(formData);    
