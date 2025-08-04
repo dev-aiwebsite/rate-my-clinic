@@ -54,7 +54,7 @@ const PricingCard = ({product, durations,metadata}:{product:TproductWithPrices |
     // }
 
     return (
-        <div className="col-span-2 hover:ring-10 hover:ring-appblue-350 flex flex-col gap-6 rounded-3xl ring-1 ring-gray-300 p-6 text-sm font-[300]">
+        <div className="flex-1 col-span-2 hover:ring-10 hover:ring-appblue-350 flex flex-col gap-6 rounded-3xl ring-1 ring-gray-300 p-6 text-sm font-[300]">
             <div>
                 <span className="font-medium text-lg capitalize">{price_name}</span>
             </div>
