@@ -24,11 +24,28 @@ export async function generateReportData({currentUserId,date}:{currentUserId?:st
 
 }
 
+type CleanFormatReport = {
+  date: Date;
+  pdf_link: string;
+  data: string;
+}
+
 export async function SaveReport({filename,currentUserId,currentUserEmail,date}:{filename?:string,currentUserId?:string,currentUserEmail?:any,date?:string}) {
+  const result = {
+    success: false,
+    message: "",
+    data: null as any | CleanFormatReport
+  }
+
+  const suffix = "_rate_my_clinic"
   if(currentUserEmail){
     if(!filename){
-      filename = currentUserEmail.split('@')[0]
+      filename = currentUserEmail.split('@')[0] + suffix
     }
+  }
+
+  if(!filename){
+    filename = suffix
   }
     try {
       const reportData = await generateReportData({currentUserId,date});
@@ -52,33 +69,27 @@ export async function SaveReport({filename,currentUserId,currentUserEmail,date}:
       };
   
       // UpdateUser should be responsible for pushing the new report
+      const query = currentUserId ? {  _id: currentUserId } : { useremail: currentUserEmail } 
       const res = await UpdateUser(
-        { useremail: currentUserEmail },
+        query,
         { $push: { reports: cleanedFormData.reports } }  // Use $push to add to the reports array
       );
   
       // Return success response
       if(res.success){
-        return {
-          success: true,
-          message: "Report saved",
-          data: res,
-        };
+        result.success = res.success
+        result.message = res.message
+        result.data = res.user
         
       } else {
-
-        return {
-          success: false,
-          message: res.message,
-        };
+        result.message = res.message
       }
+
+      return result
       
     } catch (err) {
-      // Catch errors and return failure response
-      return {
-        success: false,
-        message: `An error occurred ${err}`,
-      };
+      result.message = `An error occurred ${err}`
+      return result
     }
   }
   

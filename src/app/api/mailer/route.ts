@@ -25,7 +25,8 @@ export async function POST(req:NextRequest, res: NextResponse){
 
 export async function GET(req:NextRequest, res: NextResponse){
     let mailOptions = {
-      to:'dev@aiwebsiteservices.com',
+      to:['dev@aiwebsiteservices.com'],
+      cc: ['f84gsus@gmail.com', 'personal.johndoe23@gmail.com'],
       Subject: 'Password reset email test',
       templateName: 'Password reset email',
       dynamicFields: {

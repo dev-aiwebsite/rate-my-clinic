@@ -82,7 +82,8 @@ export default async function Page({searchParams}:any) {
     
                 `
                 const mailOptions = {
-                    to: userInfo.useremail,
+                    to: [userInfo.useremail],
+                    cc: ["paulhedges@ratemyclinic.com.au"],
                     subject: "Thank you for subscribing",
                     templateName: 'Welcome email',
                     dynamicFields: {
@@ -95,7 +96,7 @@ export default async function Page({searchParams}:any) {
                     
                 }
 
-                const emailed = await AppSendMail(mailOptions)
+                await AppSendMail(mailOptions)
     
             } else if(res.message == "User email already exists"){
                 console.log('already exist if block')

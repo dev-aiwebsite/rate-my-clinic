@@ -51,7 +51,7 @@ async function sendPasswordResetLink(email:string,name:string) {
     `;
     
     const mailOptions = {
-        to: email,
+        to: [email],
         subject: ' Password Reset Request',
         // htmlBody, // Use 'html' instead of 'htmlBody',
         templateName: 'Password reset email',
@@ -99,7 +99,7 @@ async function resetPassword(email:string,newpass:string){
     
     const mailOptions = {
         from: 'Rate My Clinic <info@ratemyclinic.com>', // Corrected email format
-        to: email,
+        to: [email],
         subject: 'Password reset',
         htmlBody, // Use 'html' instead of 'htmlBody'
     };

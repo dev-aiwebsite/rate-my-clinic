@@ -1,38 +1,44 @@
 "use client";
+
+import { useState } from "react";
+import { Button } from "primereact/button";
+import { Dropdown } from "primereact/dropdown";
+
 import { useSessionContext } from "@/context/sessionContext";
 import ReportsSection, { ReportData } from "components/ReportsSections";
 import { SaveReport } from "lib/generateReportData";
-import { Button } from "primereact/button";
-import { Dropdown } from "primereact/dropdown";
-import { useState } from "react";
-import { DropDownOption, SurveyReport, SurveyReportData } from "../../../../types/types";
 import { getClientNps, getTeamNps } from "lib/helperFunctions";
+
+import {
+  DropDownOption,
+  SurveyReport,
+  SurveyReportData,
+} from "../../../../types/types";
 
 const Page = () => {
   const { currentUser, setCurrentUser } = useSessionContext();
   const [isGenerating, setIsGenerating] = useState(false);
-  const [newReport, setNewReport] = useState<ReportData | undefined>();
+  const [newReport, setNewReport] = useState<ReportData>();
   const [isReportView, setIsReportView] = useState(true);
 
-  async function generateReport() {
-    console.log("generating new report");
+  const generateReport = async () => {
     setIsGenerating(true);
-    let params = {
+
+    const params = {
       currentUserId: currentUser._id,
       currentUserEmail: currentUser.useremail,
     };
+
     const newReport = await SaveReport(params);
-    if (newReport?.data && "user" in newReport.data) {
-      if (newReport.data.user) {
-        const newUserData = newReport.data.user as { reports: [] };
-        setCurrentUser({ ...currentUser, ...newUserData });
-        setNewReport(newUserData.reports.at(-1));
-        setIsGenerating(false);
-      }
+
+    if (newReport?.data?.user) {
+      const userData = newReport.data.user as { reports: [] };
+      setCurrentUser({ ...currentUser, ...userData });
+      setNewReport(userData.reports.at(-1));
     }
 
-    console.log(newReport, "new report");
-  }
+    setIsGenerating(false);
+  };
 
   return (
     <div className="max-md:!max-w-[100vw] bg-transparent flex-1 p-6 gap-x-6 gap-y-10 flex flex-col">
@@ -64,11 +70,10 @@ const Page = () => {
       </div>
 
       <div className="card">
-        {isReportView && <ReportsSection defaultReportData={newReport} />}
-        {!isReportView && (
-          <>
-            <ReportComparisonTable />
-          </>
+        {isReportView ? (
+          <ReportsSection defaultReportData={newReport} />
+        ) : (
+          <ReportComparisonTable />
         )}
       </div>
     </div>
@@ -77,132 +82,128 @@ const Page = () => {
 
 export default Page;
 
-
-
+// Report Comparison Table Component
 function ReportComparisonTable() {
   const { currentUser } = useSessionContext();
   const [report1, setReport1] = useState("");
   const [report2, setReport2] = useState("");
-const reports:SurveyReport[] = currentUser.reports
 
-  const reportOptions:DropDownOption[] = reports.map(i => {
-    return { name: i?.pdf_link?.split("/").at(-1) ?? "", code: i?._id ?? ""};
-  });
+  const reports: SurveyReport[] = currentUser.reports ?? [];
 
-  const report1Data:SurveyReportData = report1 ? JSON.parse(reports.find(i => i._id == report1)?.data ?? "") : ""
-  const report2Data:SurveyReportData = report2 ? JSON.parse(reports.find(i => i._id == report2)?.data ?? "") : ""
+  const reportOptions: DropDownOption[] = reports.map((r) => ({
+    name: r?.pdf_link?.split("/").at(-1) ?? "",
+    code: r?._id ?? "",
+  }));
 
-  const clientNPS1 = report1Data ? getClientNps(report1Data.surveyData.clientSurveyData) : ""
-  const clientNPS2 = report2Data ? getClientNps(report2Data.surveyData.clientSurveyData) : ""
-  const teamNPS1 = report1Data ? getTeamNps(report1Data.surveyData.teamSurveyData) : ""
-  const teamNPS2 = report2Data ? getTeamNps(report2Data.surveyData.teamSurveyData) : ""
+  const getReportData = (id: string): SurveyReportData | null => {
+    const report = reports.find((r) => r._id === id);
+    try {
+      return report?.data ? JSON.parse(report.data) : null;
+    } catch {
+      return null;
+    }
+  };
 
+  const report1Data = getReportData(report1);
+  const report2Data = getReportData(report2);
+
+  const clientNPS1 = report1Data ? getClientNps(report1Data.surveyData.clientSurveyData) : { score: "" };
+  const clientNPS2 = report2Data ? getClientNps(report2Data.surveyData.clientSurveyData) : { score: "" };
+  const teamNPS1 = report1Data ? getTeamNps(report1Data.surveyData.teamSurveyData) : { score: "" };
+  const teamNPS2 = report2Data ? getTeamNps(report2Data.surveyData.teamSurveyData) : { score: "" };
+
+  const summaryKeys = Array.from(
+    new Set([
+      ...Object.keys(report1Data?.surveyData?.summary ?? {}),
+      ...Object.keys(report2Data?.surveyData?.summary ?? {}),
+    ])
+  );
 
   return (
-    <>
-      <table className="text-sm comparison-report-table w-full border-collapse">
-        <thead>
-            <tr>
-            <th>
-            </th>
-              <th>
-                <div>
-                  <Dropdown
-                    value={report1}
-                    onChange={(e) => setReport1(e.value)}
-                    options={reportOptions.filter((i) => i.code != report2)}
-                    optionLabel="name"
-                    optionValue="code"
-                    placeholder="Select a report"
-                    className="w-[300px]"
-                    pt={{
-                        itemLabel:{
-                            className: 'truncate w-full block overflow-hidden text-ellipsis whitespace-nowrap'
-                          }
-                      }}
-                  />
-                </div>
-              </th>
-              <th>
-                <div>
-                <Dropdown
-      value={report2}
-      onChange={(e) => setReport2(e.value)}
-      options={reportOptions.filter((i) => i.code != report1)}
-      optionLabel="name"
-      optionValue="code"
-      placeholder="Select a report"
-      className="w-[300px]"
-      pt={{
-        itemLabel:{
-            className: 'truncate w-full block overflow-hidden text-ellipsis whitespace-nowrap'
-          }
-      }}
-    />
-    
-                </div>
-              </th>
-            
-              </tr>
-        </thead>
-        <tbody>
-            {(report1 || report2) && <>
-            
-                <tr>
-                <td>
-                    <span className="font-medium">Overalls</span>
-                </td>
-                <td className="text-center">
-                    <span>{report1Data?.surveyData?.overalls?.mine ?? ""}</span>
-                </td>
-                <td className="text-center">
-                    <span>{report2Data?.surveyData?.overalls?.mine ?? ""}</span>
-                </td>
-            </tr>
-                <tr>
-                <td>
-                    <span className="font-medium">Client NPS</span>
-                </td>
-                <td className="text-center">
-                    <span>{clientNPS1.score}</span>
-                </td>
-                <td className="text-center">
-                    <span>{clientNPS2.score}</span>
-                </td>
-            </tr>
-                <tr>
-                <td>
-                    <span className="font-medium">Team NPS</span>
-                </td>
-                <td className="text-center">
-                    <span>{teamNPS1.score}</span>
-                </td>
-                <td className="text-center">
-                    <span>{teamNPS2.score}</span>
-                </td>
-            </tr>
-            {Object.keys(report1Data.surveyData.summary).map(i => {
-                const item1 = report1Data?.surveyData?.summary[i]?.score ?? ""
-                const item2 = report2Data?.surveyData?.summary[i]?.score ?? ""
-                return  <tr key={i}>
-                <td>
-                    <span className="font-medium">{i}</span>
-                </td>
-                <td className="text-center">
-                    <span>{item1}</span>
-                </td>
-                <td className="text-center">
-                    <span>{item2}</span>
-                </td>
-            </tr>
-            })}
-            
-            </>
-            }
+    <table className="text-sm comparison-report-table w-full border-collapse">
+      <thead>
+        <tr>
+          <th></th>
+          <th>
+            <Dropdown
+              value={report1}
+              onChange={(e) => setReport1(e.value)}
+              options={reportOptions.filter((o) => o.code !== report2)}
+              optionLabel="name"
+              optionValue="code"
+              placeholder="Select a report"
+              className="w-[300px]"
+              pt={{
+                itemLabel: {
+                  className:
+                    "truncate w-full block overflow-hidden text-ellipsis whitespace-nowrap",
+                },
+              }}
+            />
+          </th>
+          <th>
+            <Dropdown
+              value={report2}
+              onChange={(e) => setReport2(e.value)}
+              options={reportOptions.filter((o) => o.code !== report1)}
+              optionLabel="name"
+              optionValue="code"
+              placeholder="Select a report"
+              className="w-[300px]"
+              pt={{
+                itemLabel: {
+                  className:
+                    "truncate w-full block overflow-hidden text-ellipsis whitespace-nowrap",
+                },
+              }}
+            />
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td className="font-medium">Overalls</td>
+          <td className="text-center">
+            {report1Data?.surveyData?.overalls?.mine ?? ""}
+          </td>
+          <td className="text-center">
+            {report2Data?.surveyData?.overalls?.mine ?? ""}
+          </td>
+        </tr>
+        <tr>
+          <td className="font-medium">Client NPS</td>
+          <td className="text-center">{clientNPS1.score}</td>
+          <td className="text-center">{clientNPS2.score}</td>
+        </tr>
+        <tr>
+          <td className="font-medium">Team NPS</td>
+          <td className="text-center">{teamNPS1.score}</td>
+          <td className="text-center">{teamNPS2.score}</td>
+        </tr>
+        <tr>
+          <td className="font-medium">Client</td>
+          <td className="text-center">{report1Data?.surveyData?.summary.clients.score ?? ""}</td>
+          <td className="text-center">{report2Data?.surveyData?.summary.clients.score ?? ""}</td>
+        </tr>
+        <tr>
+          <td className="font-medium">Team</td>
+          <td className="text-center">{report1Data?.surveyData?.summary.team.score ?? ""}</td>
+          <td className="text-center">{report2Data?.surveyData?.summary.team.score ?? ""}</td>
+        </tr>
+        <tr>
+          <td className="font-medium">Finance</td>
+          <td className="text-center">{report1Data?.surveyData?.summary.finance.score ?? ""}</td>
+          <td className="text-center">{report2Data?.surveyData?.summary.finance.score ?? ""}</td>
+        </tr>
+        <tr>
+          <td className="font-medium">Strategy</td>
+          <td className="text-center">{report1Data?.surveyData?.summary.strategy.score ?? ""}</td>
+          <td className="text-center">{report2Data?.surveyData?.summary.strategy.score ?? ""}</td>
+        </tr>
 
-           
-        </tbody>
-      </table>
-    </>
+    
+      </tbody>
+    </table>
   );
 }
+
