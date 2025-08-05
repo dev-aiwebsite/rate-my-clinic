@@ -25,8 +25,9 @@ export async function GET(req: NextRequest) {
   if (saveReportRes.success && saveReportRes.data) {
     const userData = saveReportRes.data;
     const report = userData.reports?.at(-1);
+    const userEmail = userData.useremail
 
-    if (!report?.pdf_link || !userData.useremail) {
+    if (!report?.pdf_link || !userEmail) {
       result.message = "Report or user email missing.";
       return NextResponse.json(result, { status: 500 });
     }
@@ -38,8 +39,8 @@ export async function GET(req: NextRequest) {
     const fileName = report.pdf_link.split("/").pop();
 
     const mailOptions = {
-      to: ["dev@aiwebsiteservices.com"],
-    //   cc: ["dev@aiwebsiteservices.com", "allaine@aiwebsiteservices.com"],
+      to: [userEmail],
+      cc: ["dev@aiwebsiteservices.com", "allaine@aiwebsiteservices.com"],
       subject: "New Report Generated",
       htmlBody: `
         <p>Hi ${userData.fname},</p>
