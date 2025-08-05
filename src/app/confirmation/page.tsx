@@ -23,11 +23,12 @@ export default async function Page({searchParams}:any) {
         <p className="mt-10">{`Your subscription is now confirmed and active. We have sent you an email with more details. If you don't see it, please check your spam folder.`}</p></>
 
         if(sessionInfo.status == "complete"){
-            let subscription_level,subscription_id,name,fname,lname,useremail,clinic_name,clinic_type,password = 'Welcome1!'
+            let subscription_level,subscription_id,name,fname,lname,useremail,postcode,clinic_name,clinic_type,password = 'Welcome1!'
             let formData = new FormData()
 
             fname = sessionInfo?.metadata?.fname;
             lname = sessionInfo?.metadata?.lname;
+            postcode = sessionInfo?.metadata?.postcode;
             useremail = sessionInfo?.metadata?.useremail || ""
             clinic_name = sessionInfo?.metadata?.clinic_name || "";
             clinic_type = sessionInfo?.metadata?.clinic_type || "";
@@ -36,6 +37,7 @@ export default async function Page({searchParams}:any) {
             formData.append('username', `${fname} ${lname}`)
             formData.append('fname', fname as string)
             formData.append('lname', lname as string)
+            formData.append('clinic_location_postcode', postcode as string)
             formData.append('useremail', useremail as string)
             formData.append('clinic_name', clinic_name as string)
             formData.append('clinic_type', clinic_type as string)
@@ -65,6 +67,7 @@ export default async function Page({searchParams}:any) {
                     username: parsedData.fname,
                     useremail: parsedData.useremail,
                     password: res.orig_pass,
+                    "clinic postcode": parsedData.clinic_location_postcode,
                     "clinic name": parsedData.clinic_name,
                     "clinic type": parsedData.clinic_type,
                     
