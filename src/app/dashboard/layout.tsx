@@ -59,9 +59,9 @@ const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(subscriptionStar
     //     surveyData = reportAsSurveyData.surveyData
     //     currentUser['reportToUse'] = reportAsSurveyData.reportUse
     // }
-    if(hasPassed){
-        currentUser['isSurveyClosed'] = true
-    }
+    // if(hasPassed){
+    //     currentUser['isSurveyClosed'] = true
+    // }
 
     // if(!reportAsSurveyData){
         // if(hasPassed){

@@ -47,17 +47,7 @@ export default function Page({searchParams}:{searchParams:any}){
     teamNps = defaultNps,
     clientNpsAvg = "0",
     teamNpsAvg = "0"
-    
-    let startDate = currentUser.createdAt
-    
 
-
-    if(lastCheckoutSession){
-        const subscriptionStartDate = new Date(lastCheckoutSession.created * 1000);
-        startDate = subscriptionStartDate
-    }
-
-    const {hasPassed, remainingDays, maxEndDate} = hasPassedMaxDays(startDate,reportGenDays)
     console.log(charts, 'charts')
     if(is_ownerSurveyData_complete){
         
@@ -99,33 +89,7 @@ export default function Page({searchParams}:{searchParams:any}){
     let headerInfoText = ''
 
     let hasReport = false
-    if(is_ownerSurveyData_complete){
-        // if(currentUser.subscription_level < 1){
-        //     let report = currentUser.reports
-        //     if(report.length){
-                
-        //         headerInfoText = `Your final report is generated`
-        //         showReport = true
-        //         hasReport = true
-        //     } else {
-        //         hasReport = false
-        //     }
-
-        // } else 
-        if(!hasPassed){
-            headerInfoText = `You have ${remainingDays} days till your final report is generated`
-        } else {
-            let report = currentUser.reports
-            if(report.length){
-                headerInfoText = `Your final report is generated`
-                showReport = true
-                hasReport = true
-            } else {
-                hasReport = false
-            }
-        }
-
-    } else {
+    if(!is_ownerSurveyData_complete){
          headerInfoText = 'To access app functionality, please complete the Owner survey.'
     }
 
