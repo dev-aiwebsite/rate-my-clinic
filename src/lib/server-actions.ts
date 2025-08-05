@@ -319,11 +319,9 @@ export const getSurveyData = async (currentUser_id?:string,date?:string) => {
             }
 
             if(clinicId == currentUser_id){
-                mySurveys = {
-                    ...clinicData,
-                    ...mySurveys
-                }
-                
+                mySurveys.clientSurveyData = clinicData.clientSurveyData
+                mySurveys.teamSurveyData = clinicData.teamSurveyData
+                mySurveys.ownerSurveyData = clinicData.ownerSurveyData
             }
 
             if(!clinicData.ownerSurveyData) return
