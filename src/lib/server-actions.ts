@@ -300,7 +300,7 @@ export const getSurveyData = async (currentUser_id?:string,date?:string) => {
                 team: {},
                 strategy: {}
             },
-            ownerSurveyData: "" as any,
+            ownerSurveyData: {} as any,
             clientSurveyData: [],
             teamSurveyData: [],
         }
