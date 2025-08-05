@@ -1,18 +1,17 @@
 "use server"
-import { reportGenDays } from './Const';
-import { oldData } from './old-survey-data';
-import { signIn, signOut, auth } from "../app/auth"
-import { DB_TeamSurveyData, DB_ClientSurveyData, DB_OwnerSurveyData, Users } from "./models"
-import { connectToDb } from "./utils"
-import bcrypt from 'bcrypt'
-import { MailOptions, elasticTransporter, transporter } from "../../config/nodemailer.config"
-import { ExtendedSession } from '../../typings';
-import { ApiClient, EmailsApi, EmailMessageData, EmailRecipient, BodyPart } from "@elasticemail/elasticemail-client"
-import Stripe from "stripe"
-import { demoEmail } from 'utils/demo';
-import { getNps } from './helperFunctions';
+import { ApiClient, BodyPart, EmailMessageData, EmailRecipient, EmailsApi } from "@elasticemail/elasticemail-client";
+import bcrypt from 'bcrypt';
 import { Types } from 'mongoose';
+import Stripe from "stripe";
+import { demoEmail } from 'utils/demo';
+import { MailOptions } from "../../config/nodemailer.config";
 import { Summary, SurveyData, User } from '../../types/types';
+import { ExtendedSession } from '../../typings';
+import { auth, signIn, signOut } from "../app/auth";
+import { getNps } from './helperFunctions';
+import { DB_ClientSurveyData, DB_OwnerSurveyData, DB_TeamSurveyData, Users } from "./models";
+import { oldData } from './old-survey-data';
+import { connectToDb } from "./utils";
 connectToDb()
 
 export const RegisterUser = async (formData:FormData) =>{
@@ -161,30 +160,30 @@ export const OwnerSurveyAction = async (formData: FormData) => {
             result['success'] = true
 
             // set 30 days report email
-            let sendTime:Date | undefined = new Date();
-            sendTime.setDate(sendTime.getDate() + reportGenDays);
-            sendTime.setHours(8, 0, 0, 0);
+            // let sendTime:Date | undefined = new Date();
+            // sendTime.setDate(sendTime.getDate() + reportGenDays);
+            // sendTime.setHours(8, 0, 0, 0);
             
             // send instant when free user 
-            if(Number(userData.subscription_level) < 1){
-                sendTime = undefined
-            }
+            // if(Number(userData.subscription_level) < 1){
+            //     sendTime = undefined
+            // }
 
-            const  mailOptions = {
-                to: [userEmail],
-                subject: "Your report is ready for download",
-                templateName: 'Report ready',
-                dynamicFields: {
-                    firstname: `${userFirstname}`,
-                    loginlink: `${link}`,
-                    useremail: userEmail
-                },
-                sendTime: sendTime,
-            }
+            // const  mailOptions = {
+            //     to: [userEmail],
+            //     subject: "Your report is ready for download",
+            //     templateName: 'Report ready',
+            //     dynamicFields: {
+            //         firstname: `${userFirstname}`,
+            //         loginlink: `${link}`,
+            //         useremail: userEmail
+            //     },
+            //     sendTime: sendTime,
+            // }
 
            
             
-            const emailed = await AppSendMail(mailOptions)
+            // const emailed = await AppSendMail(mailOptions)
         }
         
         return result
