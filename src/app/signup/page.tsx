@@ -99,12 +99,20 @@ export default function SignupPage({children}:any) {
                                                 type="text" name="lname" id="lname" defaultValue={userInfo?.lname || ""}  required/>
                                             </div>
                                         </div>
-                                        <div>
+                                        <div className="grid md:grid-cols-2 gap-5">
+                                            <div>
                                             <label className="text-xs text-neutral-400"
                                                 htmlFor="useremail">Email Address</label>
                                                 {emailExist && <p className="rounded bg-red-200 bg-opacity-50 ring-red-400 px-4 py-2 text-red-500 text-xs">* Email already exists</p>}
                                             <input className="block w-full bg-transparent ring-1 ring-gray-400 border-none rounded-md px-4 py-2 hover:ring-appblue-350 focus:ring-appblue-350 active:ring-appblue-350"
                                             type="email" name="useremail" id="useremail" defaultValue={userInfo?.useremail || ""}  required/>
+                                            </div>
+                                            <div>
+                                                <label className="text-xs text-neutral-400"
+                                                    htmlFor="postcode">Clinic Postcode</label>
+                                                <input className="block w-full bg-transparent ring-1 ring-gray-400 border-none rounded-md px-4 py-2 hover:ring-appblue-350 focus:ring-appblue-350 active:ring-appblue-350"
+                                                type="text" name="postcode" id="postcode" defaultValue={userInfo?.postcode || ""}  required/>
+                                            </div>
                                         </div>
                                         <div className="hidden">
                                             <label className="text-xs text-neutral-400"
