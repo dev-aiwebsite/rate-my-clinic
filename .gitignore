@@ -41,4 +41,4 @@ next-env.d.ts
 .note.txt
 
 # Ignore specific Stripe backend action
-src/app/api/stripe/actions.ts
+src/app/api/stripe/actions.tsdump/
