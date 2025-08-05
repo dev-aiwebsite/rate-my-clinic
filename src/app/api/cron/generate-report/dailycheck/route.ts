@@ -26,22 +26,37 @@ export async function GET(req: NextRequest) {
     const res = await GetUsers();
     users = res.data;
 
-    users.forEach((user) => {
+    for (const user of users) {
       const lastReportDate = user.reports.at(-1)?.date;
       const userRegDate = user.createdAt;
       const shouldGenerate = shouldGenerateReport(userRegDate, lastReportDate);
-
+    
       logMessages.push(`👤 ${user.useremail}`);
       logMessages.push(`   • Registered: ${userRegDate}`);
       logMessages.push(`   • Last Report: ${lastReportDate || "None"}`);
-
+    
       if (shouldGenerate) {
         logMessages.push(`   ✅ Generate report`);
-        // Add your report generation logic here
+    
+        try {
+          const reportRes = await fetch(`${process.env.NEXTAUTH_URL}/api/survey-report/save?userid=${user._id}`);
+    
+          if (reportRes.ok) {
+            const reportJson = await reportRes.json();
+            logMessages.push(`   📤 ${reportJson.message}`);
+          } else {
+            const errorText = await reportRes.text();
+            logMessages.push(`   ❌ Failed to generate report: ${errorText}`);
+          }
+        } catch (err) {
+          logMessages.push(`   ❌ Exception: ${(err as Error).message}`);
+        }
+    
       } else {
         logMessages.push(`   ⏭️ Skip (up-to-date)`);
       }
-    });
+    }
+    
 
     result.success = true;
     result.message = "Report check completed";
