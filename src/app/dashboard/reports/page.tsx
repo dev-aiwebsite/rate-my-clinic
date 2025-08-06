@@ -42,19 +42,19 @@ const Page = () => {
 
   return (
     <div className="max-md:!max-w-[100vw] bg-transparent flex-1 p-6 gap-x-6 gap-y-10 flex flex-col">
-      <div className="card flex flex-row items-center justify-between">
+      <div className="card flex flex-row items-center justify-between gap-10">
         <ul className="flex-1 max-w-lg grid gap-[1px] grid-cols-2 divide-x *:cursor-pointer *:border-none rounded-xl overflow-hidden ring-1 ring-gray-300 *:py-2 *:px-1 *:block text-sm text-neutral-500 *:text-center *:bg-white bg-gray-300">
           <li
             onClick={() => setIsReportView(true)}
             className={isReportView ? "!bg-orange-400 text-white" : ""}
           >
-            <h1 className="text-xl font-medium">Reports</h1>
+            <h1 className="md:text-xl font-medium">Reports</h1>
           </li>
           <li
             onClick={() => setIsReportView(false)}
             className={!isReportView ? "!bg-orange-400 text-white" : ""}
           >
-            <h1 className="text-xl font-medium">Compare</h1>
+            <h1 className="md:text-xl font-medium">Compare</h1>
           </li>
         </ul>
 
@@ -64,7 +64,7 @@ const Page = () => {
             onClick={generateReport}
             loading={isGenerating}
           >
-            Generate New Report
+            <span>Generate</span><span className="hidden sm:inline-flex ml-[1ch]">New Report</span>
           </Button>
         )}
       </div>
@@ -132,11 +132,11 @@ function ReportComparisonTable() {
               optionLabel="name"
               optionValue="code"
               placeholder="Select a report"
-              className="w-[300px]"
+              className="w-[25vw] md:w-[300px]"
               pt={{
                 itemLabel: {
                   className:
-                    "truncate w-full block overflow-hidden text-ellipsis whitespace-nowrap",
+                    "truncate w-full sm:text-xs block overflow-hidden text-ellipsis whitespace-nowrap",
                 },
               }}
             />
@@ -149,11 +149,11 @@ function ReportComparisonTable() {
               optionLabel="name"
               optionValue="code"
               placeholder="Select a report"
-              className="w-[300px]"
+              className="w-[25vw] md:w-[300px]"
               pt={{
                 itemLabel: {
                   className:
-                    "truncate w-full block overflow-hidden text-ellipsis whitespace-nowrap",
+                    "truncate w-full max-sm:text-xs block overflow-hidden text-ellipsis whitespace-nowrap",
                 },
               }}
             />
