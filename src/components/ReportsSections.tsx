@@ -27,8 +27,10 @@ const ReportsSection = ({defaultReportData}:ReportsSection) => {
     const [selectedReport, setSelectedReport] = useState<ReportData | undefined>(undefined)
 
     function handleOnRowClick(e:DataTableRowClickEvent){
-        const reportId = e.data.ID
+        
+        const reportId = e.data.id
         const report = currentUser.reports.find((r:ReportData) => r._id == reportId)
+        console.log(reportId, 'row click reportId')
         if(report){
             setSelectedReport(report)
         }
@@ -64,7 +66,6 @@ export function ReportTable({data,options,onRowClick}:{onRowClick?:(e:DataTableR
                 'id':i._id,
                 'Name': i.pdf_link.split("/").at(-1),
                 'Date': formatDateTime(new Date(i.date)),
-                'Action': "Download"
             }
         })
     }
