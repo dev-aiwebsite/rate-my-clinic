@@ -34,9 +34,6 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
     const deleteEnabled = options?.delete?.enabled || false
     if(!tableData) return <><span>No data found.</span></>
 
-    console.log(options?.data, 'data')
-    console.log(options?.updateData, 'setter')
-
     const hasExcelExport = options?.export?.excel
     const exportExcel = async () => {
         if(!tableData) return false
@@ -68,7 +65,6 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
     async function deleteSelectedItems(){
         setIsDeleting(true)
         const ids = selectedItems.map(i => i.id)
-        console.log(ids, 'ids to delete')
         if(!ids && !options?.delete?.enabled && options?.delete.db_name) return
          (ids)
 
@@ -82,7 +78,6 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
                 let updatedData = tableData.filter(i => !ids.includes(i.id) )
                 setTableData(updatedData)
                 let updateSurveyData = options?.data?.filter((i: { _id: any; }) => !ids.includes(i._id) )
-                console.log(updateSurveyData,'updateSurveyData')
                 if(updateSurveyData){
                     options?.updateData(updateSurveyData)
                 }
@@ -110,7 +105,7 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
     }
 
     function handleOnRowClick(e:DataTableRowClickEvent){
-        console.log(e, 'tablerowclick event')
+        console.log(e, 'tablerowclick eeevent')
         if(options?.onRowClick){
             options.onRowClick(e)
         }
