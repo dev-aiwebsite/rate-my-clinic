@@ -324,24 +324,17 @@ export const getSurveyData = async (currentUser_id?:string,date?:string) => {
             }
 
             if(!clinicData.ownerSurveyData) return
+            let summary = surveyCalculation(clinicData)
 
             if(clinicId == currentUser_id){
-                let summary = surveyCalculation(clinicData)
                 mySurveys.summary = summary
                 return
+            } else {
+                if(!clinicData.clientSurveyData.length || !clinicData.teamSurveyData.length || !clinicData.ownerSurveyData.length) return
+                otherSummary.push(summary)
             }
 
-            if(!clinicData.clientSurveyData.length || !clinicData.teamSurveyData.length) return
-
-            let summary = surveyCalculation(clinicData)
-        
-            // if(clinicId == currentUser_id){
-            //     mySurveys.summary = summary
-                
-            // } else {
-                otherSummary.push(summary)
-            // }
-            
+         
     
         })
 
@@ -363,7 +356,7 @@ export const getSurveyData = async (currentUser_id?:string,date?:string) => {
             let overall = otherSummary.map(summary => {
                 return Object.values(summary).reduce((a,b) => Number(a) + Number(b.score), 0) / 4
             })
-            
+            console.log(otherSummary.map(i => i.finance.score), 'otherSummary')
             let otherTotal = overall.reduce((a,b) => Number(a) + Number(b), 0)
             overalls['other'] = (oldDataTotal + otherTotal) / (oldData.length + overall.length)
 
@@ -381,6 +374,7 @@ export const getSurveyData = async (currentUser_id?:string,date?:string) => {
                 team: {score: (oldData.reduce((a,b) => Number(a) + Number(b.team), 0) + otherTotalScore.team) / numbersOfSurveys},
                 strategy: {score: (oldData.reduce((a,b) => Number(a) + Number(b.strategy), 0) + otherTotalScore.strategy) / numbersOfSurveys},
                 finance: {score: (oldData.reduce((a,b) => Number(a) + Number(b.finance), 0) + otherTotalScore.finance) / numbersOfSurveys},
+                
             }
             
         } else {
