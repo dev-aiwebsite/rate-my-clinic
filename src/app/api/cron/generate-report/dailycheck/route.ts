@@ -1,5 +1,5 @@
 import { CronLog } from "lib/models";
-import { GetUsers } from "lib/server-actions";
+import { AppSendMail, GetUsers } from "lib/server-actions";
 import { NextRequest, NextResponse } from "next/server";
 import { User } from "../../../../../../types/types";
 
@@ -29,27 +29,41 @@ export async function GET(req: NextRequest) {
     for (const user of users) {
       const lastReportDate = user.reports.at(-1)?.date;
       const userRegDate = user.createdAt;
-      const shouldGenerate = shouldGenerateReport(userRegDate, lastReportDate);
+      
     
       logMessages.push(`👤 ${user.useremail}`);
       logMessages.push(`   • Registered: ${userRegDate}`);
       logMessages.push(`   • Last Report: ${lastReportDate || "None"}`);
     
-      if (shouldGenerate) {
-        logMessages.push(`   ✅ Generate report`);
-    
+      if (isSixMonthMilestone(userRegDate)) {
+        logMessages.push(`   📧 Sending survey reminder email`);
+
         try {
-          const reportRes = await fetch(`${process.env.NEXTAUTH_URL}/api/survey-report/save?userid=${user._id}`);
-    
-          if (reportRes.ok) {
-            const reportJson = await reportRes.json();
-            logMessages.push(`   📤 ${reportJson.message}`);
+          const mailOptions = {
+            to: [user.useremail],
+            cc: ["dev@aiwebsiteservices.com", "allaine@aiwebsiteservices.com"],
+            subject: "Reminder | Update Your Clinic’s Performance Insights",
+            htmlBody: `
+              <p>Hi ${user.fname},</p>
+              <p>I hope you’re finding the platform valuable.</p>
+              <p>We recommend taking the survey every 6 to 12 months to stay up to date with your clinic’s performance.</p>
+              <p>If you’ve already generated a report, please disregard this message.</p>
+              <br>
+              <p>Kind regards,</p>
+              <p>The RateMyClinic Team</p>
+
+            `,
+          };
+        
+          const emailStatus = await AppSendMail(mailOptions);
+        
+          if (emailStatus.success) {
+            logMessages.push(`   ✅ Reminder email sent to ${user.useremail}`);
           } else {
-            const errorText = await reportRes.text();
-            logMessages.push(`   ❌ Failed to generate report: ${errorText}`);
+            logMessages.push(`   ❌ Failed to send email: ${emailStatus.message}`);
           }
         } catch (err) {
-          logMessages.push(`   ❌ Exception: ${(err as Error).message}`);
+          logMessages.push(`   ❌ Exception sending email: ${(err as Error).message}`);
         }
     
       } else {
@@ -101,4 +115,24 @@ const shouldGenerateReport = (
   last.setHours(0, 0, 0, 0);
 
   return last < last6MonthMark;
+};
+
+function isSixMonthMilestone (registrationDate: Date) {
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  let milestone = new Date(registrationDate);
+  milestone.setHours(0, 0, 0, 0);
+
+  // Keep adding 6 months until we reach or pass today
+  while (milestone < today) {
+    milestone.setMonth(milestone.getMonth() + 6);
+
+    // Adjust if the month doesn't have the same date (e.g., Jan 31 → Feb 28/29)
+    if (milestone.getDate() !== registrationDate.getDate()) {
+      milestone.setDate(0); // last day of previous month
+    }
+  }
+
+  return milestone.getTime() === today.getTime();
 };
