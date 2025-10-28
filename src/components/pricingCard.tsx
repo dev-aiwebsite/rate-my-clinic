@@ -14,7 +14,7 @@ const PricingCard = ({product, durations,metadata}:{product:TproductWithPrices |
     let mode:Stripe.Checkout.SessionCreateParams.Mode = product?.prices[0].type == 'one_time' ? 'payment' : 'subscription'
     let price = Math.round(product.prices[0].unit_amount / 100)
     let price_name = product.name
-    let isMonthly = Number(product?.metadata.subscription_level) > 1
+    let isNotFree = Number(product?.metadata.subscription_level) > 1
     const {currentUser} = useSessionContext()
     const pathname = usePathname()
 
@@ -60,7 +60,7 @@ const PricingCard = ({product, durations,metadata}:{product:TproductWithPrices |
             </div>
             <div>
                 {price != 0 && <span className="text-4xl font-medium">${price}</span>}
-                {isMonthly && <span className="font-medium">/month</span>}
+                {isNotFree && <span className="font-medium">/year</span>}
             </div>
             <p className="text-neutral-600">{product.description}</p>
             <ul className="flex flex-col gap-2 text-neutral-600 font-medium">

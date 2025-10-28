@@ -258,3 +258,7 @@ export const calculateNps = (npsValues: number[], npsCategory: "client" | "team"
 
       return result
 }
+
+export function isDateValue(value: any) {
+  return value instanceof Date && !isNaN(value.getTime());
+}

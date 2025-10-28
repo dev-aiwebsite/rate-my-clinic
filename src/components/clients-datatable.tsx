@@ -26,7 +26,8 @@ export default function ClientsDataTable({clientSurveyData,options}:{clientSurve
                 'Follow-up Appointment Booking Timeline': i.followUpBookingConfirmation,
                 'Group Age': i.group_age,
                 'Comments or Question':i.comments_questions,
-                'Date': formatDateTime(i.createdAt)
+                'Date': i.createdAt ? new Date(i.createdAt) : null
+
             }
             
         })

@@ -25,7 +25,7 @@ export default function TeamDataTable({teamSurveyData,options}:{teamSurveyData:a
                 'Reward Comparison': i.rewardComparison,
                 'Service Knowledge': i.serviceKnowledge,
                 'Additional Comments': i.additionalComments,
-                'Date': formatDateTime(i.createdAt)
+                'Date': i.createdAt ? new Date(i.createdAt) : null
             }
         })
     }

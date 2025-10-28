@@ -42,6 +42,13 @@ const userAccess: TuserAccess[] = [
         clinic_surveys: Infinity,
         nps: true
     },
+    {
+        subscription_level: 5,
+        charts: ['clients', 'strategy', 'team', 'finance'],
+        team_surveys: Infinity,
+        clinic_surveys: Infinity,
+        nps: true
+    }
 
 ]
 export default function AppAcess(subscription_level: number) {

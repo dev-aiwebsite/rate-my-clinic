@@ -56,16 +56,23 @@ export default function SingleUserPageTemplate({surveyData}:{surveyData:any}) {
         "data":clientSurvey
     }
     return <>
-            <TabView>
-                <TabPanel header="Owner">
-                    <TableData data={owner_datatable[0]}/>
-                </TabPanel>
-                <TabPanel header="Team">
-                    <TeamDataTable options={teamTableOptions} teamSurveyData={teamSurvey}/>
-                </TabPanel>
-                    <TabPanel header="Clients">
-                    <ClientsDataTable options={clientTableOptions} clientSurveyData={clientSurvey}/>
-                </TabPanel>
+        <TabView>
+            <TabPanel header="Owner">
+                <TableData data={owner_datatable[0]} />
+            </TabPanel>
+
+            <TabPanel
+            header={<span>Team <span className="text-gray-500">({teamSurvey?.length ?? 0})</span></span>}
+            >
+                <TeamDataTable options={teamTableOptions} teamSurveyData={teamSurvey} />
+            </TabPanel>
+
+            <TabPanel
+            header={<span>Clients <span className="text-gray-500">({clientSurvey?.length ?? 0})</span></span>}
+            >
+                <ClientsDataTable options={clientTableOptions} clientSurveyData={clientSurvey} />
+            </TabPanel>
         </TabView>
+
     </>
 }
