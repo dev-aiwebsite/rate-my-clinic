@@ -300,3 +300,25 @@ tbody.p-datatable-tbody>tr:hover {
   top: 0;
   z-index: 99999999999;
 }
+
+.scrollbar::-webkit-scrollbar,
+.scrollbar *::-webkit-scrollbar{
+  height: 16px;
+  width: 16px;
+}
+.scrollbar::-webkit-scrollbar-track,
+.scrollbar *::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 50vw;
+}
+
+.scrollbar::-webkit-scrollbar-thumb,
+.scrollbar *::-webkit-scrollbar-thumb{
+  background: #ccc;
+  border-radius: 50vw;
+}
+
+.admin_singleuser .p-datatable-wrapper {
+  max-height: calc(100vh - (0.25rem * 71) - 24px) !important;
+
+}

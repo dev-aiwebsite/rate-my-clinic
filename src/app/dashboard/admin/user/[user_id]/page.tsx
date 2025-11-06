@@ -1,16 +1,16 @@
 "use client";
-import { IoIosArrowRoundBack } from "react-icons/io";
-import Link from "next/link";
-import SingleUserPageTemplate from "components/singe-user-page-template";
-import { useEffect, useState } from "react";
 import { useSessionContext } from "@/context/sessionContext";
-import { getSurveyData } from "lib/server-actions";
-import { ProgressSpinner } from "primereact/progressspinner";
-import { redirect, useRouter } from "next/navigation";
-import SummaryOverview from "components/summary-overview";
 import CircleChart from "components/circle-chart";
-import { getClientNps, getTeamNps } from "lib/helperFunctions";
 import ClinicWorth from "components/ClinicWorth";
+import SingleUserPageTemplate from "components/singe-user-page-template";
+import SummaryOverview from "components/summary-overview";
+import { getClientNps, getTeamNps } from "lib/helperFunctions";
+import { getSurveyData } from "lib/server-actions";
+import Link from "next/link";
+import { redirect } from "next/navigation";
+import { ProgressSpinner } from "primereact/progressspinner";
+import { useEffect, useState } from "react";
+import { IoIosArrowRoundBack } from "react-icons/io";
 import { SurveyData } from "../../../../../../types/types";
 
 const defaultNps = [
@@ -155,7 +155,7 @@ export default function Page({ params }: { params: any }) {
         </div>
       </div>
 
-      <div className="card m-5">
+      <div className="card m-5 admin_singleuser">
         {!surveyData ? (
           <>
             <div className="flex justify-content-center">

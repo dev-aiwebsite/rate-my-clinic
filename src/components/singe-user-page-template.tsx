@@ -40,6 +40,9 @@ export default function SingleUserPageTemplate({surveyData}:{surveyData:any}) {
     }
 
     const teamTableOptions = {
+        export: {
+            excel: true
+        },
         'delete':{
             "enabled":true,
             "db_name":'team',
@@ -48,6 +51,9 @@ export default function SingleUserPageTemplate({surveyData}:{surveyData:any}) {
         "data":teamSurvey
     }
     const clientTableOptions = {
+          export: {
+            excel: true
+        },
         'delete':{
             "enabled":true,
             "db_name":'client',

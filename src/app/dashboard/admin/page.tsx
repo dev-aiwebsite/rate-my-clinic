@@ -154,7 +154,7 @@ export default function Page({ searchParams }: { searchParams: any }) {
           </div>
         </div>
         <DataTable
-          className="user_datatable"
+          className="user_datatable scrollbar"
           value={users_datatable_all}
           selectionMode="single"
           onSelectionChange={(e) => tableRowOnClick(e)}

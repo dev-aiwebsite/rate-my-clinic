@@ -196,7 +196,7 @@ export default function CustomDataTable({datatable,filename = 'RMC_REPORT_DATA',
                 </div>
             </div>
             <DataTable
-                className="text-sm"
+                className="text-sm scrollbar"
                 value={tableData}
                 selectionMode="checkbox"
                 onRowClick={(e)=>handleOnRowClick(e)}

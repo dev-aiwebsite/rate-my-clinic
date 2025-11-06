@@ -1,0 +1,1 @@
+{"indexes":[{"v":{"$numberInt":"2"},"key":{"_id":{"$numberInt":"1"}},"name":"_id_"}],"uuid":"1e33aa6b62434ea198e377ec2eaf5d5f","collectionName":"ownersurveydatas","type":"collection"}
